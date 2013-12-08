@@ -3,10 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bids.jbpm</groupId>
-  <artifactId>EndOfDay</artifactId>
+  <artifactId>StartOfDay</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>End Of Day</name>
-  <description>All procedures done at the end of the day</description>
+  <name>Start Of Day</name>
+  <description>All procedures done at the start of the day</description>
   <repositories>
     <repository>
       <id>guvnor-m2-repo</id>
