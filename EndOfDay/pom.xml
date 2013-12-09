@@ -11,7 +11,7 @@
     <description>All procedures done at the end of the day</description>
 
     <properties>
-        <bids.domain.version>1.0.0-SNAPSHOT</bids.domain.version>
+        <bids.domain.version>bids-domain-1.0.0-20131208.202450-1</bids.domain.version>
     </properties>
 
     <dependencies>
