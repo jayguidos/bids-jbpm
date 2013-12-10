@@ -16,7 +16,7 @@
       <groupId>bids-jbpm</groupId>
       <artifactId>bids-domain</artifactId>
       <version>${bids.domain.version}</version>
-      <classifier>${bids.domain.version.classifier}</classfier>
+      <classifier>${bids.domain.version.classifier}</classifier>
     </dependency>
   </dependencies>
   <repositories>
