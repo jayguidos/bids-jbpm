@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.bids.jbpm</groupId>
-  <artifactId>StartOfDay</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <name>Start Of Day</name>
-  <description>All procedures done at the start of the day</description>
-  <repositories>
-    <repository>
-      <id>guvnor-m2-repo</id>
-      <name>Guvnor M2 Repo</name>
-      <url>http://localhost:8080/jbpm-console/maven2/</url>
-    </repository>
-  </repositories>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.bids.jbpm</groupId>
+    <artifactId>StartOfDay</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>Start Of Day</name>
+    <description>All procedures done at the start of the day</description>
+
+    <properties>
+        <bids.domain.version>1.0.0</bids.domain.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>bids-jbpm</groupId>
+            <artifactId>bids-domain</artifactId>
+            <version>${bids.domain.version}</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>guvnor-m2-repo</id>
+            <name>Guvnor M2 Repo</name>
+            <url>http://localhost:8080/jbpm-console/maven2/</url>
+        </repository>
+    </repositories>
+
 </project>

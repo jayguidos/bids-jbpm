@@ -10,18 +10,14 @@
         <version>1.0.0</version>
     </parent>
 
-    <name>BIDS Controller WAR</name>
-    <artifactId>bids-controller</artifactId>
-
-    <properties>
-        <bids.domain.version>1.0.0</bids.domain.version>
-    </properties>
+    <name>BIDS Domain and Facts</name>
+    <artifactId>bids-domain</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>bids-jbpm</groupId>
-            <artifactId>bids-domain</artifactId>
-            <version>${bids.domain.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
         </dependency>
     </dependencies>
 
