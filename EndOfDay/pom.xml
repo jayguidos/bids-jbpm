@@ -9,12 +9,14 @@
   <description>All procedures done at the end of the day</description>
   <properties>
     <bids.domain.version>1.0.0</bids.domain.version>
+    <bids.domain.version.classifier>20131208.202450-1</bids.domain.version.classifier>
   </properties>
   <dependencies>
     <dependency>
       <groupId>bids-jbpm</groupId>
       <artifactId>bids-domain</artifactId>
       <version>${bids.domain.version}</version>
+      <classifier>${bids.domain.version.classifier}</classifier>
     </dependency>
   </dependencies>
   <repositories>
