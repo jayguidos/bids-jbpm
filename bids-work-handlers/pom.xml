@@ -5,19 +5,28 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>bids-jbpm</groupId>
         <artifactId>bids-jbpm-all</artifactId>
+        <groupId>bids-jbpm</groupId>
         <version>1.0.0</version>
     </parent>
 
-    <name>BIDS Controller WAR</name>
-    <artifactId>bids-controller</artifactId>
+    <name>BIDS jBPM Work Item Handlers</name>
+    <artifactId>bids-work-handlers</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>bids-jbpm</groupId>
             <artifactId>bids-domain</artifactId>
             <version>${bids-domain.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
         </dependency>
     </dependencies>
 
