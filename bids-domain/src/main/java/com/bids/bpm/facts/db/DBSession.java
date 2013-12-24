@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-import com.bids.bpm.facts.model.CalendarDay;
+import com.bids.bpm.facts.model.BidsDay;
 
 public class DBSession
 {
@@ -25,9 +25,9 @@ public class DBSession
         this.activeDate = activeDate;
     }
 
-    public CalendarDay getCalendarDay()
+    public BidsDay getCalendarDay()
     {
-        CalendarDay calendarDay = new CalendarDay();
+        BidsDay bidsDay = new BidsDay();
         Calendar c = Calendar.getInstance();
         c.setTime(activeDate);
 
@@ -35,20 +35,20 @@ public class DBSession
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 1);
-        calendarDay.setDate(c.getTime());
+        bidsDay.setDate(c.getTime());
 
         c.set(Calendar.HOUR_OF_DAY, 9);
         c.set(Calendar.MINUTE, 30);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        calendarDay.setSystemStartTime(c.getTime());
+        bidsDay.setSystemStartTime(c.getTime());
 
         c.set(Calendar.HOUR_OF_DAY, 4);
         c.set(Calendar.MINUTE, 00);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        calendarDay.setSystemEndTime(c.getTime());
+        bidsDay.setSystemEndTime(c.getTime());
 
-        return calendarDay;
+        return bidsDay;
     }
 }

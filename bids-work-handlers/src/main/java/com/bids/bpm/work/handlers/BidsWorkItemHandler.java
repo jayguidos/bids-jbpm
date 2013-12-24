@@ -21,7 +21,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 
 public abstract class BidsWorkItemHandler
         implements WorkItemHandler,
-                   StatefulKnowledgeSessionAware,
+                   KieSessionAware,
                    LogBaseDirAware
 {
     public static final String THREAD_NAME_PREFIX = "BidsWorkItemWorkerThread-";

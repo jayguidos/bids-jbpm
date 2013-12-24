@@ -11,7 +11,7 @@ package com.bids.bpm.work.handlers;
 
 import org.kie.api.runtime.KieSession;
 
-public interface StatefulKnowledgeSessionAware
+public interface KieSessionAware
 {
     public void setKsession(KieSession ksession);
 }

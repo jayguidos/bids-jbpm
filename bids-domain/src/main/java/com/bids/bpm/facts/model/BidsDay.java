@@ -11,19 +11,19 @@ package com.bids.bpm.facts.model;
 
 import java.util.Date;
 
-public class CalendarDay
+public class BidsDay
         extends BidsFact
 {
     private static final long serialVersionUID = 3108457365704606617L;
-    public static final String CALENDAR_DAY = "CalendarDay";
+    public static final String BIDS_DAY = "BidsDay";
     private Date date;
     private Date systemStartTime;
     private Date systemEndTime;
     private boolean isTradingHalfDay;
 
-    public CalendarDay()
+    public BidsDay()
     {
-        super(CALENDAR_DAY);
+        super(BIDS_DAY);
     }
 
     public Date getDate()
@@ -69,7 +69,7 @@ public class CalendarDay
     @Override
     public String toString()
     {
-        return "CalendarDay{" +
+        return "BidsDay{" +
                 "date=" + date +
                 ", isTradingHalfDay=" + isTradingHalfDay +
                 '}';

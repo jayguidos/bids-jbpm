@@ -18,7 +18,6 @@ import java.util.Collection;
 
 import com.bids.bpm.facts.model.WorkDone;
 import com.bids.bpm.work.handlers.BidsWorkItemHandler;
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerFactory;
 import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
 import static com.bids.bpm.work.handlers.BidsWorkItemHandlerResults.ERROR_RESULTS;
 import org.apache.log4j.Logger;
@@ -42,16 +41,6 @@ public class BashScriptWorkItemHandler
     protected BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
     {
         return new BashScriptWorker(workItem);
-    }
-
-    public static class Factory
-            implements BidsWorkItemHandlerFactory
-    {
-
-        public BidsWorkItemHandler makeFactory()
-        {
-            return new BashScriptWorkItemHandler();
-        }
     }
 
     private class BashScriptWorker

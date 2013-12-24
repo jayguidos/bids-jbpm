@@ -22,15 +22,15 @@ public class BidsTradingDay
 {
     public static final String BIDS_TRADING_DAY = "BidsTradingDay";
     private static final long serialVersionUID = -577558229893432533L;
-    private final CalendarDay day;
+    private final BidsDay day;
     private String baseLogDir;
 
     public BidsTradingDay()
     {
-        this(new CalendarDay(), "./log");
+        this(new BidsDay(), "./log");
     }
 
-    public BidsTradingDay(CalendarDay day, String baseLogDir)
+    public BidsTradingDay(BidsDay day, String baseLogDir)
     {
         super(BIDS_TRADING_DAY);
         this.day = day;
