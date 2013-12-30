@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="bids-work-handlers">
+    <output-path>$PROJECT_DIR$/out/artifacts/bids_work_handlers</output-path>
+    <root id="archive" name="bids-work-handlers.jar">
+      <element id="module-output" name="bids-work-handlers" />
+    </root>
+  </artifact>
+</component>

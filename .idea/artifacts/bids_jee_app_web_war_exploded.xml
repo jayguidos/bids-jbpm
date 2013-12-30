@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="bids-jee-app-web:war exploded">
+    <output-path>$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/target/bids-jee-app-web-1.0-SNAPSHOT</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="bids-jee-app-web/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="bids-jee-app-web" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

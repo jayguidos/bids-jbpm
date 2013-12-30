@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ejb" name="bids-jee-app-ejb:ejb exploded">
+    <output-path>$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/target/bids-jee-app-ejb-1.0-SNAPSHOT</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="bids-jee-app-ejb/ejb/EJB" />
+      <element id="module-output" name="bids-jee-app-ejb" />
+    </root>
+  </artifact>
+</component>

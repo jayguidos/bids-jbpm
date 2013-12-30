@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="ejb-jar" name="bids-ejb:ejb">
+    <output-path>$PROJECT_DIR$/bids-ejb/target</output-path>
+    <root id="archive" name="bids-ejb-1.0-SNAPSHOT.jar">
+      <element id="artifact" artifact-name="bids-ejb:ejb exploded" />
+    </root>
+  </artifact>
+</component>

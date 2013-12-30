@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EndOfDay/EndOfDay.iml" filepath="$PROJECT_DIR$/EndOfDay/EndOfDay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StartOfDay/StartOfDay.iml" filepath="$PROJECT_DIR$/StartOfDay/StartOfDay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-domain/bids-domain.iml" filepath="$PROJECT_DIR$/bids-domain/bids-domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jbpm.iml" filepath="$PROJECT_DIR$/bids-jbpm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear/bids-jee-app-ear.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear/bids-jee-app-ear.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/bids-jee-app-ejb.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/bids-jee-app-ejb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/bids-jee-app-web.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/bids-jee-app-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-rest/bids-rest.iml" filepath="$PROJECT_DIR$/bids-rest/bids-rest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-work-handlers/bids-work-handlers.iml" filepath="$PROJECT_DIR$/bids-work-handlers/bids-work-handlers.iml" />
+    </modules>
+  </component>
+</project>
+
