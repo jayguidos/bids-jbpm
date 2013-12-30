@@ -49,7 +49,6 @@
         <dependency>
             <groupId>bids-jbpm</groupId>
             <artifactId>bids-domain</artifactId>
-            <version>${bids-domain.version}</version>
         </dependency>
         <dependency>
             <groupId>bids-jbpm</groupId>

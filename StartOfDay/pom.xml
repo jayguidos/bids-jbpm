@@ -11,7 +11,7 @@
     <description>All procedures done at the start of the day</description>
 
     <properties>
-        <bids.domain.version>1.0.0</bids.domain.version>
+        <bids.domain.version>1.0.0-SNAPSHOT</bids.domain.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
