@@ -20,13 +20,14 @@
 
         <dependency>
             <groupId>bids-jbpm</groupId>
-            <artifactId>bids-controller</artifactId>
-            <version>1.0.0</version>
+            <artifactId>bids-domain</artifactId>
+            <version>${bids-domain.version}</version>
         </dependency>
         <dependency>
             <groupId>bids-jbpm</groupId>
             <artifactId>bids-domain</artifactId>
             <version>1.0.0</version>
+            <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -37,6 +38,7 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
             <version>${resteasy.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec</groupId>

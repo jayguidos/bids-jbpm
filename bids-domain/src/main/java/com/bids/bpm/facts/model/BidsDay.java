@@ -13,6 +13,7 @@ import java.util.Date;
 
 public class BidsDay
         extends BidsFact
+        implements Comparable<BidsDay>
 {
     private static final long serialVersionUID = 3108457365704606617L;
     public static final String BIDS_DAY = "BidsDay";
@@ -24,6 +25,13 @@ public class BidsDay
     public BidsDay()
     {
         super(BIDS_DAY);
+    }
+
+    public int compareTo(BidsDay o)
+    {
+        if ( o == null )
+            return 1;
+        return date.compareTo(o.getDate());
     }
 
     public Date getDate()

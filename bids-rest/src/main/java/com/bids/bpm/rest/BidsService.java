@@ -10,22 +10,20 @@
 package com.bids.bpm.rest;
 
 
-import com.bids.bpm.controller.BidsProcessManager;
-
-
-import javax.inject.Inject;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 
 @Path("/bids")
 public class BidsService
 {
-    @Inject
-    private BidsProcessManager bpm;
-
-    public void startProcess(@PathParam("processId") String pid)
-    {
-        bpm.deployUnit("bids-jbmp","EndOfDay","1.0.0-SNAPSHOT");
-        bpm.startProcess("bids-jbmp","EndOfDay","1.0.0-SNAPSHOT",pid);
-    }
+//    @Inject
+//    private BidsProcessManager bpm;
+//
+//    @GET
+//    @Produces("application/xml")
+//    public String[] startProcess(@PathParam("processId") String pid)
+//    {
+//        bpm.deployUnit("bids-jbmp", "EndOfDay", "1.0.0-SNAPSHOT");
+//        bpm.startProcess("bids-jbmp","EndOfDay","1.0.0-SNAPSHOT",pid);
+//        return new String[] { "Oh my", "So Sad" };
+//    }
 }

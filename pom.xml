@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>BIDS Daily Operations</name>
@@ -12,7 +10,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bids-controller.version>1.0.0</bids-controller.version>
         <bids-domain.version>1.0.0</bids-domain.version>
         <bids-work-handlers.version>1.0.0</bids-work-handlers.version>
 
@@ -25,16 +22,17 @@
         <jboss.javaee.version>1.0.0.Final</jboss.javaee.version>
         <hibernate.version>4.2.0.Final</hibernate.version>
         <hibernate.core.version>4.2.0.Final</hibernate.core.version>
+        <slf4j.version>1.6.4</slf4j.version>
     </properties>
 
     <modules>
         <module>EndOfDay</module>
         <module>StartOfDay</module>
-        <module>bids-controller</module>
         <module>bids-domain</module>
         <module>bids-work-handlers</module>
         <module>bids-rest</module>
-    </modules>
+    <module>bids-jee-app</module>
+  </modules>
 
     <build>
         <plugins>
