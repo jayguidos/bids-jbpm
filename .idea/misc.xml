@@ -38,6 +38,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/bids-controller/pom.xml" />
+        <option value="$PROJECT_DIR$/bids-rest/pom.xml" />
       </set>
     </option>
   </component>

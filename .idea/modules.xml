@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear/bids-jee-app-ear.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear/bids-jee-app-ear.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/bids-jee-app-ejb.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/bids-jee-app-ejb.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/bids-jee-app-web.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/bids-jee-app-web.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bids-rest/bids-rest.iml" filepath="$PROJECT_DIR$/bids-rest/bids-rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-work-handlers/bids-work-handlers.iml" filepath="$PROJECT_DIR$/bids-work-handlers/bids-work-handlers.iml" />
     </modules>
   </component>
