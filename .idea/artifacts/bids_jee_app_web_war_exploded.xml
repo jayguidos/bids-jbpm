@@ -7,6 +7,9 @@
         <element id="directory" name="classes">
           <element id="module-output" name="bids-jee-app-web" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-hibernatevalidator-provider:2.3.6.Final" />
+        </element>
       </element>
     </root>
   </artifact>
