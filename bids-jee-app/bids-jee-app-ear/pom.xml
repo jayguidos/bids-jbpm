@@ -27,6 +27,15 @@
          <artifactId>bids-jee-app-ejb</artifactId>
          <type>ejb</type>
       </dependency>
+
+       <!--Force provided scope for dom4j to avoid class loading problems during deployment-->
+       <dependency>
+           <groupId>dom4j</groupId>
+           <artifactId>dom4j</artifactId>
+           <version>1.6.1</version>
+           <scope>provided</scope>
+       </dependency>
+
    </dependencies>
 
    <build>
@@ -50,7 +59,7 @@
                      <groupId>bids-jbpm</groupId>
                      <artifactId>bids-jee-app-web</artifactId>
                      <!-- Define the context root for the webapp -->
-                     <contextRoot>/bids-jee-app</contextRoot>
+                     <contextRoot>/bids</contextRoot>
                   </webModule>
                </modules>
             </configuration>

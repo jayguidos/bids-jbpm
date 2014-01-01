@@ -15,8 +15,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 
+import com.bids.bpm.jee.kie.BidsDeploymentService;
 import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
@@ -34,7 +34,7 @@ public class BidsProcessEngine
 
     @Inject
     @Kjar
-    private DeploymentService deploymentService;
+    private BidsDeploymentService deploymentServiceYYY;
 
     /**
      * Deploys given unit into the process engine
@@ -43,7 +43,7 @@ public class BidsProcessEngine
      */
     public void deployUnit(KModuleDeploymentUnit unit)
     {
-        deploymentService.deploy(unit);
+        deploymentServiceYYY.deploy(unit);
     }
 
     /**
@@ -53,7 +53,7 @@ public class BidsProcessEngine
      */
     public void undeployUnit(KModuleDeploymentUnit unit)
     {
-        deploymentService.undeploy(unit);
+        deploymentServiceYYY.undeploy(unit);
     }
 
     /**
@@ -85,7 +85,7 @@ public class BidsProcessEngine
      */
     public RuntimeManager getRuntimeManager(String deploymentId)
     {
-        DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
+        DeployedUnit deployedUnit = deploymentServiceYYY.getDeployedUnit(deploymentId);
         if (deployedUnit == null)
         {
             return null;

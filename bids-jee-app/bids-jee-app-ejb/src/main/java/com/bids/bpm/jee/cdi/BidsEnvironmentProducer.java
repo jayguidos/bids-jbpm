@@ -23,6 +23,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 
+import com.bids.bpm.jee.kie.BidsDeploymentService;
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
@@ -49,7 +50,7 @@ public class BidsEnvironmentProducer
 
     @Inject
     @Kjar
-    public DeploymentService deploymentService;
+    public BidsDeploymentService deploymentService;
 
     @Produces
     @Default

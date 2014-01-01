@@ -9,15 +9,21 @@
 
 package com.bids.bpm.jee.controller;
 
+import java.util.List;
+
 import javax.ejb.Stateful;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.cdi.BidsProcessEngine;
+import com.bids.bpm.jee.data.BidsDeploymentsProducer;
+import com.bids.bpm.jee.kie.BidsDeploymentUnit;
+import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.shared.BidsBPMConstants;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.kie.internal.runtime.manager.context.EmptyContext;
 
 @Stateful
 public class BidsProcessController
@@ -25,11 +31,23 @@ public class BidsProcessController
     @Inject
     private BidsProcessEngine engine;
 
-    public String deployModule(String artifactId, String version)
+    @Inject
+    private BidsDeploymentsProducer bdProducer;
+
+    @PersistenceContext(unitName = "org.jbpm.domain")
+    EntityManager em;
+
+    public String deployModule(BidsDay bidsDay, String artifactId, String version)
     {
-        KModuleDeploymentUnit unit = new KModuleDeploymentUnit(BidsBPMConstants.BIDS_MAVEN_GROUP, artifactId, version);
+        KModuleDeploymentUnit unit = new BidsDeploymentUnit(bidsDay, BidsBPMConstants.BIDS_MAVEN_GROUP, artifactId, version);
         engine.deployUnit(unit);
-        engine.getRuntimeManager(unit.getIdentifier()).getRuntimeEngine(EmptyContext.get());
+
+        engine.getRuntimeEngine(unit.getIdentifier()).getKieSession().insert(bidsDay);
+
+        BidsDeployment bidsDeployment = new BidsDeployment();
+        bidsDeployment.setDeployIdentifier(unit.getIdentifier());
+        em.persist(bidsDeployment);
+
         return unit.getIdentifier();
     }
 
@@ -37,4 +55,10 @@ public class BidsProcessController
     {
         return engine.getRuntimeEngine(unitIdentifier).getKieSession().getId();
     }
+
+    public List<BidsDeployment> getDeployments()
+    {
+        return bdProducer.getDeployments();
+    }
+
 }

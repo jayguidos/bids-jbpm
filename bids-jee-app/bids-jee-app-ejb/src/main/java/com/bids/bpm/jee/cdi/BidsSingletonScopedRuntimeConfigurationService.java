@@ -57,9 +57,9 @@ public class BidsSingletonScopedRuntimeConfigurationService
 
     private void configureKieSession(KieSession kieSession, Date bidsDay, File baseLoggingDir)
     {
-        kieSession.setGlobal(GLBL_DB_SESSION, new DBSession(bidsDay));
-        kieSession.setGlobal(GLBL_KSESSION, kieSession);
-        kieSession.setGlobal(GLBL_LOG_DIR_HOME, baseLoggingDir);
+//        kieSession.setGlobal(GLBL_DB_SESSION, new DBSession(bidsDay));
+//        kieSession.setGlobal(GLBL_KSESSION, kieSession);
+//        kieSession.setGlobal(GLBL_LOG_DIR_HOME, baseLoggingDir);
 
         BashScriptWorkItemHandler bashWI = new BashScriptWorkItemHandlerFactory(kieSession, baseLoggingDir).makeWorkItem();
         kieSession.getWorkItemManager().registerWorkItemHandler(BIDS_BASH_WORK_ITEM_HANDLER,bashWI);

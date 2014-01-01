@@ -11,8 +11,11 @@
 
    <artifactId>bids-jee-app-web</artifactId>
    <packaging>war</packaging>
-
    <name>bids-jee-app Web module</name>
+
+    <properties>
+        <resteasy.version>2.3.6.Final</resteasy.version>
+    </properties>
 
    <dependencies>
 
@@ -48,7 +51,32 @@
          <scope>provided</scope>
       </dependency>
 
+       <!--Basic RESTEasy stuff-->
+       <dependency>
+           <groupId>org.jboss.resteasy</groupId>
+           <artifactId>resteasy-jaxrs</artifactId>
+           <version>${resteasy.version}</version>
+           <scope>provided</scope>
+       </dependency>
+
+       <!--JSR-303 bean validation API-->
+       <dependency>
+           <groupId>javax.validation</groupId>
+           <artifactId>validation-api</artifactId>
+           <scope>provided</scope>
+       </dependency>
+
+       <!--Resteasy JSR-303 implementation of bean validation - it is not provided by default in RESTEasy, so I need
+           to put in on the runtime classpath-->
+       <dependency>
+           <groupId>org.jboss.resteasy</groupId>
+           <artifactId>resteasy-hibernatevalidator-provider</artifactId>
+           <version>${resteasy.version}</version>
+           <scope>compile</scope>
+       </dependency>
+
    </dependencies>
+
 
    <build>
       <plugins>

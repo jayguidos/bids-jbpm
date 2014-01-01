@@ -9,7 +9,14 @@
 
 package com.bids.bpm.facts.model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+
+import com.bids.bpm.shared.BidsBPMConstants;
+import static com.bids.bpm.shared.BidsBPMConstants.TRADING_DATE_FORMAT;
 
 public class BidsDay
         extends BidsFact
@@ -25,13 +32,28 @@ public class BidsDay
     public BidsDay()
     {
         super(BIDS_DAY);
+        this.date = new Date();
+    }
+
+    public BidsDay(String dateStr)
+    {
+        super(BIDS_DAY);
+        try
+        {
+            this.date = new SimpleDateFormat(TRADING_DATE_FORMAT).parse(dateStr);
+        } catch (ParseException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     public int compareTo(BidsDay o)
     {
         if ( o == null )
             return 1;
-        return date.compareTo(o.getDate());
+        String myDate = new SimpleDateFormat(TRADING_DATE_FORMAT).format(date);
+        String otherDate = new SimpleDateFormat(TRADING_DATE_FORMAT).format(o.date);
+        return myDate.compareTo(otherDate);
     }
 
     public Date getDate()
@@ -77,9 +99,6 @@ public class BidsDay
     @Override
     public String toString()
     {
-        return "BidsDay{" +
-                "date=" + date +
-                ", isTradingHalfDay=" + isTradingHalfDay +
-                '}';
+        return "BidsDay[" + new SimpleDateFormat(TRADING_DATE_FORMAT).format(date) + ']';
     }
 }
