@@ -14,20 +14,19 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.MatrixParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.controller.BidsProcessController;
-import com.bids.bpm.jee.data.BidsDeploymentsProducer;
 import com.bids.bpm.jee.model.BidsDeployment;
-import com.bids.bpm.jee.rest.validators.ValidBidsDay;
-import static com.bids.bpm.shared.BidsBPMConstants.TRADING_DATE_FORMAT;
+import com.bids.bpm.jee.rest.dto.DeployRequest;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import org.jboss.resteasy.spi.validation.ValidateRequest;
 
 @Path("/mgmt")
@@ -42,31 +41,18 @@ public class BidsRESTService
     @Inject
     private EntityManager em;
 
-    @GET
+    @POST
     @Path("/deploy")
-    @Produces("text/plain")
-    public String deploy(
-
-            @MatrixParam("artifactId")
-            @NotNull(message = "artifactId is required")
-            String artifactId,
-
-            @MatrixParam("version")
-            @NotNull(message = "version (i.e. artifact version) is required")
-            String version,
-
-            @MatrixParam("bidsDay")
-            @NotNull(message = "bidsDay is required in format " + TRADING_DATE_FORMAT)
-            @ValidBidsDay
-            String dateStr
-    )
+    @Produces(APPLICATION_XML)
+    @Consumes(APPLICATION_XML)
+    public BidsDeployment deploy(@Valid DeployRequest deploy)
     {
-        return bpc.deployModule(new BidsDay(dateStr), artifactId, version);
+        return bpc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
     }
 
     @GET
     @Path("/deployments")
-    @Produces("application/xml")
+    @Produces(APPLICATION_XML)
     public BidsDeployment[] deployments()
     {
         List<BidsDeployment> deployments = bpc.getDeployments();

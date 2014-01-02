@@ -17,6 +17,7 @@ import javax.validation.ConstraintValidatorContext;
 
 
 import com.bids.bpm.shared.BidsBPMConstants;
+import static com.bids.bpm.shared.BidsBPMConstants.TRADING_DATE_FORMAT;
 
 public class BidsDayValidator
         implements ConstraintValidator<ValidBidsDay, String>
@@ -35,7 +36,7 @@ public class BidsDayValidator
 
         try
         {
-            new SimpleDateFormat(BidsBPMConstants.TRADING_DATE_FORMAT).parse(value);
+            new SimpleDateFormat(TRADING_DATE_FORMAT).parse(value);
             return true;
         } catch (ParseException ignored)
         {

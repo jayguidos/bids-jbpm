@@ -30,6 +30,9 @@
         <hibernate.core.version>4.2.0.Final</hibernate.core.version>
         <slf4j.version>1.6.4</slf4j.version>
 
+        <!--JBoss-->
+        <resteasy.version>2.3.6.Final</resteasy.version>
+
     </properties>
 
     <modules>
@@ -38,6 +41,7 @@
         <module>bids-domain</module>
         <module>bids-work-handlers</module>
         <module>bids-jee-app</module>
+        <module>bids-rest-client</module>
     </modules>
 
     <build>

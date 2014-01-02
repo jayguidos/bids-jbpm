@@ -37,7 +37,7 @@ public class BidsProcessController
     @PersistenceContext(unitName = "org.jbpm.domain")
     EntityManager em;
 
-    public String deployModule(BidsDay bidsDay, String artifactId, String version)
+    public BidsDeployment deployModule(BidsDay bidsDay, String artifactId, String version)
     {
         KModuleDeploymentUnit unit = new BidsDeploymentUnit(bidsDay, BidsBPMConstants.BIDS_MAVEN_GROUP, artifactId, version);
         engine.deployUnit(unit);
@@ -48,7 +48,7 @@ public class BidsProcessController
         bidsDeployment.setDeployIdentifier(unit.getIdentifier());
         em.persist(bidsDeployment);
 
-        return unit.getIdentifier();
+        return bidsDeployment;
     }
 
     public int createBidsDaySession(String unitIdentifier, BidsDay day)

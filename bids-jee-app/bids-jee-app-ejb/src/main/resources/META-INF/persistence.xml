@@ -14,7 +14,9 @@
     <mapping-file>META-INF/Executor-orm.xml</mapping-file>
     <mapping-file>META-INF/Servicesorm.xml</mapping-file>
     <mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
-    
+
+    <class>com.bids.bpm.jee.model.BidsDeployment</class>
+
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.ContentImpl</class>
     <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>

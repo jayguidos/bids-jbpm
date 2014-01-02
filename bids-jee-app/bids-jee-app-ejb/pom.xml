@@ -46,14 +46,14 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>bids-jbpm</groupId>
-            <artifactId>bids-domain</artifactId>
-        </dependency>
+        <!--My own dependencies-->
         <dependency>
             <groupId>bids-jbpm</groupId>
             <artifactId>bids-work-handlers</artifactId>
-            <version>${bids-work-handlers.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bids-jbpm</groupId>
+            <artifactId>bids-jee-app-ejb-api</artifactId>
         </dependency>
 
         <!--Dependencies for Kie-->
