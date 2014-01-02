@@ -9,6 +9,7 @@
 
 package com.bids.bpm.rest.client;
 
+import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.rest.client.cmds.DeployCmd;
 
 public class BidsServiceClient
@@ -17,9 +18,10 @@ public class BidsServiceClient
     {
         try
         {
-            DeployCmd deployCmd = new DeployCmd("http://localhost:8080/bids/rest/mgmt/deploy");
-            deployCmd.formRequest(new String[]{});
-            deployCmd.execute();
+            String uriTemplate = "http://localhost:8080/bids/rest/mgmt";
+            DeployCmd deployCmd = new DeployCmd(uriTemplate.concat("/deploy"), new String[] {});
+            BidsDeployment bd = deployCmd.runCmd(BidsDeployment.class);
+            System.out.println(bd);
         } catch (Exception e)
         {
             e.printStackTrace();
