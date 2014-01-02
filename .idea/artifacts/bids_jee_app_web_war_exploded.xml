@@ -8,6 +8,9 @@
           <element id="module-output" name="bids-jee-app-web" />
         </element>
         <element id="directory" name="lib">
+          <element id="archive" name="bids-jee-app-web-api-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="bids-jee-app-web-api" />
+          </element>
           <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-hibernatevalidator-provider:2.3.6.Final" />
         </element>
       </element>

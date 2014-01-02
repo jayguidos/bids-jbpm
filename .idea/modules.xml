@@ -9,7 +9,10 @@
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear/bids-jee-app-ear.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear/bids-jee-app-ear.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/bids-jee-app-ejb.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb/bids-jee-app-ejb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb-api/bids-jee-app-ejb-api.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb-api/bids-jee-app-ejb-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/bids-jee-app-web.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-web/bids-jee-app-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-web-api/bids-jee-app-web-api.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app-web-api/bids-jee-app-web-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bids-rest-client/bids-rest-client.iml" filepath="$PROJECT_DIR$/bids-rest-client/bids-rest-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-work-handlers/bids-work-handlers.iml" filepath="$PROJECT_DIR$/bids-work-handlers/bids-work-handlers.iml" />
     </modules>
   </component>

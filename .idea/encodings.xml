@@ -8,8 +8,10 @@
     <file url="file://$PROJECT_DIR$/bids-jee-app" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ear" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-ejb-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-web" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/bids-rest" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app-web-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bids-rest-client" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bids-work-handlers" charset="UTF-8" />
   </component>
 </project>

@@ -25,9 +25,13 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="bids-domain" />
+        <module name="bids-jee-app-client" />
         <module name="bids-jee-app-ear" />
         <module name="bids-jee-app-ejb" />
+        <module name="bids-jee-app-ejb-api" />
         <module name="bids-jee-app-web" />
+        <module name="bids-jee-app-web-api" />
+        <module name="bids-rest-client" />
         <module name="bids-work-handlers" />
         <module name="EndOfDay" />
         <module name="EndOfDay (1)" />
@@ -37,7 +41,9 @@
     <bytecodeTargetLevel>
       <module name="bids-ejb" target="1.6" />
       <module name="bids-jee-app-ejb" target="1.6" />
+      <module name="bids-jee-app-ejb-api" target="1.6" />
       <module name="bids-jee-app-web" target="1.6" />
+      <module name="bids-jee-app-web-api" target="1.6" />
       <module name="bids-rest" target="1.5" />
     </bytecodeTargetLevel>
   </component>
