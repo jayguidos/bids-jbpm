@@ -27,6 +27,7 @@ import com.bids.bpm.jee.controller.BidsProcessController;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.rest.dto.DeployRequest;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.spi.validation.ValidateRequest;
 
 @Path("/mgmt")
@@ -53,10 +54,10 @@ public class BidsRESTService
     @GET
     @Path("/deployments")
     @Produces(APPLICATION_XML)
-    public BidsDeployment[] deployments()
+    @Wrapped(element="list", prefix="deployments")
+    public List<BidsDeployment> deployments()
     {
-        List<BidsDeployment> deployments = bpc.getDeployments();
-        return deployments.toArray(new BidsDeployment[deployments.size()]);
+        return bpc.getDeployments();
     }
 
 }

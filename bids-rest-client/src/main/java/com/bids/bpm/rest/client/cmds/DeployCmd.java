@@ -9,30 +9,49 @@
 
 package com.bids.bpm.rest.client.cmds;
 
+import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.rest.dto.DeployRequest;
 import com.bids.bpm.rest.client.BSCommand;
+import com.bids.bpm.rest.client.JAXBHelper;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import org.jboss.resteasy.client.ClientRequest;
 
 public class DeployCmd
-        extends BSCommand
+        extends BSCommand<BidsDeployment>
 {
 
+    public static final String NAME = "deploy";
     private DeployRequest dr;
 
-    public DeployCmd(String uriTemplate, String[] args)
+    public DeployCmd(String uriTemplate)
     {
-        super(uriTemplate, CommandType.post, args);
+        super(NAME, uriTemplate.concat("/mgmt/deploy"), CommandType.post);
     }
 
-    protected void prepareRequest(ClientRequest request, String[] args)
+    @Override
+    public String getResultAsXML()
+            throws Exception
+    {
+        return JAXBHelper.marshallIntoXML(BidsDeployment.class,getResult());
+    }
+
+    @Override
+    public BidsDeployment getResult()
+    {
+        return response.getEntity(BidsDeployment.class);
+    }
+
+    protected void prepareRequest(String[] args)
             throws Exception
     {
         dr = new DeployRequest();
-        dr.setArtifactId("EndOfDay");
-        dr.setVersion("1.0.0-SNAPSHOT");
-        dr.setBidsDate("XX-12-22");
-        request.body(APPLICATION_XML, marshallIntoXML(DeployRequest.class, dr));
+
+        if (args.length != 3)
+            throw new RuntimeException("expected 3 args: artifactId version bidsDate");
+        dr.setArtifactId(args[0]);
+        dr.setVersion(args[1]);
+        dr.setBidsDate(args[2]);
+        request.body(APPLICATION_XML, JAXBHelper.marshallIntoXML(DeployRequest.class, dr));
     }
 
 }
+

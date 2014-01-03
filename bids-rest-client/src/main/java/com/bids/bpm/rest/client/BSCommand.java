@@ -9,73 +9,97 @@
 
 package com.bids.bpm.rest.client;
 
-import java.io.StringWriter;
-
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
 
 
 import com.bids.bpm.jee.rest.dto.ErrorResponse;
-import com.bids.bpm.rest.client.cmds.DeployCmd;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
-public abstract class BSCommand
+public abstract class BSCommand<T>
 {
-    private final ClientRequest request;
-    private final CommandType cmdType;
-    private final String[] args;
-
     public enum CommandType
     {
         get, put, post, delete
     }
 
-    public BSCommand(String uriTemplate, CommandType cmdType, String[] args)
+    protected final ClientRequest request;
+    private final String name;
+    private final CommandType cmdType;
+    protected ClientResponse<?> response;
+
+    public BSCommand(String name, String uriTemplate, CommandType cmdType)
     {
-        this.args = args;
-        this.request = new ClientRequest(uriTemplate);
+        this.name = name;
         this.cmdType = cmdType;
+        this.request = new ClientRequest(uriTemplate);
     }
 
-    public <T> T runCmd(Class<T> returnType)
+    public T runCmd()
             throws Exception
     {
-        prepareRequest(request, args);
+        sendRequest();
+        return getResult();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "BSCommand{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
+    abstract public String getResultAsXML()
+            throws Exception;
+
+    abstract public T getResult();
+
+    public ClientRequest getRequest()
+    {
+        return request;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public CommandType getCmdType()
+    {
+        return cmdType;
+    }
+
+    private T sendRequest()
+            throws Exception
+    {
         switch (cmdType)
         {
             case get:
-                return processServerResponse(returnType, request.get());
+                return processServerResponse(request.get());
             case put:
-                return processServerResponse(returnType, request.put());
+                return processServerResponse(request.put());
             case post:
-                return processServerResponse(returnType, request.post());
+                return processServerResponse(request.post());
             case delete:
-                return processServerResponse(returnType, request.delete());
+                return processServerResponse(request.delete());
         }
         return null;
     }
 
-    protected abstract void prepareRequest(ClientRequest request, String[] args)
+    protected abstract void prepareRequest(String[] args)
             throws Exception;
 
-    protected <V> String marshallIntoXML(Class<V> jaxbClass, V instance)
+    protected T processServerResponse(ClientResponse<?> response)
             throws Exception
     {
-        StringWriter sw = new StringWriter();
-        JAXBContext jbc = JAXBContext.newInstance(jaxbClass);
-        jbc.createMarshaller().marshal(instance, sw);
-        return sw.toString();
-    }
-
-    protected <T> T processServerResponse(Class<T> expectedResponseEntityType, ClientResponse<?> response)
-            throws Exception
-    {
+        this.response = response;
         if (response.getResponseStatus().getFamily() == Response.Status.Family.SUCCESSFUL)
-            return response.getEntity(expectedResponseEntityType);
+            return getResult();
         else if (response.getResponseStatus().getFamily() == Response.Status.Family.SERVER_ERROR)
             throw new ErrorResponseException(response.getEntity(ErrorResponse.class));
         else
             throw new RuntimeException("Unknown error : " + response.getResponseStatus().getStatusCode());
     }
+
 }
