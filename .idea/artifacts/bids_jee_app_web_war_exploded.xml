@@ -11,7 +11,12 @@
           <element id="archive" name="bids-jee-app-web-api-1.0-SNAPSHOT.jar">
             <element id="module-output" name="bids-jee-app-web-api" />
           </element>
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
           <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-hibernatevalidator-provider:2.3.6.Final" />
+          <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-jaxb-provider:2.3.6.Final" />
+          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.4" />
+          <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.2.3" />
+          <element id="library" level="project" name="Maven: javax.xml.stream:stax-api:1.0-2" />
         </element>
       </element>
     </root>
