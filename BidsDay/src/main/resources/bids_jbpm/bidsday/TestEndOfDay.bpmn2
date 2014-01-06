@@ -365,7 +365,7 @@
             <bpmn2:sequenceFlow id="_1AED2E71-0E4B-4D0B-94BB-20CD3DF843B5-_F80D6703-BAEF-4D81-95AE-155FE1B4F828" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_1AED2E71-0E4B-4D0B-94BB-20CD3DF843B5" targetRef="_F80D6703-BAEF-4D81-95AE-155FE1B4F828"/>
         </bpmn2:process>
         <bpmndi:BPMNDiagram id="_Kyda0k2HEeOqbZH0kGDXjA">
-            <bpmndi:BPMNPlane id="_Kyda002HEeOqbZH0kGDXjA" bpmnElement="com.bids.bpm.EndOfDay">
+            <bpmndi:BPMNPlane id="_Kyda002HEeOqbZH0kGDXjA" bpmnElement="BidsDay.TestEndOfDay">
                 <bpmndi:BPMNShape id="_Kyda1E2HEeOqbZH0kGDXjA" bpmnElement="_6809EDA7-CF37-41DB-A6CE-8F45040F0287">
                     <dc:Bounds height="80.0" width="100.0" x="75.0" y="390.0"/>
                 </bpmndi:BPMNShape>
