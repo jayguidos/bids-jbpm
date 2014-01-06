@@ -33,6 +33,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/bids-ejb/pom.xml" />
         <option value="$PROJECT_DIR$/bids-jee-app/pom.xml" />
+        <option value="$PROJECT_DIR$/BidsDay/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
