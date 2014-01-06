@@ -20,18 +20,17 @@ public class DeployCmd
 {
 
     public static final String NAME = "deploy";
-    private DeployRequest dr;
 
     public DeployCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/deploy"), CommandType.post);
+        super(NAME, uriTemplate.concat("/mgmt/" + NAME), CommandType.post);
     }
 
     @Override
-    public String getResultAsXML()
+    public String getResultAsString()
             throws Exception
     {
-        return JAXBHelper.marshallIntoXML(BidsDeployment.class,getResult());
+        return JAXBHelper.marshallIntoXML(BidsDeployment.class, getResult());
     }
 
     @Override
@@ -43,10 +42,11 @@ public class DeployCmd
     protected void prepareRequest(String[] args)
             throws Exception
     {
-        dr = new DeployRequest();
 
         if (args.length != 3)
             throw new RuntimeException("expected 3 args: artifactId version bidsDate");
+
+        DeployRequest dr = new DeployRequest();
         dr.setArtifactId(args[0]);
         dr.setVersion(args[1]);
         dr.setBidsDate(args[2]);

@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-import com.bids.bpm.jee.rest.validators.ValidBidsDay;
+import com.bids.bpm.facts.model.validators.ValidBidsDateString;
 import static com.bids.bpm.shared.BidsBPMConstants.TRADING_DATE_FORMAT;
 import static javax.xml.bind.annotation.XmlAccessType.NONE;
 
@@ -37,7 +37,7 @@ public class DeployRequest
 
     @XmlElement
     @NotNull(message = "bidsDay is required in format " + TRADING_DATE_FORMAT)
-    @ValidBidsDay
+    @ValidBidsDateString
     private String bidsDate;
 
     public String getArtifactId()

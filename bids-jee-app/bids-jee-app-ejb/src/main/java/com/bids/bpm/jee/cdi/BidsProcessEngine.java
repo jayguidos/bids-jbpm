@@ -34,7 +34,7 @@ public class BidsProcessEngine
 
     @Inject
     @Kjar
-    private BidsDeploymentService deploymentServiceYYY;
+    private BidsDeploymentService deploymentService;
 
     /**
      * Deploys given unit into the process engine
@@ -43,7 +43,7 @@ public class BidsProcessEngine
      */
     public void deployUnit(KModuleDeploymentUnit unit)
     {
-        deploymentServiceYYY.deploy(unit);
+        deploymentService.deploy(unit);
     }
 
     /**
@@ -53,7 +53,7 @@ public class BidsProcessEngine
      */
     public void undeployUnit(KModuleDeploymentUnit unit)
     {
-        deploymentServiceYYY.undeploy(unit);
+        deploymentService.undeploy(unit);
     }
 
     /**
@@ -85,7 +85,7 @@ public class BidsProcessEngine
      */
     public RuntimeManager getRuntimeManager(String deploymentId)
     {
-        DeployedUnit deployedUnit = deploymentServiceYYY.getDeployedUnit(deploymentId);
+        DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
         if (deployedUnit == null)
         {
             return null;

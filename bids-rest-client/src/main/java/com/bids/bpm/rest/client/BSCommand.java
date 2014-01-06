@@ -50,7 +50,7 @@ public abstract class BSCommand<T>
                 '}';
     }
 
-    abstract public String getResultAsXML()
+    abstract public String getResultAsString()
             throws Exception;
 
     abstract public T getResult();

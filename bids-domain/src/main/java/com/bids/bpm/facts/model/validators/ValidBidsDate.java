@@ -1,4 +1,4 @@
-package com.bids.bpm.jee.rest.validators;
+package com.bids.bpm.facts.model.validators;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,10 +22,10 @@ import static com.bids.bpm.shared.BidsBPMConstants.TRADING_DATE_FORMAT;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
-@Constraint(validatedBy = BidsDayValidator.class)
-public @interface ValidBidsDay
+@Constraint(validatedBy = BidsDateValidator.class)
+public @interface ValidBidsDate
 {
-    String message() default "BidsDay format must be " + TRADING_DATE_FORMAT;
+    String message() default "BidsDay dates must be from 2013 on";
 
     Class<?>[] groups() default {};
 

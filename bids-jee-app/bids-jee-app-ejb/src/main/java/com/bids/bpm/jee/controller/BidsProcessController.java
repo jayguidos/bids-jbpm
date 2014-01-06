@@ -9,7 +9,9 @@
 
 package com.bids.bpm.jee.controller;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -19,6 +21,7 @@ import javax.persistence.PersistenceContext;
 
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.cdi.BidsProcessEngine;
+import com.bids.bpm.jee.data.BidsDayProducer;
 import com.bids.bpm.jee.data.BidsDeploymentsProducer;
 import com.bids.bpm.jee.kie.BidsDeploymentUnit;
 import com.bids.bpm.jee.model.BidsDeployment;
@@ -32,23 +35,39 @@ public class BidsProcessController
     private BidsProcessEngine engine;
 
     @Inject
-    private BidsDeploymentsProducer bdProducer;
+    private BidsDeploymentsProducer deploymentsProducer;
+
+    @Inject
+    private BidsDayProducer bidsDayProducer;
 
     @PersistenceContext(unitName = "org.jbpm.domain")
     EntityManager em;
 
     public BidsDeployment deployModule(BidsDay bidsDay, String artifactId, String version)
     {
+
+        // deploy the module identified by the GAV
         KModuleDeploymentUnit unit = new BidsDeploymentUnit(bidsDay, BidsBPMConstants.BIDS_MAVEN_GROUP, artifactId, version);
         engine.deployUnit(unit);
 
+        // convert bids day to a persistent version
+        if ( bidsDayProducer.getBidsDays().containsKey(bidsDay.getDate() ) )
+            bidsDay = bidsDayProducer.getBidsDays().get(bidsDay.getDate());
+        else
+            em.persist(bidsDay);
+
+        // add all facts
         engine.getRuntimeEngine(unit.getIdentifier()).getKieSession().insert(bidsDay);
 
-        BidsDeployment bidsDeployment = new BidsDeployment();
-        bidsDeployment.setDeployIdentifier(unit.getIdentifier());
-        em.persist(bidsDeployment);
+        // remember our deployment
+        BidsDeployment bd = new BidsDeployment();
+        bd.setDeployIdentifier(unit.getIdentifier());
+        bd.setArtifactId(artifactId);
+        bd.setVersion(version);
+        bd.setBidsDay(bidsDay);
+        em.persist(bd);
 
-        return bidsDeployment;
+        return bd;
     }
 
     public int createBidsDaySession(String unitIdentifier, BidsDay day)
@@ -56,9 +75,37 @@ public class BidsProcessController
         return engine.getRuntimeEngine(unitIdentifier).getKieSession().getId();
     }
 
-    public List<BidsDeployment> getDeployments()
+    public BidsDeployment findDeployment(Long bdId)
     {
-        return bdProducer.getDeployments();
+        for (BidsDeployment bidsDeployment : deploymentsProducer.getDeployments())
+            if ( bidsDeployment.getId().equals(bdId))
+                return bidsDeployment;
+        return null;
     }
 
+    public boolean undeployModule(Long bdId)
+    {
+        Map<Date,BidsDay> bidsDays = bidsDayProducer.getBidsDays();
+        BidsDeployment bd = findDeployment(bdId);
+        if ( bd == null )
+            throw new RuntimeException("Could not undeploy. Deployment does not exist: " + bdId);
+
+        // reassemble the unit key and undeploy
+        KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BidsBPMConstants.BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
+        engine.undeployUnit(unit);
+
+        // eliminate the deployment
+        em.remove(bd);
+        return false;
+    }
+
+    public List<BidsDeployment> getDeployments()
+    {
+        return deploymentsProducer.getDeployments();
+    }
+
+    private BidsDeploymentUnit fromBidsDeployment(BidsDeployment bd)
+    {
+        return new BidsDeploymentUnit(bd.getBidsDay(), BidsBPMConstants.BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
+    }
 }

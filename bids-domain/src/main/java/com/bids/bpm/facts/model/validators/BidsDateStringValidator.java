@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.jee.rest.validators;
+package com.bids.bpm.facts.model.validators;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,27 +16,25 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 
-import com.bids.bpm.shared.BidsBPMConstants;
 import static com.bids.bpm.shared.BidsBPMConstants.TRADING_DATE_FORMAT;
 
-public class BidsDayValidator
-        implements ConstraintValidator<ValidBidsDay, String>
+public class BidsDateStringValidator
+        implements ConstraintValidator<ValidBidsDateString, String>
 {
-    @Override
-    public void initialize(ValidBidsDay constraintAnnotation)
+
+    public void initialize(ValidBidsDateString constraintAnnotation)
     {
 
     }
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context)
+    public boolean isValid(String candidateBidsDateAsString, ConstraintValidatorContext context)
     {
-        if ( value == null || value.length() == 0 )
+        if (candidateBidsDateAsString == null || candidateBidsDateAsString.length() == 0)
             return false;
 
         try
         {
-            new SimpleDateFormat(TRADING_DATE_FORMAT).parse(value);
+            new SimpleDateFormat(TRADING_DATE_FORMAT).parse(candidateBidsDateAsString);
             return true;
         } catch (ParseException ignored)
         {

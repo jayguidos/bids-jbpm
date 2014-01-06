@@ -25,11 +25,11 @@ public class GetDeploymentsCmd
 
     public GetDeploymentsCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/deployments"), CommandType.get);
+        super(NAME, uriTemplate.concat("/mgmt/" + NAME), CommandType.get);
     }
 
     @Override
-    public String getResultAsXML()
+    public String getResultAsString()
             throws Exception
     {
         return JAXBHelper.marshallIntoXML("deployments", BidsDeployment.class, getResult());

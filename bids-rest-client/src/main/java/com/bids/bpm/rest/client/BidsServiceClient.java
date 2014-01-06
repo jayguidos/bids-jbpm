@@ -16,6 +16,7 @@ import java.util.Map;
 
 import com.bids.bpm.rest.client.cmds.DeployCmd;
 import com.bids.bpm.rest.client.cmds.GetDeploymentsCmd;
+import com.bids.bpm.rest.client.cmds.UndeployCmd;
 import org.apache.log4j.Logger;
 
 public class BidsServiceClient
@@ -47,7 +48,7 @@ public class BidsServiceClient
         cmd.prepareRequest(getCmdArgs(args));
         log.trace("Running command: " + cmd);
         cmd.runCmd();
-        log.info("Result: \n" + cmd.getResultAsXML());
+        log.info("Result: \n" + cmd.getResultAsString());
 
     }
 
@@ -56,6 +57,7 @@ public class BidsServiceClient
         HashMap<String, BSCommand<?>> cmds = new HashMap<String, BSCommand<?>>();
         cmds.put(GetDeploymentsCmd.NAME, new GetDeploymentsCmd(uriTemplate));
         cmds.put(DeployCmd.NAME, new DeployCmd(uriTemplate));
+        cmds.put(UndeployCmd.NAME, new UndeployCmd(uriTemplate));
         return cmds;
     }
 

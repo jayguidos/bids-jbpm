@@ -16,6 +16,10 @@ public abstract class BidsFact
 {
     protected String name;
 
+    protected BidsFact()
+    {
+    }
+
     public BidsFact(String name)
     {
         this.name = name;
