@@ -33,10 +33,7 @@
         <module name="bids-jee-app-web-api" />
         <module name="bids-rest-client" />
         <module name="bids-work-handlers" />
-        <module name="BidsDay" />
-        <module name="EndOfDay" />
         <module name="EndOfDay (1)" />
-        <module name="StartOfDay" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

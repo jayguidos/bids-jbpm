@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BidsDay/BidsDay.iml" filepath="$PROJECT_DIR$/BidsDay/BidsDay.iml" />
-      <module fileurl="file://$PROJECT_DIR$/EndOfDay/EndOfDay.iml" filepath="$PROJECT_DIR$/EndOfDay/EndOfDay.iml" />
-      <module fileurl="file://$PROJECT_DIR$/StartOfDay/StartOfDay.iml" filepath="$PROJECT_DIR$/StartOfDay/StartOfDay.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-domain/bids-domain.iml" filepath="$PROJECT_DIR$/bids-domain/bids-domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jbpm.iml" filepath="$PROJECT_DIR$/bids-jbpm.iml" />
       <module fileurl="file://$PROJECT_DIR$/bids-jee-app/bids-jee-app.iml" filepath="$PROJECT_DIR$/bids-jee-app/bids-jee-app.iml" />
