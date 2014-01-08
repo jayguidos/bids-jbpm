@@ -36,8 +36,6 @@
     </properties>
 
     <modules>
-        <module>EndOfDay</module>
-        <module>StartOfDay</module>
         <module>bids-domain</module>
         <module>bids-work-handlers</module>
         <module>bids-jee-app</module>

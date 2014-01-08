@@ -15,10 +15,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 
-import com.bids.bpm.jee.kie.BidsDeploymentService;
 import org.jbpm.kie.services.api.DeployedUnit;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.RuntimeDataService;
+import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -34,7 +34,7 @@ public class BidsProcessEngine
 
     @Inject
     @Kjar
-    private BidsDeploymentService deploymentService;
+    private KModuleDeploymentService deploymentService;
 
     /**
      * Deploys given unit into the process engine

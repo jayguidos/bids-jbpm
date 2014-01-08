@@ -23,10 +23,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 
-import com.bids.bpm.jee.kie.BidsDeploymentService;
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
+import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -50,7 +50,7 @@ public class BidsEnvironmentProducer
 
     @Inject
     @Kjar
-    public BidsDeploymentService deploymentService;
+    public KModuleDeploymentService deploymentService;
 
     @Produces
     @Default
