@@ -74,4 +74,14 @@ public class BidsRESTService
         else
             return bpc.undeployModule(bdId);
     }
+
+    @POST
+    @Path("/start")
+    @Produces(APPLICATION_XML)
+    @Consumes(APPLICATION_XML)
+    public BidsDeployment start(@Valid DeployRequest deploy)
+    {
+        return bpc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
+    }
+
 }

@@ -8,6 +8,10 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+
+import com.bids.bpm.shared.BidsBPMConstants;
+import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BPM_LOG_DIR_PROP_NAME;
+
 /**
  * This class uses CDI to alias Java EE resources, such as the persistence context, to CDI beans
  * 
@@ -36,6 +40,11 @@ public class Resources {
    @Produces
    @GlobalLogDir
    public File produceBaseLoggingDir(){
-       return new File(".");
+       String baseDirStr = new File(System.getProperty("user.home"), "data/jbpm").toString();
+       if ( System.getProperty(BIDS_BPM_LOG_DIR_PROP_NAME) != null )
+           baseDirStr = System.getProperty(BIDS_BPM_LOG_DIR_PROP_NAME);
+       File baseDir = new File(baseDirStr);
+       baseDir.mkdirs();
+       return baseDir;
    }
 }
