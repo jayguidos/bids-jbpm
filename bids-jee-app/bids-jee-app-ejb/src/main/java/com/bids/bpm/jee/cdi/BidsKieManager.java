@@ -26,7 +26,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 @ApplicationScoped
-public class BidsProcessEngine
+public class BidsKieManager
 {
 
     @Inject
