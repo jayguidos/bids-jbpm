@@ -1,0 +1,8 @@
+package com.bids.bpm
+dialect  "mvel"
+
+import com.bids.bpm.facts.model.WorkDone
+
+query "All work done" 
+    $work : WorkDone()
+end
