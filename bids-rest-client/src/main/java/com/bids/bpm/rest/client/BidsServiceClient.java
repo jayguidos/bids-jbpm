@@ -16,6 +16,7 @@ import java.util.Map;
 
 import com.bids.bpm.rest.client.cmds.DeployCmd;
 import com.bids.bpm.rest.client.cmds.GetDeploymentsCmd;
+import com.bids.bpm.rest.client.cmds.StartProcess;
 import com.bids.bpm.rest.client.cmds.UndeployCmd;
 import org.apache.log4j.Logger;
 
@@ -58,6 +59,7 @@ public class BidsServiceClient
         cmds.put(GetDeploymentsCmd.NAME, new GetDeploymentsCmd(uriTemplate));
         cmds.put(DeployCmd.NAME, new DeployCmd(uriTemplate));
         cmds.put(UndeployCmd.NAME, new UndeployCmd(uriTemplate));
+        cmds.put(StartProcess.NAME, new StartProcess(uriTemplate));
         return cmds;
     }
 

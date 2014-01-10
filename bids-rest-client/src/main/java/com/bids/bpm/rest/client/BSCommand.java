@@ -9,7 +9,14 @@
 
 package com.bids.bpm.rest.client;
 
+import java.io.StringWriter;
+import java.util.List;
+
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 
 import com.bids.bpm.jee.rest.dto.ErrorResponse;

@@ -8,17 +8,23 @@
     <!--Copied verbatum from jbpm-console.war -->
   <persistence-unit name="org.jbpm.domain" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
     <jta-data-source>java:jboss/datasources/jbpm-bids</jta-data-source>
+
+    <!--JBPM Mappings  -->
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
     <mapping-file>META-INF/Executor-orm.xml</mapping-file>
     <mapping-file>META-INF/Servicesorm.xml</mapping-file>
     <mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
 
+      <!--BIDS Specific Mappings -->
     <mapping-file>META-INF/BidsDay-orm.xml</mapping-file>
-
     <class>com.bids.bpm.jee.model.BidsDeployment</class>
+    <class>com.bids.bpm.jee.model.BidsActiveProcess</class>
+    <!--End BIDS Specific Mappings-->
 
+    <!--More Mappings  -->
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.ContentImpl</class>
     <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>

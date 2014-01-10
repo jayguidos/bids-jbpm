@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -25,15 +26,14 @@ import com.bids.bpm.jee.cdi.BidsKieManager;
 import com.bids.bpm.jee.data.BidsDayProducer;
 import com.bids.bpm.jee.data.BidsDeploymentsProducer;
 import com.bids.bpm.jee.kie.BidsDeploymentUnit;
+import com.bids.bpm.jee.model.BidsActiveProcess;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.util.GlobalLogDir;
-import com.bids.bpm.shared.BidsBPMConstants;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 
 @Stateful
@@ -55,6 +55,9 @@ public class BidsProcessController
     @GlobalLogDir
     private File logBaseDir;
 
+    @Inject
+    private Logger log;
+
     public BidsDeployment deployModule(BidsDay bidsDay, String artifactId, String version)
     {
 
@@ -63,7 +66,7 @@ public class BidsProcessController
         kieManager.deployUnit(unit);
 
         // convert bids day to a persistent version
-        if ( bidsDayProducer.getBidsDays().containsKey(bidsDay.getDate() ) )
+        if (bidsDayProducer.getBidsDays().containsKey(bidsDay.getDate()))
             bidsDay = bidsDayProducer.getBidsDays().get(bidsDay.getDate());
         else
             em.persist(bidsDay);
@@ -72,7 +75,7 @@ public class BidsProcessController
         KieSession kieSession = kieManager.getRuntimeEngine(unit.getIdentifier()).getKieSession();
         kieSession.insert(bidsDay);
         kieSession.setGlobal(GLBL_KSESSION, kieSession);
-        kieSession.setGlobal(GLBL_LOG_DIR_HOME, logBaseDir);
+        kieSession.setGlobal(GLBL_LOG_DIR_HOME, logBaseDir.toString());
 
         // remember our deployment
         BidsDeployment bd = new BidsDeployment();
@@ -82,22 +85,28 @@ public class BidsProcessController
         bd.setBidsDay(bidsDay);
         em.persist(bd);
 
+        log.info("Deployed BidsModule " + bd);
         return bd;
     }
 
     public BidsDeployment findDeployment(Long bdId)
     {
+        return internalFindDeployment(bdId);
+    }
+
+    private BidsDeployment internalFindDeployment(Long bdId)
+    {
         for (BidsDeployment bidsDeployment : deploymentsProducer.getDeployments())
-            if ( bidsDeployment.getId().equals(bdId))
+            if (bidsDeployment.getId().equals(bdId))
                 return bidsDeployment;
         return null;
     }
 
     public boolean undeployModule(Long bdId)
     {
-        Map<Date,BidsDay> bidsDays = bidsDayProducer.getBidsDays();
-        BidsDeployment bd = findDeployment(bdId);
-        if ( bd == null )
+        Map<Date, BidsDay> bidsDays = bidsDayProducer.getBidsDays();
+        BidsDeployment bd = internalFindDeployment(bdId);
+        if (bd == null)
             throw new RuntimeException("Could not undeploy. Deployment does not exist: " + bdId);
 
         // reassemble the unit key and undeploy
@@ -105,8 +114,9 @@ public class BidsProcessController
         kieManager.undeployUnit(unit);
 
         // eliminate the deployment
-        em.remove(bd);
-        return false;
+        em.remove(em.merge(bd));
+        log.info("Undeployed BidsModule " + bd);
+        return true;
     }
 
     public List<BidsDeployment> getDeployments()
@@ -114,13 +124,37 @@ public class BidsProcessController
         return deploymentsProducer.getDeployments();
     }
 
-    public void startProcess(Long bdId, String processId)
+    public BidsActiveProcess startProcess(Long bdId, String processId)
     {
-        BidsDeployment bd = findDeployment(bdId);
-        RuntimeEngine runtimeEngine = kieManager.getRuntimeEngine(bd.getDeployIdentifier());
-        KieSession kieSession = runtimeEngine.getKieSession();
+        BidsDeployment bd = internalFindDeployment(bdId);
+        KieSession kieSession = extractKieSession(bd);
         ProcessInstance processInstance = kieSession.startProcess(processId);
-        processInstance.getId();
+
+        log.info("Launched process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
+
+        BidsActiveProcess activeProcess = new BidsActiveProcess();
+        activeProcess.setDeployment(bd);
+        activeProcess.setProcessId(processId);
+        activeProcess.setProcessInstanceId(processInstance.getId());
+        em.persist(activeProcess);
+
+        return activeProcess;
+    }
+
+    public void deleteWorkDoneItem(String workDoneId, Long bdId)
+    {
+        String query =
+                "query \"people over the age of 30\" \n" +
+                        "    person : Person( age > 30 )\n" +
+                        "end";
+        BidsDeployment bd = internalFindDeployment(bdId);
+        KieSession kieSession = extractKieSession(bd);
+        kieSession.getQueryResults("").
+    }
+
+    private KieSession extractKieSession(BidsDeployment bd)
+    {
+        return kieManager.getRuntimeEngine(bd.getDeployIdentifier()).getKieSession();
     }
 
     private BidsDeploymentUnit fromBidsDeployment(BidsDeployment bd)

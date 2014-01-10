@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 
-import com.bids.bpm.shared.BidsBPMConstants;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BPM_LOG_DIR_PROP_NAME;
 
 /**

@@ -16,8 +16,12 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.namespace.QName;
+
+
+import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 
 public class JAXBHelper
 {
@@ -39,7 +43,9 @@ public class JAXBHelper
         JAXBContext jbc = JAXBContext.newInstance(jaxbClass,Wrapper.class);
         Wrapper wrapper = new Wrapper(instances);
         JAXBElement<Wrapper> jaxbElement = new JAXBElement<Wrapper>(qName, Wrapper.class, wrapper);
-        jbc.createMarshaller().marshal(jaxbElement, sw);
+        Marshaller marshaller = jbc.createMarshaller();
+        marshaller.setProperty(JAXB_FORMATTED_OUTPUT,true);
+        marshaller.marshal(jaxbElement, sw);
         return sw.toString();
     }
 

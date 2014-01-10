@@ -91,6 +91,18 @@ public class BidsDeployment
         this.id = id;
     }
 
+    @Override
+    public String toString()
+    {
+        return "BidsDeployment{" +
+                "id=" + id +
+                ", deployIdentifier='" + deployIdentifier + '\'' +
+                ", artifactId='" + artifactId + '\'' +
+                ", version='" + version + '\'' +
+                ", bidsDay=" + bidsDay +
+                '}';
+    }
+
     public String getDeployIdentifier()
     {
         return deployIdentifier;
@@ -101,4 +113,22 @@ public class BidsDeployment
         this.deployIdentifier = deployIdentifier;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof BidsDeployment)) return false;
+
+        BidsDeployment that = (BidsDeployment) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return id != null ? id.hashCode() : 0;
+    }
 }

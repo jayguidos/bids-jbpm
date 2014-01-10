@@ -11,6 +11,7 @@
     </parent>
 
     <name>BIDS Domain and Facts</name>
+    <groupId>com.bids.bpm</groupId>
     <artifactId>bids-domain</artifactId>
 
     <dependencies>
