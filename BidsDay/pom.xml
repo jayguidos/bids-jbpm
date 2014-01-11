@@ -8,9 +8,9 @@
   <name>BidsDay</name>
   <dependencies>
     <dependency>
-       <groupId>bids-jbpm</groupId>
-      <artifactId>bids-domain</artifactId>
-      <version>1.0-SNAPSHOT</version>
+        <groupId>bids-jbpm</groupId>
+        <artifactId>bids-domain</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <repositories>
