@@ -8,7 +8,7 @@
   <name>BidsDay</name>
   <dependencies>
     <dependency>
-        <groupId>bids-jbpm</groupId>
+        <groupId>com.bids.bpm</groupId>
         <artifactId>bids-domain</artifactId>
         <version>1.0.0</version>
     </dependency>
