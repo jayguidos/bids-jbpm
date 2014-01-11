@@ -12,6 +12,12 @@
         <artifactId>bids-domain</artifactId>
         <version>1.0.0</version>
     </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+            <scope>provided</scope>
+        </dependency>
   </dependencies>
   <repositories>
     <repository>
