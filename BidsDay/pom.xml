@@ -10,8 +10,14 @@
     <dependency>
         <groupId>bids-jbpm</groupId>
         <artifactId>bids-domain</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+            <scope>provided</scope>
+        </dependency>
   </dependencies>
   <repositories>
     <repository>
@@ -20,5 +26,4 @@
       <url>http://localhost:8080/jbpm-console/maven2/</url>
     </repository>
   </repositories>
-
 </project>
