@@ -13,7 +13,7 @@
         <element id="archive" name="bids-work-handlers-1.0.0-SNAPSHOT.jar">
           <element id="module-output" name="bids-work-handlers" />
         </element>
-        <element id="archive" name="bids-domain-1.0.0-SNAPSHOT.jar">
+        <element id="archive" name="bids-domain-1.0.0.jar">
           <element id="module-output" name="bids-domain" />
         </element>
         <element id="library" level="project" name="Maven: commons-io:commons-io:2.1" />
