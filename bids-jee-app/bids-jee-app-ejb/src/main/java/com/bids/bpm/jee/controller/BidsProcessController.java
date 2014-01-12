@@ -33,30 +33,41 @@ import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
 @Stateful
 public class BidsProcessController
 {
-    @Inject
-    private BidsKieManager kieManager;
-
-    @Inject
-    private BidsDeploymentsProducer deploymentsProducer;
-
-    @Inject
-    private BidsDayProducer bidsDayProducer;
-
     @PersistenceContext(unitName = "org.jbpm.domain")
     EntityManager em;
-
+    @Inject
+    private BidsKieManager kieManager;
+    @Inject
+    private BidsDeploymentsProducer deploymentsProducer;
+    @Inject
+    private BidsDayProducer bidsDayProducer;
     @Inject
     @GlobalLogDir
     private File logBaseDir;
-
     @Inject
     private Logger log;
+
+    public boolean deleteWorkDoneItem(String workDoneName, Long bdId)
+    {
+        BidsDeployment bd = em.find(BidsDeployment.class, bdId);
+        KieSession kieSession = extractKieSession(bd);
+        QueryResults queryResults = kieSession.getQueryResults("Is this work done", workDoneName);
+        for (QueryResultsRow result : queryResults)
+        {
+            kieSession.delete(result.getFactHandle("work"));
+            log.info("Work Done deleted for " + bd.getBidsDay() + ": " + workDoneName);
+            return true;
+        }
+        log.warning("Work Done not found for " + bd.getBidsDay() + ": " + workDoneName);
+        return false;
+    }
 
     public BidsDeployment deployModule(BidsDay bidsDay, String artifactId, String version)
     {
@@ -88,30 +99,20 @@ public class BidsProcessController
         return bd;
     }
 
-    public BidsDeployment findDeployment(Long bdId)
-    {
-        return em.find(BidsDeployment.class, bdId);
-    }
-
-    public boolean undeployModule(Long bdId)
+    public void dumpAllFacts(Long bdId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         if (bd == null)
-            throw new RuntimeException("Could not undeploy. Deployment does not exist: " + bdId);
-
-        // reassemble the unit key and undeploy
-        KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
-        kieManager.undeployUnit(unit);
-
-        // eliminate the deployment
-        em.remove(bd);
-        log.info("Undeployed BidsModule " + bd);
-        return true;
+            throw new RuntimeException("Could not dump facts. Deployment does not exist: " + bdId);
+        KieSession kieSession = extractKieSession(bd);
+        log.info("Dumping facts for " + bd.getBidsDay());
+        for (FactHandle fh : kieSession.getFactHandles())
+            log.info("Fact: " + kieSession.getObject(fh).toString());
     }
 
-    public List<BidsDeployment> getDeployments()
+    public BidsDeployment findDeployment(Long bdId)
     {
-        return deploymentsProducer.getDeployments();
+        return em.find(BidsDeployment.class, bdId);
     }
 
     public BidsActiveProcess startProcess(Long bdId, String processId)
@@ -133,19 +134,25 @@ public class BidsProcessController
         return activeProcess;
     }
 
-    public boolean deleteWorkDoneItem(String workDoneName, Long bdId)
+    public boolean undeployModule(Long bdId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
-        KieSession kieSession = extractKieSession(bd);
-        QueryResults queryResults = kieSession.getQueryResults("Is this work done", workDoneName);
-        for (QueryResultsRow result : queryResults)
-        {
-            kieSession.delete(result.getFactHandle("work"));
-            log.info("Work Done deleted for " + bd.getBidsDay() + ": " + workDoneName);
-            return true;
-        }
-        log.warning("Work Done not found for " + bd.getBidsDay() + ": " + workDoneName);
-        return false;
+        if (bd == null)
+            throw new RuntimeException("Could not undeploy. Deployment does not exist: " + bdId);
+
+        // reassemble the unit key and undeploy
+        KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
+        kieManager.undeployUnit(unit);
+
+        // eliminate the deployment
+        em.remove(bd);
+        log.info("Undeployed BidsModule " + bd);
+        return true;
+    }
+
+    public List<BidsDeployment> getDeployments()
+    {
+        return deploymentsProducer.getDeployments();
     }
 
     private KieSession extractKieSession(BidsDeployment bd)

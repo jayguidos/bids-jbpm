@@ -12,6 +12,7 @@ package com.bids.bpm.rest.client.cmds;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.rest.dto.DeployRequest;
 import com.bids.bpm.rest.client.BSCommand;
+import static com.bids.bpm.rest.client.BSCommand.CommandType.post;
 import com.bids.bpm.rest.client.JAXBHelper;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
@@ -20,17 +21,18 @@ public class DeployCmd
 {
 
     public static final String NAME = "deploy";
+    private final JAXBHelper requestJaxbHelper = new JAXBHelper(DeployRequest.class);
 
     public DeployCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), CommandType.post);
+        super(NAME, uriTemplate.concat("/mgmt/" + NAME), post, BidsDeployment.class);
     }
 
     @Override
     public String getResultAsString()
             throws Exception
     {
-        return JAXBHelper.marshallIntoXML(BidsDeployment.class, getResult());
+        return getResultAsXML();
     }
 
     @Override
@@ -50,7 +52,7 @@ public class DeployCmd
         dr.setArtifactId(args[0]);
         dr.setVersion(args[1]);
         dr.setBidsDate(args[2]);
-        request.body(APPLICATION_XML, JAXBHelper.marshallIntoXML(DeployRequest.class, dr));
+        request.body(APPLICATION_XML, requestJaxbHelper.marshallIntoXML(dr));
     }
 
 }

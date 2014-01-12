@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -27,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.facts.model.validators.ValidBidsDateString;
 import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -56,7 +58,7 @@ public class BidsDeployment
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = ALL, mappedBy = "deployment")
+    @OneToMany(cascade = ALL, mappedBy = "deployment", fetch = EAGER)
     private Set<BidsActiveProcess> processes;
 
     public BidsDeployment()

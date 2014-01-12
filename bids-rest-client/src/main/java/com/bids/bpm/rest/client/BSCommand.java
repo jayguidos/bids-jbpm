@@ -9,17 +9,11 @@
 
 package com.bids.bpm.rest.client;
 
-import java.io.StringWriter;
-import java.util.List;
-
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
 
 
 import com.bids.bpm.jee.rest.dto.ErrorResponse;
+import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
@@ -30,16 +24,19 @@ public abstract class BSCommand<T>
         get, put, post, delete
     }
 
+    private static final Logger log = Logger.getLogger(BSCommand.class);
     protected final ClientRequest request;
+    protected final JAXBHelper jaxbHelper;
     private final String name;
     private final CommandType cmdType;
     protected ClientResponse<?> response;
 
-    public BSCommand(String name, String uriTemplate, CommandType cmdType)
+    public BSCommand(String name, String uriTemplate, CommandType cmdType, Class<?> tClass)
     {
         this.name = name;
         this.cmdType = cmdType;
         this.request = new ClientRequest(uriTemplate);
+        this.jaxbHelper = new JAXBHelper(tClass);
     }
 
     public T runCmd()
@@ -75,6 +72,19 @@ public abstract class BSCommand<T>
     public CommandType getCmdType()
     {
         return cmdType;
+    }
+
+    protected String getResultAsXML()
+    {
+        T result = getResult();
+        try
+        {
+            return jaxbHelper.marshallIntoXML(result);
+        } catch (Exception e)
+        {
+            log.error("Could not marshall as XML: " + result);
+            return "ERROR";
+        }
     }
 
     private T sendRequest()

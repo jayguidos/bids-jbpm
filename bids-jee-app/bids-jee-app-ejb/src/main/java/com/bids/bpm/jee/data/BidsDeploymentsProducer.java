@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 
 
 import com.bids.bpm.jee.model.BidsDeployment;
@@ -53,11 +54,23 @@ public class BidsDeploymentsProducer
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<BidsDeployment> criteria = cb.createQuery(BidsDeployment.class);
-        Root<BidsDeployment> member = criteria.from(BidsDeployment.class);
+        Root<BidsDeployment> deploymentRoot = criteria.from(BidsDeployment.class);
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new
         // feature in JPA 2.0
-//        criteria.select(member).orderBy(cb.asc(member.get(BidsDeployment.identifier)));
-        criteria.select(member).orderBy(cb.asc(member.get("deployIdentifier")));
+//        criteria.select(member).orderBy(cb.asc(member.get(BidsDeployment_.));
+        criteria.select(deploymentRoot).orderBy(cb.asc(deploymentRoot.get("deployIdentifier")));
+        deployments = em.createQuery(criteria).getResultList();
+    }
+
+    public void retrieveAllDeploymentsNoLazyLoading()
+    {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<BidsDeployment> criteria = cb.createQuery(BidsDeployment.class);
+        Root<BidsDeployment> deploymentRoot = criteria.from(BidsDeployment.class);
+        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
+        // feature in JPA 2.0
+//        criteria.select(member).orderBy(cb.asc(member.get(BidsDeployment_.));
+        criteria.select(deploymentRoot).orderBy(cb.asc(deploymentRoot.get("deployIdentifier")));
         deployments = em.createQuery(criteria).getResultList();
     }
 

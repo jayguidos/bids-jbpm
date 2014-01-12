@@ -21,6 +21,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 
@@ -81,6 +82,16 @@ public class BidsRESTService
         return bpc.startProcess(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getProcessId());
     }
 
+    @GET
+    @Path("/dumpFacts/{bdId}")
+    @Produces(APPLICATION_XML)
+    public BidsDeployment dumpFacts(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString)
+    {
+        BidsDeployment bidsDeployment = findBidsDeployment(bdIdString);
+        bpc.dumpAllFacts(bidsDeployment.getId());
+        return bidsDeployment;
+    }
+
     private BidsDeployment findBidsDeployment(String bdIdStr)
     {
         Long bdId = Long.parseLong(bdIdStr);
@@ -90,4 +101,5 @@ public class BidsRESTService
         else
             return bd;
     }
+
 }
