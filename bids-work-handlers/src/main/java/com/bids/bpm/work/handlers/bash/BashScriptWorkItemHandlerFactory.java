@@ -12,25 +12,22 @@ package com.bids.bpm.work.handlers.bash;
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerFactory;
-import org.kie.api.runtime.KieSession;
+import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 public class BashScriptWorkItemHandlerFactory
-        implements BidsWorkItemHandlerFactory<BashScriptWorkItemHandler>
+        extends AbstractBidsWorkItemHandlerFactoryImpl<BashScriptWorkItemHandler>
 {
-    private KieSession ksession;
-    private File logBaseDir;
 
-    public BashScriptWorkItemHandlerFactory(KieSession ksession, File logBaseDir)
+    public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir)
     {
-        this.ksession = ksession;
-        this.logBaseDir = logBaseDir;
+        super(runtimeManager, logBaseDir);
     }
 
     public BashScriptWorkItemHandler makeWorkItem()
     {
         BashScriptWorkItemHandler bashScriptWorkItemHandler = new BashScriptWorkItemHandler();
-        bashScriptWorkItemHandler.setKsession(ksession);
+        bashScriptWorkItemHandler.setRuntimeManager(runtimeManager);
         bashScriptWorkItemHandler.setLogBaseDir(logBaseDir);
         return bashScriptWorkItemHandler;
     }

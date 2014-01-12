@@ -6,3 +6,7 @@ import com.bids.bpm.facts.model.WorkDone
 query "All work done" 
     $work : WorkDone()
 end
+
+query "Is this work done" ( String workName )
+    $work : WorkDone( name == workName )
+end

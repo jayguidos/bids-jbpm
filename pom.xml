@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--My Versions-->
-        <bids-domain.version>1.0.0-SNAPSHOT</bids-domain.version>
+        <bids-domain.version>1.0.0</bids-domain.version>
         <bids-work-handlers.version>1.0.0-SNAPSHOT</bids-work-handlers.version>
         <bids-jee-app.version>1.0.0-SNAPSHOT</bids-jee-app.version>
 

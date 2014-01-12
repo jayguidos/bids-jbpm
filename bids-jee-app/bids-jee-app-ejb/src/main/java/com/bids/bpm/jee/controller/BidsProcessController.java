@@ -10,9 +10,7 @@
 package com.bids.bpm.jee.controller;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -35,6 +33,8 @@ import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 @Stateful
 public class BidsProcessController
@@ -60,7 +60,6 @@ public class BidsProcessController
 
     public BidsDeployment deployModule(BidsDay bidsDay, String artifactId, String version)
     {
-
         // deploy the module identified by the GAV
         KModuleDeploymentUnit unit = new BidsDeploymentUnit(bidsDay, BIDS_MAVEN_GROUP, artifactId, version);
         kieManager.deployUnit(unit);
@@ -91,21 +90,12 @@ public class BidsProcessController
 
     public BidsDeployment findDeployment(Long bdId)
     {
-        return internalFindDeployment(bdId);
-    }
-
-    private BidsDeployment internalFindDeployment(Long bdId)
-    {
-        for (BidsDeployment bidsDeployment : deploymentsProducer.getDeployments())
-            if (bidsDeployment.getId().equals(bdId))
-                return bidsDeployment;
-        return null;
+        return em.find(BidsDeployment.class, bdId);
     }
 
     public boolean undeployModule(Long bdId)
     {
-        Map<Date, BidsDay> bidsDays = bidsDayProducer.getBidsDays();
-        BidsDeployment bd = internalFindDeployment(bdId);
+        BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         if (bd == null)
             throw new RuntimeException("Could not undeploy. Deployment does not exist: " + bdId);
 
@@ -114,7 +104,7 @@ public class BidsProcessController
         kieManager.undeployUnit(unit);
 
         // eliminate the deployment
-        em.remove(em.merge(bd));
+        em.remove(bd);
         log.info("Undeployed BidsModule " + bd);
         return true;
     }
@@ -126,7 +116,9 @@ public class BidsProcessController
 
     public BidsActiveProcess startProcess(Long bdId, String processId)
     {
-        BidsDeployment bd = internalFindDeployment(bdId);
+        BidsDeployment bd = em.find(BidsDeployment.class, bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not start process. Deployment does not exist: " + bdId);
         KieSession kieSession = extractKieSession(bd);
         ProcessInstance processInstance = kieSession.startProcess(processId);
 
@@ -136,20 +128,24 @@ public class BidsProcessController
         activeProcess.setDeployment(bd);
         activeProcess.setProcessId(processId);
         activeProcess.setProcessInstanceId(processInstance.getId());
-        em.persist(activeProcess);
+        bd.addProcess(activeProcess);
 
         return activeProcess;
     }
 
-    public void deleteWorkDoneItem(String workDoneId, Long bdId)
+    public boolean deleteWorkDoneItem(String workDoneName, Long bdId)
     {
-        String query =
-                "query \"people over the age of 30\" \n" +
-                        "    person : Person( age > 30 )\n" +
-                        "end";
-        BidsDeployment bd = internalFindDeployment(bdId);
+        BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         KieSession kieSession = extractKieSession(bd);
-        kieSession.getQueryResults("").
+        QueryResults queryResults = kieSession.getQueryResults("Is this work done", workDoneName);
+        for (QueryResultsRow result : queryResults)
+        {
+            kieSession.delete(result.getFactHandle("work"));
+            log.info("Work Done deleted for " + bd.getBidsDay() + ": " + workDoneName);
+            return true;
+        }
+        log.warning("Work Done not found for " + bd.getBidsDay() + ": " + workDoneName);
+        return false;
     }
 
     private KieSession extractKieSession(BidsDeployment bd)
@@ -157,8 +153,4 @@ public class BidsProcessController
         return kieManager.getRuntimeEngine(bd.getDeployIdentifier()).getKieSession();
     }
 
-    private BidsDeploymentUnit fromBidsDeployment(BidsDeployment bd)
-    {
-        return new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
-    }
 }

@@ -67,17 +67,18 @@ public class BashScriptWorkItemHandler
             onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
             waitForSuccessfulExitStatus = getBooleanParameter(IN_WAIT_FOR_SUCCESS, false);
             this.scriptLogDir = new File(workItemLogDir, scriptName);
+            log.info("BashScript will log to " + scriptLogDir.toString());
         }
 
         @Override
         public BidsWorkItemHandlerResults doWorkInThread()
         {
 
-            Collection<FactHandle> workDoneHandles = ksession.getFactHandles(doneTaskFilter);
+            Collection<FactHandle> workDoneHandles = getKsession().getFactHandles(doneTaskFilter);
             if (!onceOnly && workDoneHandles.size() > 0)
             {
                 log.warn("Work Id: " + workDoneId + " already completed - skipping this invocation");
-                WorkDone workDone = (WorkDone) ksession.getObject(workDoneHandles.iterator().next());
+                WorkDone workDone = (WorkDone) getKsession().getObject(workDoneHandles.iterator().next());
                 return new BidsWorkItemHandlerResults(0, workDone);
             }
 

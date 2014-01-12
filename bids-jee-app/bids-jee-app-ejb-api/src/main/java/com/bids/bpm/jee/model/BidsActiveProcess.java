@@ -35,7 +35,6 @@ public class BidsActiveProcess
     @JoinColumn(name = "BIDS_DEPLOY_ID")
     private BidsDeployment deployment;
 
-
     @NotNull
     private long processInstanceId;
 

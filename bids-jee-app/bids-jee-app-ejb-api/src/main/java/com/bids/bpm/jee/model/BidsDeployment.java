@@ -9,11 +9,15 @@
 
 package com.bids.bpm.jee.model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -22,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.facts.model.validators.ValidBidsDateString;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -50,6 +55,13 @@ public class BidsDeployment
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
+    @OneToMany(cascade = ALL, mappedBy = "deployment")
+    private Set<BidsActiveProcess> processes;
+
+    public BidsDeployment()
+    {
+    }
 
     public String getArtifactId()
     {
@@ -89,6 +101,22 @@ public class BidsDeployment
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Set<BidsActiveProcess> getProcesses()
+    {
+        return processes;
+    }
+
+    public void setProcesses(Set<BidsActiveProcess> processes)
+    {
+        this.processes = processes;
+    }
+
+    public void addProcess(BidsActiveProcess p)
+    {
+        p.setDeployment(this);
+        this.processes.add(p);
     }
 
     @Override

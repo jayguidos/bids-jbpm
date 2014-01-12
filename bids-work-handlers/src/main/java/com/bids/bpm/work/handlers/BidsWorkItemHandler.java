@@ -14,22 +14,22 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 
 public abstract class BidsWorkItemHandler
-        implements WorkItemHandler,
-                   KieSessionAware,
-                   LogBaseDirAware
+        implements WorkItemHandler
 {
     public static final String THREAD_NAME_PREFIX = "BidsWorkItemWorkerThread-";
     private static int threadCounter = 1;
-    protected KieSession ksession;
     protected File logBaseDir;
     private AtomicReference<Thread> workerThread = new AtomicReference<Thread>();
     private AtomicReference<BidsWorkItemWorker> worker = new AtomicReference<BidsWorkItemWorker>();
+    private RuntimeManager runtimeManager;
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager)
     {
@@ -54,6 +54,11 @@ public abstract class BidsWorkItemHandler
         workerThread.get().start();
     }
 
+    public void setRuntimeManager(RuntimeManager runtimeManager)
+    {
+        this.runtimeManager = runtimeManager;
+    }
+
     public File getLogBaseDir()
     {
         return logBaseDir;
@@ -66,12 +71,14 @@ public abstract class BidsWorkItemHandler
 
     public KieSession getKsession()
     {
-        return ksession;
+        // presumes a global singleton engine for this runtime, otherwise I would have to provide
+        // something in the context
+        return runtimeManager.getRuntimeEngine(EmptyContext.get()).getKieSession();
     }
 
-    public void setKsession(KieSession ksession)
+    public RuntimeManager getRuntimeManager()
     {
-        this.ksession = ksession;
+        return runtimeManager;
     }
 
     protected abstract BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem);
@@ -86,7 +93,7 @@ public abstract class BidsWorkItemHandler
         public BidsWorkItemWorker(WorkItem workItem)
         {
             this.workItem = workItem;
-            ProcessInstance process = ksession.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance process = getKsession().getProcessInstance(workItem.getProcessInstanceId());
             this.workItemLogDir = new File(logBaseDir, process.getProcessName());
             this.workItemId = workItem.getId();
         }
@@ -99,13 +106,13 @@ public abstract class BidsWorkItemHandler
             BidsWorkItemHandlerResults rr = doWorkInThread();
 
             // mark the work as done
-            ksession.insert(rr.getWorkDone());
+            getKsession().insert(rr.getWorkDone());
 
             // notify manager that work item has been completed.  We cannot keep a handle to
             // the WorkItemManager around - the transaction it is within will have been
             // closed by the time we get here.  Instead get it directly from the session when
             // we need it
-            ksession.getWorkItemManager().completeWorkItem(workItemId, rr.getResults());
+            getKsession().getWorkItemManager().completeWorkItem(workItemId, rr.getResults());
             workerThread.set(null);
             worker.set(null);
         }

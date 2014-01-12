@@ -42,9 +42,9 @@ public class BashWorkItemProducer
 
     public Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params)
     {
-        KieSession kieSession = getKieSession(params);
         HashMap<String, WorkItemHandler> wihMap = new HashMap<String, WorkItemHandler>();
-        BashScriptWorkItemHandlerFactory factory = new BashScriptWorkItemHandlerFactory(kieSession, logBaseDir);
+        RuntimeManager runtimeManager = getRuntimeManager(params);
+        BashScriptWorkItemHandlerFactory factory = new BashScriptWorkItemHandlerFactory(runtimeManager, logBaseDir);
         wihMap.put(BIDS_BASH_WORK_ITEM_HANDLER, factory.makeWorkItem());
         return wihMap;
     }
