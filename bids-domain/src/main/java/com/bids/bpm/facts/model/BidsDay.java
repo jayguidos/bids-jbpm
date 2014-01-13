@@ -74,7 +74,7 @@ public class BidsDay
 
     public BidsDay(String dateStr)
     {
-        super(BIDS_DAY);
+        super(dateStr);
         try
         {
             this.date = new SimpleDateFormat(TRADING_DATE_FORMAT).parse(dateStr);
@@ -180,4 +180,5 @@ public class BidsDay
     {
         this.id = id;
     }
+
 }

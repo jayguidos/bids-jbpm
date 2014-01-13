@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="REST Get Deployments" type="Application" factoryName="Application">
+  <configuration default="false" name="REST Start Process" type="Application" factoryName="Application">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
       <pattern>
         <option name="PATTERN" value="com.bids.bpm.rest.client.*" />
@@ -8,7 +8,7 @@
     </extension>
     <option name="MAIN_CLASS_NAME" value="com.bids.bpm.rest.client.BidsServiceClient" />
     <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value="deployments" />
+    <option name="PROGRAM_PARAMETERS" value="startProcess BidsDay.TestEndOfDay 1" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -17,13 +17,7 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="bids-rest-client" />
     <envs />
-    <RunnerSettings RunnerId="Debug">
-      <option name="DEBUG_PORT" value="" />
-      <option name="TRANSPORT" value="0" />
-      <option name="LOCAL" value="true" />
-    </RunnerSettings>
     <RunnerSettings RunnerId="Run" />
-    <ConfigurationWrapper RunnerId="Debug" />
     <ConfigurationWrapper RunnerId="Run" />
     <method />
   </configuration>

@@ -21,14 +21,15 @@ import org.apache.log4j.Logger;
 
 public class BashShell
 {
+    private static final Logger logger = Logger.getLogger(BashShell.class);
+    private String host = "localhost";
     private String[] commandArgs;
     private String scriptName;
+    private String scriptArgs;
     private AsyncStreamHandler inputStreamHandler;
     private AsyncStreamHandler errorStreamHandler;
     private AtomicInteger exitValue = new AtomicInteger(-1);
     private boolean logOutput = false;
-
-    private static final Logger logger = Logger.getLogger(BashShell.class);
 
     public BashShell()
     {
@@ -36,17 +37,13 @@ public class BashShell
 
     public BashShell(String scriptName)
     {
-        this.scriptName = scriptName;
+        this(scriptName, "");
     }
 
-    public void setScriptName(String scriptName)
+    public BashShell(String scriptName, String scriptArgs)
     {
         this.scriptName = scriptName;
-    }
-
-    private String inheritEnvironmentVariable(String environmentVar)
-    {
-        return environmentVar + "=" + System.getenv(environmentVar);
+        this.scriptArgs = scriptArgs;
     }
 
     public int execute()
@@ -62,7 +59,10 @@ public class BashShell
         allArgs.add("/bin/bash");
         allArgs.add("--login");
         allArgs.add("-c");
-        allArgs.add("ssh bidsapp@localhost \"" + scriptName + "\"");
+        if (scriptArgs == null || scriptArgs.trim().length() == 0)
+            allArgs.add("ssh bidsapp@" + host + " \"" + scriptName + "\"");
+        else
+            allArgs.add("ssh bidsapp@" + host + " \"" + scriptName + " " + scriptArgs + "\"");
 
         this.commandArgs = allArgs.toArray(new String[allArgs.size()]);
         exitValue.set(-1);
@@ -99,6 +99,21 @@ public class BashShell
         return exitValue.get();
     }
 
+    public boolean isLogOutput()
+    {
+        return logOutput;
+    }
+
+    public void setLogOutput(boolean logOutput)
+    {
+        this.logOutput = logOutput;
+    }
+
+    public String getScriptArgs()
+    {
+        return scriptArgs;
+    }
+
     public int getExitValue()
     {
         return exitValue.get();
@@ -114,6 +129,31 @@ public class BashShell
         return errorStreamHandler.getOutputBuffer();
     }
 
+    public String getScriptName()
+    {
+        return scriptName;
+    }
+
+    public void setScriptName(String scriptName)
+    {
+        this.scriptName = scriptName;
+    }
+
+    public String getHost()
+    {
+        return host;
+    }
+
+    public void setHost(String host)
+    {
+        this.host = host;
+    }
+
+    private String inheritEnvironmentVariable(String environmentVar)
+    {
+        return environmentVar + "=" + System.getenv(environmentVar);
+    }
+
     private void logOutput()
     {
         StringBuilder sb = new StringBuilder();
@@ -126,16 +166,6 @@ public class BashShell
             logger.info(sb.toString());
         else
             logger.error(sb.toString());
-    }
-
-    public boolean isLogOutput()
-    {
-        return logOutput;
-    }
-
-    public void setLogOutput(boolean logOutput)
-    {
-        this.logOutput = logOutput;
     }
 
     private class AsyncStreamHandler
@@ -181,10 +211,4 @@ public class BashShell
         }
 
     }
-
-    public String getScriptName()
-    {
-        return scriptName;
-    }
-
 }

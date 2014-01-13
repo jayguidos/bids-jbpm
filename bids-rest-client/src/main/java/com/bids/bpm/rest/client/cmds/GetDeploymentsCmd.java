@@ -14,7 +14,7 @@ import java.util.List;
 
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.rest.client.BSCommand;
-import com.bids.bpm.rest.client.JAXBHelper;
+import static com.bids.bpm.rest.client.BSCommand.CommandType.get;
 import org.jboss.resteasy.util.GenericType;
 
 public class GetDeploymentsCmd
@@ -22,25 +22,26 @@ public class GetDeploymentsCmd
 {
 
     public static final String NAME = "deployments";
+    public static final GenericType<List<BidsDeployment>> BD_LIST_TYPE = new GenericType<List<BidsDeployment>>()
+    {
+    };
 
     public GetDeploymentsCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), CommandType.get);
+        super(NAME, uriTemplate.concat("/mgmt/" + NAME), get, BidsDeployment.class);
     }
 
     @Override
     public String getResultAsString()
             throws Exception
     {
-        return JAXBHelper.marshallIntoXML("deployments", BidsDeployment.class, getResult());
+        return jaxbHelper.marshallIntoXML(NAME, getResult());
     }
 
     @Override
     public List<BidsDeployment> getResult()
     {
-        return response.getEntity(new GenericType<List<BidsDeployment>>()
-        {
-        });
+        return response.getEntity(BD_LIST_TYPE);
     }
 
     protected void prepareRequest(String[] args)

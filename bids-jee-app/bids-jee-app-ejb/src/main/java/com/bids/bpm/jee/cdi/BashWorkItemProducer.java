@@ -9,14 +9,13 @@
 
 package com.bids.bpm.jee.cdi;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 
-import com.bids.bpm.jee.util.GlobalLogDir;
+import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BASH_WORK_ITEM_HANDLER;
 import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandlerFactory;
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
@@ -37,14 +36,13 @@ public class BashWorkItemProducer
     public static final String TASK_SERVICE = "taskService";
 
     @Inject
-    @GlobalLogDir
-    private File logBaseDir;
+    private BidsJBPMConfiguration config;
 
     public Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params)
     {
-        KieSession kieSession = getKieSession(params);
         HashMap<String, WorkItemHandler> wihMap = new HashMap<String, WorkItemHandler>();
-        BashScriptWorkItemHandlerFactory factory = new BashScriptWorkItemHandlerFactory(kieSession, logBaseDir);
+        RuntimeManager runtimeManager = getRuntimeManager(params);
+        BashScriptWorkItemHandlerFactory factory = new BashScriptWorkItemHandlerFactory(runtimeManager, config.getGlobalLogDir(), config.getBashHostName());
         wihMap.put(BIDS_BASH_WORK_ITEM_HANDLER, factory.makeWorkItem());
         return wihMap;
     }

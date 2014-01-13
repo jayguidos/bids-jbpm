@@ -9,32 +9,32 @@
 
 package com.bids.bpm.rest.client.cmds;
 
+import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.rest.client.BSCommand;
-import static com.bids.bpm.rest.client.BSCommand.CommandType.delete;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static com.bids.bpm.rest.client.BSCommand.CommandType.get;
 
-public class UndeployCmd
-        extends BSCommand<Boolean>
+public class DumpFactsCmd
+        extends BSCommand<BidsDeployment>
 {
 
-    public static final String NAME = "undeploy";
+    public static final String NAME = "dumpFacts";
 
-    public UndeployCmd(String uriTemplate)
+    public DumpFactsCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), delete, Boolean.class);
+        super(NAME, uriTemplate.concat("/mgmt/" + NAME), get, BidsDeployment.class);
     }
 
     @Override
     public String getResultAsString()
             throws Exception
     {
-        return getResult().toString();
+        return getResultAsXML();
     }
 
     @Override
-    public Boolean getResult()
+    public BidsDeployment getResult()
     {
-        return response.getEntity(Boolean.class);
+        return response.getEntity(BidsDeployment.class);
     }
 
     protected void prepareRequest(String[] args)
@@ -42,7 +42,7 @@ public class UndeployCmd
     {
         if (args.length != 1)
             throw new RuntimeException("expected 1 args: deploymentId");
-        request.body(TEXT_PLAIN, args[0].getBytes());
+        request.pathParameter("bdId", args[0]);
     }
 
 }

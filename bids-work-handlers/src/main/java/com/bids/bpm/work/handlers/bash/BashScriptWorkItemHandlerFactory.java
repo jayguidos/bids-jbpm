@@ -12,26 +12,33 @@ package com.bids.bpm.work.handlers.bash;
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerFactory;
-import org.kie.api.runtime.KieSession;
+import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 public class BashScriptWorkItemHandlerFactory
-        implements BidsWorkItemHandlerFactory<BashScriptWorkItemHandler>
+        extends AbstractBidsWorkItemHandlerFactoryImpl<BashScriptWorkItemHandler>
 {
-    private KieSession ksession;
-    private File logBaseDir;
 
-    public BashScriptWorkItemHandlerFactory(KieSession ksession, File logBaseDir)
+    private final String targetHost;
+
+    public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir)
     {
-        this.ksession = ksession;
-        this.logBaseDir = logBaseDir;
+        this(runtimeManager, logBaseDir, null);
+    }
+
+    public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir, String targetHost)
+    {
+        super(runtimeManager, logBaseDir);
+        this.targetHost = targetHost;
     }
 
     public BashScriptWorkItemHandler makeWorkItem()
     {
         BashScriptWorkItemHandler bashScriptWorkItemHandler = new BashScriptWorkItemHandler();
-        bashScriptWorkItemHandler.setKsession(ksession);
+        bashScriptWorkItemHandler.setRuntimeManager(runtimeManager);
         bashScriptWorkItemHandler.setLogBaseDir(logBaseDir);
+        if ( targetHost != null && targetHost.trim().length() > 0 )
+            bashScriptWorkItemHandler.setTargetHost(targetHost);
         return bashScriptWorkItemHandler;
     }
 }

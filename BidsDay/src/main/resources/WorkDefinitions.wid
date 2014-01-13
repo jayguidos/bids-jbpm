@@ -62,6 +62,7 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
      "name" : "BashScript",
         "parameters" : [
            "ScriptName" : new StringDataType(),
+           "ScriptArgs" : new StringDataType(),
            "WorkId" : new StringDataType(),
            "SimDelay" : new IntegerDataType() 
      ],
