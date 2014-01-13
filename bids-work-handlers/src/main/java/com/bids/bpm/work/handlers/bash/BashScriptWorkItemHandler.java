@@ -151,7 +151,7 @@ public class BashScriptWorkItemHandler
             try
             {
 
-                log.info("Executing BASH Script(WorkId:" + workDoneId + "): " + script.getScriptName());
+                log.info("Executing BASH Script(WorkId:" + workDoneId + "): " + script.getScriptName() + " " + script.getScriptArgs());
                 script.execute();
 
                 // assemble the results of the BASH script run

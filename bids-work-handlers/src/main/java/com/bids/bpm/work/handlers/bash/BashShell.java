@@ -59,7 +59,7 @@ public class BashShell
         allArgs.add("/bin/bash");
         allArgs.add("--login");
         allArgs.add("-c");
-        if ( scriptArgs == null || scriptArgs.trim().length() == 0  )
+        if (scriptArgs == null || scriptArgs.trim().length() == 0)
             allArgs.add("ssh bidsapp@" + host + " \"" + scriptName + "\"");
         else
             allArgs.add("ssh bidsapp@" + host + " \"" + scriptName + " " + scriptArgs + "\"");
@@ -107,6 +107,11 @@ public class BashShell
     public void setLogOutput(boolean logOutput)
     {
         this.logOutput = logOutput;
+    }
+
+    public String getScriptArgs()
+    {
+        return scriptArgs;
     }
 
     public int getExitValue()
