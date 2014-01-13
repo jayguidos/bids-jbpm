@@ -19,9 +19,17 @@ public class BashScriptWorkItemHandlerFactory
         extends AbstractBidsWorkItemHandlerFactoryImpl<BashScriptWorkItemHandler>
 {
 
+    private final String targetHost;
+
     public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir)
     {
+        this(runtimeManager, logBaseDir, null);
+    }
+
+    public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir, String targetHost)
+    {
         super(runtimeManager, logBaseDir);
+        this.targetHost = targetHost;
     }
 
     public BashScriptWorkItemHandler makeWorkItem()
@@ -29,6 +37,8 @@ public class BashScriptWorkItemHandlerFactory
         BashScriptWorkItemHandler bashScriptWorkItemHandler = new BashScriptWorkItemHandler();
         bashScriptWorkItemHandler.setRuntimeManager(runtimeManager);
         bashScriptWorkItemHandler.setLogBaseDir(logBaseDir);
+        if ( targetHost != null && targetHost.trim().length() > 0 )
+            bashScriptWorkItemHandler.setTargetHost(targetHost);
         return bashScriptWorkItemHandler;
     }
 }

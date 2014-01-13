@@ -9,7 +9,6 @@
 
 package com.bids.bpm.jee.controller;
 
-import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,7 +25,7 @@ import com.bids.bpm.jee.data.BidsDeploymentsProducer;
 import com.bids.bpm.jee.kie.BidsDeploymentUnit;
 import com.bids.bpm.jee.model.BidsActiveProcess;
 import com.bids.bpm.jee.model.BidsDeployment;
-import com.bids.bpm.jee.util.GlobalLogDir;
+import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
@@ -49,8 +48,7 @@ public class BidsProcessController
     @Inject
     private BidsDayProducer bidsDayProducer;
     @Inject
-    @GlobalLogDir
-    private File logBaseDir;
+    private BidsJBPMConfiguration config;
     @Inject
     private Logger log;
 
@@ -85,7 +83,7 @@ public class BidsProcessController
         KieSession kieSession = kieManager.getRuntimeEngine(unit.getIdentifier()).getKieSession();
         kieSession.insert(bidsDay);
         kieSession.setGlobal(GLBL_KSESSION, kieSession);
-        kieSession.setGlobal(GLBL_LOG_DIR_HOME, logBaseDir.toString());
+        kieSession.setGlobal(GLBL_LOG_DIR_HOME, config.getGlobalLogDir().toString());
 
         // remember our deployment
         BidsDeployment bd = new BidsDeployment();

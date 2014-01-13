@@ -11,9 +11,7 @@ package com.bids.bpm.jee.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -22,23 +20,27 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
 import com.bids.bpm.facts.model.BidsDay;
-import com.bids.bpm.facts.model.validators.ValidBidsDateString;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 import org.hibernate.validator.constraints.NotEmpty;
 
+// JPA Annotations
 @Entity
-@XmlRootElement
 @Table(uniqueConstraints =
                {
                        @UniqueConstraint(columnNames = "deployIdentifier")
                }
 )
+// JAXB Annotations
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BidsDeployment
 {
     @NotNull
@@ -57,12 +59,48 @@ public class BidsDeployment
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
     @OneToMany(cascade = ALL, mappedBy = "deployment", fetch = EAGER)
     private Set<BidsActiveProcess> processes;
 
     public BidsDeployment()
     {
+    }
+
+    public void addProcess(BidsActiveProcess p)
+    {
+        p.setDeployment(this);
+        this.processes.add(p);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof BidsDeployment)) return false;
+
+        BidsDeployment that = (BidsDeployment) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "BidsDeployment{" +
+                "id=" + id +
+                ", deployIdentifier='" + deployIdentifier + '\'' +
+                ", artifactId='" + artifactId + '\'' +
+                ", version='" + version + '\'' +
+                ", bidsDay=" + bidsDay +
+                '}';
     }
 
     public String getArtifactId()
@@ -115,24 +153,6 @@ public class BidsDeployment
         this.processes = processes;
     }
 
-    public void addProcess(BidsActiveProcess p)
-    {
-        p.setDeployment(this);
-        this.processes.add(p);
-    }
-
-    @Override
-    public String toString()
-    {
-        return "BidsDeployment{" +
-                "id=" + id +
-                ", deployIdentifier='" + deployIdentifier + '\'' +
-                ", artifactId='" + artifactId + '\'' +
-                ", version='" + version + '\'' +
-                ", bidsDay=" + bidsDay +
-                '}';
-    }
-
     public String getDeployIdentifier()
     {
         return deployIdentifier;
@@ -141,24 +161,5 @@ public class BidsDeployment
     public void setDeployIdentifier(String deployIdentifier)
     {
         this.deployIdentifier = deployIdentifier;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof BidsDeployment)) return false;
-
-        BidsDeployment that = (BidsDeployment) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return id != null ? id.hashCode() : 0;
     }
 }

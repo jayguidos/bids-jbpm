@@ -10,9 +10,12 @@
 package com.bids.bpm.work.handlers;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 
+import com.bids.bpm.facts.model.BidsDay;
+import org.drools.core.ObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -94,7 +97,20 @@ public abstract class BidsWorkItemHandler
         {
             this.workItem = workItem;
             ProcessInstance process = getKsession().getProcessInstance(workItem.getProcessInstanceId());
-            this.workItemLogDir = new File(logBaseDir, process.getProcessName());
+            Collection<?> objs = getKsession().getObjects(new ObjectFilter()
+            {
+                public boolean accept(Object object)
+                {
+                    return object instanceof BidsDay;
+                }
+            });
+            File workItemLogBaseDir = logBaseDir;
+            if ( objs.size() > 0 )
+            {
+                BidsDay bidsDay = (BidsDay) objs.iterator().next();
+                workItemLogBaseDir = new File(workItemLogBaseDir,bidsDay.getName());
+            }
+            this.workItemLogDir = new File(workItemLogBaseDir, process.getProcessName());
             this.workItemId = workItem.getId();
         }
 

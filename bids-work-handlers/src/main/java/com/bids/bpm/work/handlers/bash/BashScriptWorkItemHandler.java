@@ -31,11 +31,23 @@ public class BashScriptWorkItemHandler
 
     public static final String IN_WORK_ID = "WorkId";
     public static final String IN_SCRIPT_NAME = "ScriptName";
+    public static final String IN_SCRIPT_ARGS = "ScriptArgs";
     public static final String IN_ONCE_ONLY = "OnceOnly";
     public static final String IN_WAIT_FOR_SUCCESS = "WaitForSuccess";
     public static final String OUT_STD_OUT = "StdOut";
     public static final String OUT_STD_ERR = "StdErr";
     private static final Logger log = Logger.getLogger(BashScriptWorkItemHandler.class);
+    private String targetHost;
+
+    public String getTargetHost()
+    {
+        return targetHost;
+    }
+
+    public void setTargetHost(String targetHost)
+    {
+        this.targetHost = targetHost;
+    }
 
     @Override
     protected BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
@@ -55,6 +67,7 @@ public class BashScriptWorkItemHandler
         };
         private final String workDoneId;
         private final String scriptName;
+        private final String scriptArgs;
         private final boolean onceOnly;
         private final boolean waitForSuccessfulExitStatus;
         private final File scriptLogDir;
@@ -63,6 +76,7 @@ public class BashScriptWorkItemHandler
         {
             super(workItem);
             scriptName = getStringParameter(IN_SCRIPT_NAME, "echo");
+            scriptArgs = getStringParameter(IN_SCRIPT_ARGS, null);
             workDoneId = getStringParameter(IN_WORK_ID, scriptName.replace(" ", "_"));
             onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
             waitForSuccessfulExitStatus = getBooleanParameter(IN_WAIT_FOR_SUCCESS, false);
@@ -130,7 +144,9 @@ public class BashScriptWorkItemHandler
         private BidsWorkItemHandlerResults executeInShell()
         {
             BidsWorkItemHandlerResults rr = new BidsWorkItemHandlerResults();
-            BashShell script = new BashShell(scriptName);
+            BashShell script = new BashShell(scriptName, scriptArgs);
+            if ( targetHost != null && targetHost.trim().length() > 0 )
+                script.setHost(targetHost);
 
             try
             {

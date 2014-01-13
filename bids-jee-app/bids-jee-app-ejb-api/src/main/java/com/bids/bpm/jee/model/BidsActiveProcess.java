@@ -16,30 +16,72 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+// JPA Annotations
 @Entity
-@XmlRootElement
 @Table()
+
+// JAXB Annotations
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+
 public class BidsActiveProcess
 {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "BIDS_DEPLOY_ID")
+    @XmlTransient
     private BidsDeployment deployment;
-
     @NotNull
     private long processInstanceId;
-
     @NotNull
     private String processId;
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof BidsActiveProcess)) return false;
+
+        BidsActiveProcess that = (BidsActiveProcess) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    // reset the transient marked by @XmlTransient
+    public void afterUnmarshal(Unmarshaller u, Object parent) {
+        this.deployment = (BidsDeployment)parent;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "BidsActiveProcess{" +
+                "id=" + id +
+                ", processInstanceId=" + processInstanceId +
+                ", processId='" + processId + '\'' +
+                ", deployment=" + deployment +
+                '}';
+    }
 
     public Long getId()
     {
@@ -79,35 +121,5 @@ public class BidsActiveProcess
     public void setProcessId(String processId)
     {
         this.processId = processId;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "BidsActiveProcess{" +
-                "id=" + id +
-                ", processInstanceId=" + processInstanceId +
-                ", processId='" + processId + '\'' +
-                ", deployment=" + deployment +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof BidsActiveProcess)) return false;
-
-        BidsActiveProcess that = (BidsActiveProcess) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return id != null ? id.hashCode() : 0;
     }
 }
