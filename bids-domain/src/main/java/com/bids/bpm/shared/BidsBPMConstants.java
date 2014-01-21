@@ -15,7 +15,7 @@ public class BidsBPMConstants
     public static final String BIDS_BASH_WORK_ITEM_HANDLER="BashScript";
     public static final String BIDS_BPM_LOG_DIR_PROP_NAME = "com.bids.bpm.log.dir";
     public static final String BIDS_BPM_BASH_HOST_PROP_NAME = "com.bids.bash.host";
-    public static final String TRADING_DATE_FORMAT = "yyyy-mm-dd";
+    public static final String TRADING_DATE_FORMAT = "yyyy-MM-dd";
     public static final String GLBL_DB_SESSION = "dbSession";
     public static final String GLBL_LOG_DIR_HOME = "logDirHome";
     public static final String GLBL_KSESSION = "ksession";
