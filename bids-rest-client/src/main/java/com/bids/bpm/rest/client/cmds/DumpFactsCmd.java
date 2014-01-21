@@ -18,10 +18,11 @@ public class DumpFactsCmd
 {
 
     public static final String NAME = "dumpFacts";
+    public static final String DEPLOYMENT_ID = "bdId";
 
     public DumpFactsCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), get, BidsDeployment.class);
+        super(NAME, assembleUri(uriTemplate, NAME, new String[] {DEPLOYMENT_ID} ), get, BidsDeployment.class);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class DumpFactsCmd
     {
         if (args.length != 1)
             throw new RuntimeException("expected 1 args: deploymentId");
-        request.pathParameter("bdId", args[0]);
+        request.pathParameter(DEPLOYMENT_ID, args[0]);
     }
 
 }

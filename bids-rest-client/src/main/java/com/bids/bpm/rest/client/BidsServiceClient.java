@@ -41,7 +41,7 @@ public class BidsServiceClient
     public void runCommand(String uriTemplate, String[] args)
             throws Exception
     {
-        Map<String, BSCommand<?>> cmds = makeCmds(uriTemplate);
+        Map<String, BSCommand<?>> cmds = makeCmds(uriTemplate+"/mgmt");
         if (args.length == 0 || !cmds.containsKey(args[0]))
             throw new RuntimeException("Specify command to run");
 

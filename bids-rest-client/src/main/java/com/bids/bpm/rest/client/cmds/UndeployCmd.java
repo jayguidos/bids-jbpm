@@ -21,7 +21,7 @@ public class UndeployCmd
 
     public UndeployCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), delete, Boolean.class);
+        super(NAME, assembleUri(uriTemplate, NAME), delete, Boolean.class);
     }
 
     @Override

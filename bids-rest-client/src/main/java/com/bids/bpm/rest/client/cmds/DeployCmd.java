@@ -25,7 +25,7 @@ public class DeployCmd
 
     public DeployCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), post, BidsDeployment.class);
+        super(NAME, assembleUri(uriTemplate, NAME), post, BidsDeployment.class);
     }
 
     @Override

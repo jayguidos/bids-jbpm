@@ -24,7 +24,7 @@ public class StartProcess
 
     public StartProcess(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), post, BidsActiveProcess.class);
+        super(NAME, assembleUri(uriTemplate, NAME), post, BidsActiveProcess.class);
     }
 
     @Override

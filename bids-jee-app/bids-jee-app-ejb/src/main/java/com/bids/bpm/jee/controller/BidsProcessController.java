@@ -12,7 +12,7 @@ package com.bids.bpm.jee.controller;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,7 +36,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
-@Stateful
+@Stateless
 public class BidsProcessController
 {
     @PersistenceContext(unitName = "org.jbpm.domain")
@@ -111,6 +111,15 @@ public class BidsProcessController
     public BidsDeployment findDeployment(Long bdId)
     {
         return em.find(BidsDeployment.class, bdId);
+    }
+
+    // this is only called via bootstrapping
+    public void redeployOnRestart(BidsDeployment bd)
+    {
+        // reassemble the unit key and redeploy to rebuild all runtimes
+        KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
+        log.info("Re-deploying BidsModule " + bd);
+        kieManager.deployUnit(unit);
     }
 
     public BidsActiveProcess startProcess(Long bdId, String processId)
