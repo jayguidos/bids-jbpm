@@ -27,8 +27,9 @@ import javax.ws.rs.Produces;
 
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.controller.BidsProcessController;
-import com.bids.bpm.jee.model.BidsActiveProcess;
+import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.jee.model.BidsDeployment;
+import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
 import com.bids.bpm.jee.rest.dto.DeployRequest;
 import com.bids.bpm.jee.rest.dto.StartProcessRequest;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -77,7 +78,7 @@ public class BidsRESTService
     @Path("/startProcess")
     @Produces(APPLICATION_XML)
     @Consumes(APPLICATION_XML)
-    public BidsActiveProcess start(@Valid StartProcessRequest sp)
+    public BidsProcessInvocation start(@Valid StartProcessRequest sp)
     {
         return bpc.startProcess(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getProcessId());
     }
@@ -85,11 +86,13 @@ public class BidsRESTService
     @GET
     @Path("/dumpFacts/{bdId}")
     @Produces(APPLICATION_XML)
-    public BidsDeployment dumpFacts(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString)
+    public BidsFactsResponse dumpFacts(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString)
     {
         BidsDeployment bidsDeployment = findBidsDeployment(bdIdString);
-        bpc.dumpAllFacts(bidsDeployment.getId());
-        return bidsDeployment;
+        BidsFactsResponse response = new BidsFactsResponse();
+        response.setBidsDeploymentId(bidsDeployment.getId());
+        response.setFacts(bpc.dumpAllFacts(bidsDeployment.getId()));
+        return response;
     }
 
     private BidsDeployment findBidsDeployment(String bdIdStr)

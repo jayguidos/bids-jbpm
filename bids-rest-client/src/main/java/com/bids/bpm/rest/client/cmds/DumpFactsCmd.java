@@ -10,11 +10,12 @@
 package com.bids.bpm.rest.client.cmds;
 
 import com.bids.bpm.jee.model.BidsDeployment;
+import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.get;
 
 public class DumpFactsCmd
-        extends BSCommand<BidsDeployment>
+        extends BSCommand<BidsFactsResponse>
 {
 
     public static final String NAME = "dumpFacts";
@@ -22,7 +23,7 @@ public class DumpFactsCmd
 
     public DumpFactsCmd(String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME, new String[] {DEPLOYMENT_ID} ), get, BidsDeployment.class);
+        super(NAME, assembleUri(uriTemplate, NAME, new String[] {DEPLOYMENT_ID} ), get, BidsFactsResponse.class);
     }
 
     @Override
@@ -33,9 +34,9 @@ public class DumpFactsCmd
     }
 
     @Override
-    public BidsDeployment getResult()
+    public BidsFactsResponse getResult()
     {
-        return response.getEntity(BidsDeployment.class);
+        return response.getEntity(BidsFactsResponse.class);
     }
 
     protected void prepareRequest(String[] args)

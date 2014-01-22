@@ -9,7 +9,7 @@
 
 package com.bids.bpm.rest.client.cmds;
 
-import com.bids.bpm.jee.model.BidsActiveProcess;
+import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.jee.rest.dto.StartProcessRequest;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.post;
@@ -17,14 +17,14 @@ import com.bids.bpm.rest.client.JAXBHelper;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 public class StartProcess
-        extends BSCommand<BidsActiveProcess>
+        extends BSCommand<BidsProcessInvocation>
 {
     public static final String NAME = "startProcess";
     private final JAXBHelper jaxbHelper = new JAXBHelper(StartProcessRequest.class);
 
     public StartProcess(String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), post, BidsActiveProcess.class);
+        super(NAME, assembleUri(uriTemplate, NAME), post, BidsProcessInvocation.class);
     }
 
     @Override
@@ -35,9 +35,9 @@ public class StartProcess
     }
 
     @Override
-    public BidsActiveProcess getResult()
+    public BidsProcessInvocation getResult()
     {
-        return response.getEntity(BidsActiveProcess.class);
+        return response.getEntity(BidsProcessInvocation.class);
     }
 
     protected void prepareRequest(String[] args)

@@ -9,6 +9,7 @@
 
 package com.bids.bpm.jee.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -22,6 +23,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -59,17 +62,26 @@ public class BidsDeployment
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
     @OneToMany(cascade = ALL, mappedBy = "deployment", fetch = EAGER)
-    private Set<BidsActiveProcess> processes;
+    @XmlElementWrapper(name = "processes")
+    @XmlElement(name = "process")
+    private Set<BidsProcessInvocation> activeProcesses;
 
     public BidsDeployment()
     {
     }
 
-    public void addProcess(BidsActiveProcess p)
+    public void startProcess(BidsProcessInvocation p)
     {
         p.setDeployment(this);
-        this.processes.add(p);
+        p.setStartTime(new Date());
+        this.activeProcesses.add(p);
+    }
+
+    public void completeProcess(BidsProcessInvocation p)
+    {
+        p.setEndTime(new Date());
     }
 
     @Override
@@ -143,14 +155,14 @@ public class BidsDeployment
         this.id = id;
     }
 
-    public Set<BidsActiveProcess> getProcesses()
+    public Set<BidsProcessInvocation> getActiveProcesses()
     {
-        return processes;
+        return activeProcesses;
     }
 
-    public void setProcesses(Set<BidsActiveProcess> processes)
+    public void setActiveProcesses(Set<BidsProcessInvocation> processes)
     {
-        this.processes = processes;
+        this.activeProcesses = processes;
     }
 
     public String getDeployIdentifier()
