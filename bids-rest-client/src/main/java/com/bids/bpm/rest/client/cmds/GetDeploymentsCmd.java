@@ -28,7 +28,7 @@ public class GetDeploymentsCmd
 
     public GetDeploymentsCmd(String uriTemplate)
     {
-        super(NAME, uriTemplate.concat("/mgmt/" + NAME), get, BidsDeployment.class);
+        super(NAME, assembleUri(uriTemplate, NAME), get, BidsDeployment.class);
     }
 
     @Override

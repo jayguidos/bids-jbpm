@@ -21,7 +21,7 @@
       <!--BIDS Specific Mappings -->
     <mapping-file>META-INF/BidsDay-orm.xml</mapping-file>
     <class>com.bids.bpm.jee.model.BidsDeployment</class>
-    <class>com.bids.bpm.jee.model.BidsActiveProcess</class>
+    <class>com.bids.bpm.jee.model.BidsProcessInvocation</class>
     <!--End BIDS Specific Mappings-->
 
     <!--More Mappings  -->

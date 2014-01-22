@@ -9,19 +9,20 @@
 
 package com.bids.bpm.rest.client.cmds;
 
+import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.delete;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
-public class UndeployCmd
-        extends BSCommand<Boolean>
+public class KillProcessCmd
+        extends BSCommand<BidsProcessInvocation>
 {
 
-    public static final String NAME = "undeploy";
+    public static final String NAME = "killProcess";
 
-    public UndeployCmd(String uriTemplate)
+    public KillProcessCmd(String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), delete, Boolean.class);
+        super(NAME, assembleUri(uriTemplate, NAME), delete, BidsProcessInvocation.class);
     }
 
     @Override
@@ -32,16 +33,16 @@ public class UndeployCmd
     }
 
     @Override
-    public Boolean getResult()
+    public BidsProcessInvocation getResult()
     {
-        return response.getEntity(Boolean.class);
+        return response.getEntity(BidsProcessInvocation.class);
     }
 
     protected void prepareRequest(String[] args)
             throws Exception
     {
         if (args.length != 1)
-            throw new RuntimeException("expected 1 args: deploymentId");
+            throw new RuntimeException("expected 1 args: bidsProcessId");
         request.body(TEXT_PLAIN, args[0].getBytes());
     }
 

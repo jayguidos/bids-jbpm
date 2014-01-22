@@ -9,13 +9,20 @@
 
 package com.bids.bpm.jee.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 
 
 import com.bids.bpm.facts.model.BidsDay;
@@ -23,20 +30,22 @@ import com.bids.bpm.jee.cdi.BidsKieManager;
 import com.bids.bpm.jee.data.BidsDayProducer;
 import com.bids.bpm.jee.data.BidsDeploymentsProducer;
 import com.bids.bpm.jee.kie.BidsDeploymentUnit;
-import com.bids.bpm.jee.model.BidsActiveProcess;
 import com.bids.bpm.jee.model.BidsDeployment;
+import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
-@Stateful
+@Stateless
 public class BidsProcessController
 {
     @PersistenceContext(unitName = "org.jbpm.domain")
@@ -51,6 +60,18 @@ public class BidsProcessController
     private BidsJBPMConfiguration config;
     @Inject
     private Logger log;
+    @Resource
+    private SessionContext context;
+
+    public BidsProcessInvocation completeProcess(long kieProcessInstanceId)
+    {
+        // query to convert to ID of persistent object
+        BidsProcessInvocation process = bidsProcessFromKieProcessInstance(kieProcessInstanceId);
+        if (process == null)
+            throw new RuntimeException("Could not find Bids Process. Kie process instance is not recorded: " + kieProcessInstanceId);
+        process.getDeployment().completeProcess(process);
+        return process;
+    }
 
     public boolean deleteWorkDoneItem(String workDoneName, Long bdId)
     {
@@ -84,6 +105,16 @@ public class BidsProcessController
         kieSession.insert(bidsDay);
         kieSession.setGlobal(GLBL_KSESSION, kieSession);
         kieSession.setGlobal(GLBL_LOG_DIR_HOME, config.getGlobalLogDir().toString());
+        kieSession.addEventListener(new DefaultProcessEventListener()
+        {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event)
+            {
+                ProcessInstance processInstance = event.getProcessInstance();
+                BidsProcessInvocation process = context.getBusinessObject(BidsProcessController.class).completeProcess(processInstance.getId());
+                log.info("Completed process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+            }
+        });
 
         // remember our deployment
         BidsDeployment bd = new BidsDeployment();
@@ -97,15 +128,17 @@ public class BidsProcessController
         return bd;
     }
 
-    public void dumpAllFacts(Long bdId)
+    public List<String> dumpAllFacts(Long bdId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         if (bd == null)
             throw new RuntimeException("Could not dump facts. Deployment does not exist: " + bdId);
+        ArrayList<String> facts = new ArrayList<String>();
         KieSession kieSession = extractKieSession(bd);
         log.info("Dumping facts for " + bd.getBidsDay());
         for (FactHandle fh : kieSession.getFactHandles())
-            log.info("Fact: " + kieSession.getObject(fh).toString());
+            facts.add(kieSession.getObject(fh).toString());
+        return facts;
     }
 
     public BidsDeployment findDeployment(Long bdId)
@@ -113,23 +146,55 @@ public class BidsProcessController
         return em.find(BidsDeployment.class, bdId);
     }
 
-    public BidsActiveProcess startProcess(Long bdId, String processId)
+    public BidsProcessInvocation killProcess(long bidsProcessId)
+    {
+        BidsProcessInvocation process = em.find(BidsProcessInvocation.class, bidsProcessId);
+        if (process == null)
+            throw new RuntimeException("Could not find Bids Process. Cannot abort: " + bidsProcessId);
+        KieSession kieSession = extractKieSession(process.getDeployment());
+        ProcessInstance processInstance = kieSession.getProcessInstance(process.getKieInstanceId());
+        if (processInstance != null)
+            try
+            {
+                kieSession.abortProcessInstance(process.getKieInstanceId());
+                log.warning("Killed process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+            } catch (Exception ignored)
+            {
+                log.warning("Could not kill process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+            }
+        else
+            log.warning("Process gone, no kill done for " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+
+        process.getDeployment().completeProcess(process);
+        return process;
+    }
+
+    // this is only called via bootstrapping
+    public void redeployOnRestart(BidsDeployment bd)
+    {
+        // reassemble the unit key and redeploy to rebuild all runtimes
+        KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
+        log.info("Re-deploying BidsModule " + bd);
+        kieManager.deployUnit(unit);
+    }
+
+    public BidsProcessInvocation startProcess(Long bdId, String kieProcesssId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         if (bd == null)
             throw new RuntimeException("Could not start process. Deployment does not exist: " + bdId);
         KieSession kieSession = extractKieSession(bd);
-        ProcessInstance processInstance = kieSession.startProcess(processId);
+        ProcessInstance processInstance = kieSession.startProcess(kieProcesssId);
 
         log.info("Launched process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
 
-        BidsActiveProcess activeProcess = new BidsActiveProcess();
-        activeProcess.setDeployment(bd);
-        activeProcess.setProcessId(processId);
-        activeProcess.setProcessInstanceId(processInstance.getId());
-        bd.addProcess(activeProcess);
+        BidsProcessInvocation bidsProcess = new BidsProcessInvocation();
+        bidsProcess.setDeployment(bd);
+        bidsProcess.setKieProcessDescriptionId(kieProcesssId);
+        bidsProcess.setKieInstanceId(processInstance.getId());
+        bd.startProcess(bidsProcess);
 
-        return activeProcess;
+        return bidsProcess;
     }
 
     public boolean undeployModule(Long bdId)
@@ -151,6 +216,22 @@ public class BidsProcessController
     public List<BidsDeployment> getDeployments()
     {
         return deploymentsProducer.getDeployments();
+    }
+
+    private BidsProcessInvocation bidsProcessFromKieProcessInstance(long kieProcessInstanceId)
+    {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<BidsProcessInvocation> query = cb.createQuery(BidsProcessInvocation.class);
+        Root<BidsProcessInvocation> bpi = query.from(BidsProcessInvocation.class);
+
+        ParameterExpression<Long> instanceParameter = cb.parameter(Long.class);
+        query.select(bpi).where(
+                cb.equal(
+                        bpi.get("kieInstanceId"), instanceParameter
+                )
+        );
+
+        return em.createQuery(query).setParameter(instanceParameter, kieProcessInstanceId).getSingleResult();
     }
 
     private KieSession extractKieSession(BidsDeployment bd)

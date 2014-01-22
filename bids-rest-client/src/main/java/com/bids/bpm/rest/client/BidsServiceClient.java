@@ -17,6 +17,7 @@ import java.util.Map;
 import com.bids.bpm.rest.client.cmds.DeployCmd;
 import com.bids.bpm.rest.client.cmds.DumpFactsCmd;
 import com.bids.bpm.rest.client.cmds.GetDeploymentsCmd;
+import com.bids.bpm.rest.client.cmds.KillProcessCmd;
 import com.bids.bpm.rest.client.cmds.StartProcess;
 import com.bids.bpm.rest.client.cmds.UndeployCmd;
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public class BidsServiceClient
     public void runCommand(String uriTemplate, String[] args)
             throws Exception
     {
-        Map<String, BSCommand<?>> cmds = makeCmds(uriTemplate);
+        Map<String, BSCommand<?>> cmds = makeCmds(uriTemplate+"/mgmt");
         if (args.length == 0 || !cmds.containsKey(args[0]))
             throw new RuntimeException("Specify command to run");
 
@@ -62,6 +63,7 @@ public class BidsServiceClient
         cmds.put(UndeployCmd.NAME, new UndeployCmd(uriTemplate));
         cmds.put(StartProcess.NAME, new StartProcess(uriTemplate));
         cmds.put(DumpFactsCmd.NAME, new DumpFactsCmd(uriTemplate));
+        cmds.put(KillProcessCmd.NAME, new KillProcessCmd(uriTemplate));
         return cmds;
     }
 

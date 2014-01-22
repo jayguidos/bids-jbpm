@@ -33,7 +33,7 @@ public class StartProcessRequest
     @XmlElement
     @NotEmpty
     @NotNull(message = "processId is required")
-    private String processId;
+    private String kieProcessId;
 
     public String getDeploymentId()
     {
@@ -45,13 +45,13 @@ public class StartProcessRequest
         this.deploymentId = deploymentId;
     }
 
-    public String getProcessId()
+    public String getKieProcessId()
     {
-        return processId;
+        return kieProcessId;
     }
 
-    public void setProcessId(String processId)
+    public void setKieProcessId(String kieProcessId)
     {
-        this.processId = processId;
+        this.kieProcessId = kieProcessId;
     }
 }

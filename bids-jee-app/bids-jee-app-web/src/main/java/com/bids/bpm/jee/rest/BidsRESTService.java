@@ -27,8 +27,9 @@ import javax.ws.rs.Produces;
 
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.controller.BidsProcessController;
-import com.bids.bpm.jee.model.BidsActiveProcess;
 import com.bids.bpm.jee.model.BidsDeployment;
+import com.bids.bpm.jee.model.BidsProcessInvocation;
+import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
 import com.bids.bpm.jee.rest.dto.DeployRequest;
 import com.bids.bpm.jee.rest.dto.StartProcessRequest;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -64,6 +65,36 @@ public class BidsRESTService
         return bpc.getDeployments();
     }
 
+    @GET
+    @Path("/dumpFacts/{bdId}")
+    @Produces(APPLICATION_XML)
+    public BidsFactsResponse dumpFacts(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString)
+    {
+        BidsDeployment bidsDeployment = findBidsDeployment(bdIdString);
+        BidsFactsResponse response = new BidsFactsResponse();
+        response.setBidsDeploymentId(bidsDeployment.getId());
+        response.setFacts(bpc.dumpAllFacts(bidsDeployment.getId()));
+        return response;
+    }
+
+    @DELETE
+    @Path("/killProcess")
+    @Produces(APPLICATION_XML)
+    @Consumes(TEXT_PLAIN)
+    public BidsProcessInvocation killProcess(@NotNull @DecimalMin("1") Long bidsProcessId)
+    {
+        return bpc.killProcess(bidsProcessId);
+    }
+
+    @POST
+    @Path("/startProcess")
+    @Produces(APPLICATION_XML)
+    @Consumes(APPLICATION_XML)
+    public BidsProcessInvocation startProcess(@Valid StartProcessRequest sp)
+    {
+        return bpc.startProcess(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getKieProcessId());
+    }
+
     @DELETE
     @Path("/undeploy")
     @Produces(TEXT_PLAIN)
@@ -71,25 +102,6 @@ public class BidsRESTService
     public boolean undeploy(@NotNull @NotEmpty @DecimalMin("1") String bdIdString)
     {
         return bpc.undeployModule(findBidsDeployment(bdIdString).getId());
-    }
-
-    @POST
-    @Path("/startProcess")
-    @Produces(APPLICATION_XML)
-    @Consumes(APPLICATION_XML)
-    public BidsActiveProcess start(@Valid StartProcessRequest sp)
-    {
-        return bpc.startProcess(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getProcessId());
-    }
-
-    @GET
-    @Path("/dumpFacts/{bdId}")
-    @Produces(APPLICATION_XML)
-    public BidsDeployment dumpFacts(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString)
-    {
-        BidsDeployment bidsDeployment = findBidsDeployment(bdIdString);
-        bpc.dumpAllFacts(bidsDeployment.getId());
-        return bidsDeployment;
     }
 
     private BidsDeployment findBidsDeployment(String bdIdStr)

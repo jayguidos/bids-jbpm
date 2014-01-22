@@ -54,6 +54,22 @@ public abstract class BSCommand<T>
                 '}';
     }
 
+    protected static String assembleUri(String base, String name)
+    {
+        return assembleUri(base, name, new String[] {});
+    }
+
+    protected static String assembleUri(String base, String name, String[] params )
+    {
+        StringBuilder uri = new StringBuilder(base).append("/").append(name);
+        // RESTEasy style URI with templated parameters. URI-embedded parameters
+        // are in the form of [URI]/{Pname1}/{Pname2}... and will be substituted
+        // during the HTTP call
+        for (String p : params)
+            uri.append("/{").append(p).append("}");
+        return uri.toString();
+    }
+
     abstract public String getResultAsString()
             throws Exception;
 

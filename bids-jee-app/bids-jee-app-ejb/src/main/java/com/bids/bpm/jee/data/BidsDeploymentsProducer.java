@@ -62,16 +62,4 @@ public class BidsDeploymentsProducer
         deployments = em.createQuery(criteria).getResultList();
     }
 
-    public void retrieveAllDeploymentsNoLazyLoading()
-    {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<BidsDeployment> criteria = cb.createQuery(BidsDeployment.class);
-        Root<BidsDeployment> deploymentRoot = criteria.from(BidsDeployment.class);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-//        criteria.select(member).orderBy(cb.asc(member.get(BidsDeployment_.));
-        criteria.select(deploymentRoot).orderBy(cb.asc(deploymentRoot.get("deployIdentifier")));
-        deployments = em.createQuery(criteria).getResultList();
-    }
-
 }

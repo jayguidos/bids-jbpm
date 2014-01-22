@@ -9,13 +9,17 @@
 
 package com.bids.bpm.jee.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,13 +31,17 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 // JPA Annotations
 @Entity
-@Table()
+@Table(uniqueConstraints =
+               {
+                       @UniqueConstraint(columnNames = "kieInstanceId")
+               }
+)
 
 // JAXB Annotations
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 
-public class BidsActiveProcess
+public class BidsProcessInvocation
 {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -44,17 +52,21 @@ public class BidsActiveProcess
     @XmlTransient
     private BidsDeployment deployment;
     @NotNull
-    private long processInstanceId;
+    private long kieInstanceId;
     @NotNull
-    private String processId;
+    private String kieProcessDescriptionId;
+    // nullable
+    private Date startTime;
+    // nullable
+    private Date endTime;
 
     @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (!(o instanceof BidsActiveProcess)) return false;
+        if (!(o instanceof BidsProcessInvocation)) return false;
 
-        BidsActiveProcess that = (BidsActiveProcess) o;
+        BidsProcessInvocation that = (BidsProcessInvocation) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
@@ -72,13 +84,23 @@ public class BidsActiveProcess
         return id != null ? id.hashCode() : 0;
     }
 
+    public void setEndTime(Date endTime)
+    {
+        this.endTime = endTime;
+    }
+
+    public void setStartTime(Date startTime)
+    {
+        this.startTime = startTime;
+    }
+
     @Override
     public String toString()
     {
-        return "BidsActiveProcess{" +
+        return "BidsProcessInvocation{" +
                 "id=" + id +
-                ", processInstanceId=" + processInstanceId +
-                ", processId='" + processId + '\'' +
+                ", kieInstanceId=" + kieInstanceId +
+                ", kieProcessDescriptionId='" + kieProcessDescriptionId + '\'' +
                 ", deployment=" + deployment +
                 '}';
     }
@@ -103,23 +125,33 @@ public class BidsActiveProcess
         this.deployment = deployment;
     }
 
-    public long getProcessInstanceId()
+    public long getKieInstanceId()
     {
-        return processInstanceId;
+        return kieInstanceId;
     }
 
-    public void setProcessInstanceId(long processInstanceId)
+    public void setKieInstanceId(long kieInstanceId)
     {
-        this.processInstanceId = processInstanceId;
+        this.kieInstanceId = kieInstanceId;
     }
 
-    public String getProcessId()
+    public String getKieProcessDescriptionId()
     {
-        return processId;
+        return kieProcessDescriptionId;
     }
 
-    public void setProcessId(String processId)
+    public void setKieProcessDescriptionId(String kieProcessDescriptionId)
     {
-        this.processId = processId;
+        this.kieProcessDescriptionId = kieProcessDescriptionId;
+    }
+
+    public Date getStartTime()
+    {
+        return startTime;
+    }
+
+    public Date getEndTime()
+    {
+        return endTime;
     }
 }
