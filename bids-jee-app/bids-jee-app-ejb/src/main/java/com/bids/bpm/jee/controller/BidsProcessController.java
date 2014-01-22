@@ -146,6 +146,29 @@ public class BidsProcessController
         return em.find(BidsDeployment.class, bdId);
     }
 
+    public BidsProcessInvocation killProcess(long bidsProcessId)
+    {
+        BidsProcessInvocation process = em.find(BidsProcessInvocation.class, bidsProcessId);
+        if (process == null)
+            throw new RuntimeException("Could not find Bids Process. Cannot abort: " + bidsProcessId);
+        KieSession kieSession = extractKieSession(process.getDeployment());
+        ProcessInstance processInstance = kieSession.getProcessInstance(process.getKieInstanceId());
+        if (processInstance != null)
+            try
+            {
+                kieSession.abortProcessInstance(process.getKieInstanceId());
+                log.warning("Killed process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+            } catch (Exception ignored)
+            {
+                log.warning("Could not kill process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+            }
+        else
+            log.warning("Process gone, no kill done for " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+
+        process.getDeployment().completeProcess(process);
+        return process;
+    }
+
     // this is only called via bootstrapping
     public void redeployOnRestart(BidsDeployment bd)
     {
@@ -155,23 +178,23 @@ public class BidsProcessController
         kieManager.deployUnit(unit);
     }
 
-    public BidsProcessInvocation startProcess(Long bdId, String processId)
+    public BidsProcessInvocation startProcess(Long bdId, String kieProcesssId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         if (bd == null)
             throw new RuntimeException("Could not start process. Deployment does not exist: " + bdId);
         KieSession kieSession = extractKieSession(bd);
-        ProcessInstance processInstance = kieSession.startProcess(processId);
+        ProcessInstance processInstance = kieSession.startProcess(kieProcesssId);
 
         log.info("Launched process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
 
-        BidsProcessInvocation activeProcess = new BidsProcessInvocation();
-        activeProcess.setDeployment(bd);
-        activeProcess.setKieProcessDescriptionId(processId);
-        activeProcess.setKieInstanceId(processInstance.getId());
-        bd.startProcess(activeProcess);
+        BidsProcessInvocation bidsProcess = new BidsProcessInvocation();
+        bidsProcess.setDeployment(bd);
+        bidsProcess.setKieProcessDescriptionId(kieProcesssId);
+        bidsProcess.setKieInstanceId(processInstance.getId());
+        bd.startProcess(bidsProcess);
 
-        return activeProcess;
+        return bidsProcess;
     }
 
     public boolean undeployModule(Long bdId)

@@ -48,7 +48,7 @@ public class StartProcess
             throw new RuntimeException("expected 2 args: processId deploymentId");
 
         StartProcessRequest dr = new StartProcessRequest();
-        dr.setProcessId(args[0]);
+        dr.setKieProcessId(args[0]);
         dr.setDeploymentId(args[1]);
         request.body(APPLICATION_XML, jaxbHelper.marshallIntoXML(dr));
     }

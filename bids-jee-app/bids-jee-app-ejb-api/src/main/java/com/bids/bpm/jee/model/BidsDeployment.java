@@ -66,7 +66,7 @@ public class BidsDeployment
     @OneToMany(cascade = ALL, mappedBy = "deployment", fetch = EAGER)
     @XmlElementWrapper(name = "processes")
     @XmlElement(name = "process")
-    private Set<BidsProcessInvocation> activeProcesses;
+    private Set<BidsProcessInvocation> processHistory;
 
     public BidsDeployment()
     {
@@ -76,7 +76,7 @@ public class BidsDeployment
     {
         p.setDeployment(this);
         p.setStartTime(new Date());
-        this.activeProcesses.add(p);
+        this.processHistory.add(p);
     }
 
     public void completeProcess(BidsProcessInvocation p)
@@ -155,14 +155,14 @@ public class BidsDeployment
         this.id = id;
     }
 
-    public Set<BidsProcessInvocation> getActiveProcesses()
+    public Set<BidsProcessInvocation> getProcessHistory()
     {
-        return activeProcesses;
+        return processHistory;
     }
 
-    public void setActiveProcesses(Set<BidsProcessInvocation> processes)
+    public void setProcessHistory(Set<BidsProcessInvocation> processes)
     {
-        this.activeProcesses = processes;
+        this.processHistory = processes;
     }
 
     public String getDeployIdentifier()
