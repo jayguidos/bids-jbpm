@@ -13,13 +13,13 @@ import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.delete;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
-public class UndeployCmd
+public class StopDayCmd
         extends BSCommand<Boolean>
 {
 
-    public static final String NAME = "undeploy";
+    public static final String NAME = "stopDay";
 
-    public UndeployCmd(String uriTemplate)
+    public StopDayCmd(String uriTemplate)
     {
         super(NAME, assembleUri(uriTemplate, NAME), delete, Boolean.class);
     }

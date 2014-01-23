@@ -5,4 +5,4 @@ bidsDeploymentId="$1"
 #  Main
 #
 cd `dirname $0`/../bids-rest-client
-mvn exec:java -Dexec.args="undeploy $bidsDeploymentId" | grep -v "\[INFO\]"
+mvn exec:java -Dexec.args="stopDay $bidsDeploymentId" | grep -v "\[INFO\]"

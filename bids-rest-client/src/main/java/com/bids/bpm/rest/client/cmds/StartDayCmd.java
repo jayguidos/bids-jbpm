@@ -16,14 +16,14 @@ import static com.bids.bpm.rest.client.BSCommand.CommandType.post;
 import com.bids.bpm.rest.client.JAXBHelper;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
-public class DeployCmd
+public class StartDayCmd
         extends BSCommand<BidsDeployment>
 {
 
-    public static final String NAME = "deploy";
+    public static final String NAME = "startDay";
     private final JAXBHelper requestJaxbHelper = new JAXBHelper(DeployRequest.class);
 
-    public DeployCmd(String uriTemplate)
+    public StartDayCmd(String uriTemplate)
     {
         super(NAME, assembleUri(uriTemplate, NAME), post, BidsDeployment.class);
     }

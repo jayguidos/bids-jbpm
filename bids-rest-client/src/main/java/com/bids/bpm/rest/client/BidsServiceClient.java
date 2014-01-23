@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import com.bids.bpm.rest.client.cmds.DeployCmd;
+import com.bids.bpm.rest.client.cmds.StartDayCmd;
 import com.bids.bpm.rest.client.cmds.DumpFactsCmd;
 import com.bids.bpm.rest.client.cmds.GetDeploymentsCmd;
 import com.bids.bpm.rest.client.cmds.KillProcessCmd;
 import com.bids.bpm.rest.client.cmds.StartProcess;
-import com.bids.bpm.rest.client.cmds.UndeployCmd;
+import com.bids.bpm.rest.client.cmds.StopDayCmd;
 import org.apache.log4j.Logger;
 
 public class BidsServiceClient
@@ -59,8 +59,8 @@ public class BidsServiceClient
     {
         HashMap<String, BSCommand<?>> cmds = new HashMap<String, BSCommand<?>>();
         cmds.put(GetDeploymentsCmd.NAME, new GetDeploymentsCmd(uriTemplate));
-        cmds.put(DeployCmd.NAME, new DeployCmd(uriTemplate));
-        cmds.put(UndeployCmd.NAME, new UndeployCmd(uriTemplate));
+        cmds.put(StartDayCmd.NAME, new StartDayCmd(uriTemplate));
+        cmds.put(StopDayCmd.NAME, new StopDayCmd(uriTemplate));
         cmds.put(StartProcess.NAME, new StartProcess(uriTemplate));
         cmds.put(DumpFactsCmd.NAME, new DumpFactsCmd(uriTemplate));
         cmds.put(KillProcessCmd.NAME, new KillProcessCmd(uriTemplate));

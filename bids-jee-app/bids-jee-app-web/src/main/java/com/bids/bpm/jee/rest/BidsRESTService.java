@@ -47,15 +47,6 @@ public class BidsRESTService
     @Inject
     private BidsProcessController bpc;
 
-    @POST
-    @Path("/deploy")
-    @Produces(APPLICATION_XML)
-    @Consumes(APPLICATION_XML)
-    public BidsDeployment deploy(@Valid DeployRequest deploy)
-    {
-        return bpc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
-    }
-
     @GET
     @Path("/deployments")
     @Produces(APPLICATION_XML)
@@ -87,6 +78,15 @@ public class BidsRESTService
     }
 
     @POST
+    @Path("/startDay")
+    @Produces(APPLICATION_XML)
+    @Consumes(APPLICATION_XML)
+    public BidsDeployment startDay(@Valid DeployRequest deploy)
+    {
+        return bpc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
+    }
+
+    @POST
     @Path("/startProcess")
     @Produces(APPLICATION_XML)
     @Consumes(APPLICATION_XML)
@@ -96,10 +96,10 @@ public class BidsRESTService
     }
 
     @DELETE
-    @Path("/undeploy")
+    @Path("/stopDay")
     @Produces(TEXT_PLAIN)
     @Consumes(TEXT_PLAIN)
-    public boolean undeploy(@NotNull @NotEmpty @DecimalMin("1") String bdIdString)
+    public boolean stopDay(@NotNull @NotEmpty @DecimalMin("1") String bdIdString)
     {
         return bpc.undeployModule(findBidsDeployment(bdIdString).getId());
     }
