@@ -10,41 +10,54 @@
 package com.bids.bpm.jee.util;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Properties;
 import java.util.logging.Logger;
+
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BPM_BASH_HOST_PROP_NAME;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BPM_LOG_DIR_PROP_NAME;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.SystemConfiguration;
 
+@ApplicationScoped
 public class BidsJBPMConfiguration
-    implements Serializable
+        implements Serializable
 {
     public static final String BIDS_JBPM_PROPERTIES = "bids-jbpm.properties";
+    public static final String USER_HOME = "user.home";
+    public static final String DEFAULT_DATA_DIR = new File(System.getProperty(USER_HOME), "data/jbpm").toString();
+    public static final String DEFAULT_BASH_HOST = "localhost";
     private File globalLogDir;
     private String bashHostName;
 
-    public BidsJBPMConfiguration()
+    @Inject
+    private Logger log;
+
+    @PostConstruct
+    public void doPostConstruct()
     {
-        Properties p = new Properties();
+        CompositeConfiguration config = new CompositeConfiguration();
+        config.addConfiguration(new SystemConfiguration());
         try
         {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(BIDS_JBPM_PROPERTIES);
-            if ( resourceAsStream != null )
-            {
-                p.load(resourceAsStream);
-                resourceAsStream.close();
-            }
-            this.globalLogDir = new File(loadProperty(BIDS_BPM_LOG_DIR_PROP_NAME, p, new File(System.getProperty("user.home"), "data/jbpm").toString()));
-            this.globalLogDir.mkdirs();
-            this.bashHostName = loadProperty(BIDS_BPM_BASH_HOST_PROP_NAME, p, "localhost");
-        } catch (IOException e)
+            config.addConfiguration(new PropertiesConfiguration(BIDS_JBPM_PROPERTIES));
+        } catch (ConfigurationException ignored)
         {
-            Logger.getLogger(this.getClass().getName()).severe("Cannot load properties: " + BIDS_JBPM_PROPERTIES);
+
         }
+
+        this.globalLogDir = new File(config.getString(BIDS_BPM_LOG_DIR_PROP_NAME, DEFAULT_DATA_DIR));
+        log.info("Global Logging Directory Home: " + this.globalLogDir);
+        this.globalLogDir.mkdirs();
+        this.bashHostName = config.getString(BIDS_BPM_BASH_HOST_PROP_NAME, DEFAULT_BASH_HOST);
+        log.info("BASH Host Server Name: " + this.bashHostName );
     }
 
     public File getGlobalLogDir()
@@ -67,11 +80,4 @@ public class BidsJBPMConfiguration
         this.bashHostName = bashHostName;
     }
 
-    private String loadProperty(String name, Properties p, String defaultValue)
-    {
-        if (System.getProperty(name) != null)
-            return System.getProperty(name);
-        else
-            return p.getProperty(name, defaultValue);
-    }
 }

@@ -9,10 +9,10 @@
 
 package com.bids.bpm.rest.client.cmds;
 
-import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.get;
+import com.bids.bpm.rest.client.RestEasyClientFactory;
 
 public class DumpFactsCmd
         extends BSCommand<BidsFactsResponse>
@@ -21,9 +21,9 @@ public class DumpFactsCmd
     public static final String NAME = "dumpFacts";
     public static final String DEPLOYMENT_ID = "bdId";
 
-    public DumpFactsCmd(String uriTemplate)
+    public DumpFactsCmd(RestEasyClientFactory clientFactory,String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME, new String[] {DEPLOYMENT_ID} ), get, BidsFactsResponse.class);
+        super(NAME, clientFactory.makeRequest(assembleUri(uriTemplate, NAME, new String[] {DEPLOYMENT_ID} )), get, BidsFactsResponse.class);
     }
 
     @Override

@@ -56,6 +56,12 @@
             <artifactId>bids-jee-app-ejb-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.10</version>
+        </dependency>
+
         <!--Dependencies for Kie-->
         <dependency>
             <groupId>org.jbpm</groupId>

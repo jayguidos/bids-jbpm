@@ -14,6 +14,7 @@ import com.bids.bpm.jee.rest.dto.DeployRequest;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.post;
 import com.bids.bpm.rest.client.JAXBHelper;
+import com.bids.bpm.rest.client.RestEasyClientFactory;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 public class StartDayCmd
@@ -23,9 +24,9 @@ public class StartDayCmd
     public static final String NAME = "startDay";
     private final JAXBHelper requestJaxbHelper = new JAXBHelper(DeployRequest.class);
 
-    public StartDayCmd(String uriTemplate)
+    public StartDayCmd(RestEasyClientFactory clientFactory,String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), post, BidsDeployment.class);
+        super(NAME, clientFactory.makeRequest(assembleUri(uriTemplate, NAME)), post, BidsDeployment.class);
     }
 
     @Override

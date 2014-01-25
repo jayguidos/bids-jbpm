@@ -11,6 +11,7 @@ package com.bids.bpm.rest.client.cmds;
 
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.delete;
+import com.bids.bpm.rest.client.RestEasyClientFactory;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 public class StopDayCmd
@@ -19,9 +20,9 @@ public class StopDayCmd
 
     public static final String NAME = "stopDay";
 
-    public StopDayCmd(String uriTemplate)
+    public StopDayCmd(RestEasyClientFactory clientFactory,String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), delete, Boolean.class);
+        super(NAME, clientFactory.makeRequest(assembleUri(uriTemplate, NAME)), delete, Boolean.class);
     }
 
     @Override

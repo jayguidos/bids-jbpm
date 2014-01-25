@@ -12,6 +12,7 @@ package com.bids.bpm.rest.client.cmds;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.delete;
+import com.bids.bpm.rest.client.RestEasyClientFactory;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 public class KillProcessCmd
@@ -20,9 +21,9 @@ public class KillProcessCmd
 
     public static final String NAME = "killProcess";
 
-    public KillProcessCmd(String uriTemplate)
+    public KillProcessCmd(RestEasyClientFactory clientFactory,String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), delete, BidsProcessInvocation.class);
+        super(NAME, clientFactory.makeRequest(assembleUri(uriTemplate, NAME)), delete, BidsProcessInvocation.class);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.bids.bpm.jee.rest.dto.StartProcessRequest;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.post;
 import com.bids.bpm.rest.client.JAXBHelper;
+import com.bids.bpm.rest.client.RestEasyClientFactory;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 public class StartProcess
@@ -22,9 +23,9 @@ public class StartProcess
     public static final String NAME = "startProcess";
     private final JAXBHelper jaxbHelper = new JAXBHelper(StartProcessRequest.class);
 
-    public StartProcess(String uriTemplate)
+    public StartProcess(RestEasyClientFactory clientFactory,String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), post, BidsProcessInvocation.class);
+        super(NAME, clientFactory.makeRequest(assembleUri(uriTemplate, NAME)), post, BidsProcessInvocation.class);
     }
 
     @Override

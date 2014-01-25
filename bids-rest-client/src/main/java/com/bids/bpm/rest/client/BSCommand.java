@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 
 import com.bids.bpm.jee.rest.dto.ErrorResponse;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
@@ -31,11 +32,11 @@ public abstract class BSCommand<T>
     private final CommandType cmdType;
     protected ClientResponse<?> response;
 
-    public BSCommand(String name, String uriTemplate, CommandType cmdType, Class<?> tClass)
+    public BSCommand(String name, ClientRequest request, CommandType cmdType, Class<?> tClass)
     {
         this.name = name;
         this.cmdType = cmdType;
-        this.request = new ClientRequest(uriTemplate);
+        this.request = request;
         this.jaxbHelper = new JAXBHelper(tClass);
     }
 

@@ -15,6 +15,7 @@ import java.util.List;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.get;
+import com.bids.bpm.rest.client.RestEasyClientFactory;
 import org.jboss.resteasy.util.GenericType;
 
 public class GetDeploymentsCmd
@@ -26,9 +27,9 @@ public class GetDeploymentsCmd
     {
     };
 
-    public GetDeploymentsCmd(String uriTemplate)
+    public GetDeploymentsCmd(RestEasyClientFactory clientFactory, String uriTemplate)
     {
-        super(NAME, assembleUri(uriTemplate, NAME), get, BidsDeployment.class);
+        super(NAME, clientFactory.makeRequest(assembleUri(uriTemplate, NAME)), get, BidsDeployment.class);
     }
 
     @Override
