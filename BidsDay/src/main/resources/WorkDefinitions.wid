@@ -88,5 +88,6 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
      ],
      "displayName" : "Job Control",
      "icon" : "defaultservicenodeicon.png"
- ]
+  ]
+]
 
