@@ -73,9 +73,7 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
      ],
      "displayName" : "Bash Script",
      "icon" : "defaultservicenodeicon.png"
-   ]
-
-],
+  ],
 
  [
      "name" : "JobControl",
@@ -90,7 +88,5 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
      ],
      "displayName" : "Job Control",
      "icon" : "defaultservicenodeicon.png"
-   ]
-
-]
+ ]
 
