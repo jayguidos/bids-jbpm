@@ -13,7 +13,7 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
     ],
     "displayName" : "Email",
     "icon" : "defaultemailicon.gif"
-  ],
+  ],import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 
   [
     "name" : "Log",
@@ -76,18 +76,33 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
   ],
 
  [
-     "name" : "JobControl",
+     "name" : "StartJob",
         "parameters" : [
-           "JobType" : new StringDataType(),
-           "JobId" : new StringDataType()     
+           "JobId" : new StringDataType(),
+    "IsARestart" : new BooleanDataType()     
      ],
      "results" : [
-         "ReturnCode" : new IntegerDataType(),
+         "JobControlRecord" : new ObjectDataType(),
          "StdOut" : new StringDataType(),
          "StdErr" : new StringDataType()
      ],
-     "displayName" : "Job Control",
+     "displayName" : "Start Job Control",
+     "icon" : "defaultservicenodeicon.png"
+  ],
+
+ [
+     "name" : "EndJob",
+        "parameters" : [
+           "jobFailed" : new BooleanDataType()     
+     ],
+     "results" : [
+         "JobControlRecord" : new ObjectDataType(),
+         "StdOut" : new StringDataType(),
+         "StdErr" : new StringDataType()
+     ],
+     "displayName" : "End Job Control",
      "icon" : "defaultservicenodeicon.png"
   ]
+
 ]
 
