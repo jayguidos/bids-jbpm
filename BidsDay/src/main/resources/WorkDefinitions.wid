@@ -75,4 +75,21 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
      "icon" : "defaultservicenodeicon.png"
    ]
 
+],
+
+ [
+     "name" : "JobControl",
+        "parameters" : [
+           "JobType" : new StringDataType(),
+           "JobId" : new StringDataType()     ],
+     "results" : [
+         "ReturnCode" : new IntegerDataType(),
+         "StdOut" : new StringDataType(),
+         "StdErr" : new StringDataType()
+     ],
+     "displayName" : "Job Control",
+     "icon" : "defaultservicenodeicon.png"
+   ]
+
 ]
+
