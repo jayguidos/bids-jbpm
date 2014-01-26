@@ -81,7 +81,8 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
      "name" : "JobControl",
         "parameters" : [
            "JobType" : new StringDataType(),
-           "JobId" : new StringDataType()     ],
+           "JobId" : new StringDataType()     
+     ],
      "results" : [
          "ReturnCode" : new IntegerDataType(),
          "StdOut" : new StringDataType(),
