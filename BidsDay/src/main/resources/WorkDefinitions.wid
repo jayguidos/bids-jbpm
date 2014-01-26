@@ -1,7 +1,8 @@
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
- 
+import org.drools.core.process.core.datatype.impl.type.BooleanDataType; 
+
 [
   [
     "name" : "Email",
