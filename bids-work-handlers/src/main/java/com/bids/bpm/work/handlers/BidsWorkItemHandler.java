@@ -33,6 +33,8 @@ public abstract class BidsWorkItemHandler
     private AtomicReference<Thread> workerThread = new AtomicReference<Thread>();
     private AtomicReference<BidsWorkItemWorker> worker = new AtomicReference<BidsWorkItemWorker>();
     private RuntimeManager runtimeManager;
+    public static final String IN_SIGNAL_ON_ERROR = "SignalOnError";
+    public static final String NO_SIGNAL_ON_ERROR = "";
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager)
     {
@@ -92,10 +94,13 @@ public abstract class BidsWorkItemHandler
         protected final long workItemId;
         protected final File workItemLogDir;
         protected final WorkItem workItem;
+        private final String signalOnError;
 
         public BidsWorkItemWorker(WorkItem workItem)
         {
             this.workItem = workItem;
+            this.signalOnError = getStringParameter(IN_SIGNAL_ON_ERROR, NO_SIGNAL_ON_ERROR);
+
             ProcessInstance process = getKsession().getProcessInstance(workItem.getProcessInstanceId());
             Collection<?> objs = getKsession().getObjects(new ObjectFilter()
             {
@@ -128,7 +133,11 @@ public abstract class BidsWorkItemHandler
             // the WorkItemManager around - the transaction it is within will have been
             // closed by the time we get here.  Instead get it directly from the session when
             // we need it
+            if ( rr.getReturnCode() !=  0 && NO_SIGNAL_ON_ERROR.equals(signalOnError ) )
+                getKsession().signalEvent("BidsError", rr);
             getKsession().getWorkItemManager().completeWorkItem(workItemId, rr.getResults());
+
+
             workerThread.set(null);
             worker.set(null);
         }

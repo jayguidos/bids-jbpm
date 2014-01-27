@@ -37,7 +37,7 @@ public class BashScriptWorkItemHandler
     public static final String OUT_STD_OUT = "StdOut";
     public static final String OUT_STD_ERR = "StdErr";
     private static final Logger log = Logger.getLogger(BashScriptWorkItemHandler.class);
-    private String targetHost;
+    protected String targetHost;
 
     public String getTargetHost()
     {
@@ -55,7 +55,7 @@ public class BashScriptWorkItemHandler
         return new BashScriptWorker(workItem);
     }
 
-    private class BashScriptWorker
+    protected class BashScriptWorker
             extends BidsWorkItemWorker
     {
         private final ObjectFilter doneTaskFilter = new ObjectFilter()
@@ -65,9 +65,9 @@ public class BashScriptWorkItemHandler
                 return object instanceof WorkDone && ((WorkDone) object).getName().equals(workDoneId);
             }
         };
-        private final String workDoneId;
-        private final String scriptName;
-        private final String scriptArgs;
+        protected final String workDoneId;
+        protected String scriptName;
+        protected String scriptArgs;
         private final boolean onceOnly;
         private final boolean waitForSuccessfulExitStatus;
         private final File scriptLogDir;
@@ -141,12 +141,10 @@ public class BashScriptWorkItemHandler
             }
         }
 
-        private BidsWorkItemHandlerResults executeInShell()
+        protected BidsWorkItemHandlerResults executeInShell()
         {
             BidsWorkItemHandlerResults rr = new BidsWorkItemHandlerResults();
-            BashShell script = new BashShell(scriptName, scriptArgs);
-            if ( targetHost != null && targetHost.trim().length() > 0 )
-                script.setHost(targetHost);
+            BashShell script = makeBashShell();
 
             try
             {
@@ -173,7 +171,15 @@ public class BashScriptWorkItemHandler
             return rr;
         }
 
-        private void writeFile(String suffix, StringBuilder contents)
+        protected BashShell makeBashShell()
+        {
+            BashShell script = new BashShell(scriptName, scriptArgs);
+            if ( targetHost != null && targetHost.trim().length() > 0 )
+                script.setHost(targetHost);
+            return script;
+        }
+
+        protected void writeFile(String suffix, StringBuilder contents)
         {
             try
             {
