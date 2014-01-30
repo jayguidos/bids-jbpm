@@ -7,7 +7,7 @@
       </pattern>
     </extension>
     <option name="MAIN_CLASS_NAME" value="com.bids.bpm.rest.client.BidsServiceClient" />
-    <option name="VM_PARAMETERS" value="-Dbids.jbpm.rest.host=localhost" />
+    <option name="VM_PARAMETERS" value="-Dbids.jbpm.rest.host=cgybpm01 -Dbids.jbpm.rest.username=andi -Dbids.jbpm.rest.password=password" />
     <option name="PROGRAM_PARAMETERS" value="startDay BidsDay 1.0.0-SNAPSHOT 2013-12-22" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
