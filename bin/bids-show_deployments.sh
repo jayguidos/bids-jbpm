@@ -1,7 +1,7 @@
-#!/bin/bash 
+#!/bin/bash -xv
 
+. `dirname $0`/setup.rc
 #
 #  Main
 #
-cd `dirname $0`/../bids-rest-client
-mvn exec:java -Dexec.args="deployments" | grep -v "\[INFO\]"
+runRestCmd andi '' deployments

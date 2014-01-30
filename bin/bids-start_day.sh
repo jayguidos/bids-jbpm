@@ -3,8 +3,10 @@
 processId="$1"
 version="$2"
 bidsDay="$3"
+
+. `dirname $0`/setup.rc
+
 #
 #  Main
 #
-cd `dirname $0`/../bids-rest-client
-mvn exec:java -Dexec.args="startDay $processId $version $bidsDay" | grep -v "\[INFO\]"
+runRestCmd andi '' startDay $processId $version $bidsDay

@@ -2,8 +2,10 @@
 
 processId="$1"
 deploymentId="$2"
+
+. `dirname $0`/setup.rc
+
 #
 #  Main
 #
-cd `dirname $0`/../bids-rest-client
-mvn exec:java -Dexec.args="startProcess $processId $deploymentId" | grep -v "\[INFO\]"
+runRestCmd andi '' startProcess $processId $deploymentId

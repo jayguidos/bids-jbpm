@@ -1,8 +1,10 @@
 #!/bin/bash 
 
 bidsDeploymentId="$1"
+
+. `dirname $0`/setup.rc
+
 #
 #  Main
 #
-cd `dirname $0`/../bids-rest-client
-mvn exec:java -Dexec.args="stopDay $bidsDeploymentId" | grep -v "\[INFO\]"
+runRestCmd andi '' stopDay $bidsDeploymentId
