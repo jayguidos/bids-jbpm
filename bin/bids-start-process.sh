@@ -1,5 +1,7 @@
 #!/bin/bash 
 
+. `dirname $0`/pre-process.rc
+
 processId="$1"
 deploymentId="$2"
 

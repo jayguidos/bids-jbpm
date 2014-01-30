@@ -1,11 +1,15 @@
 [ -z "$BPM_BIN_HOME" ] && export BPM_BIN_HOME="$( cd `dirname $0`; pwd )"
 [ -z "$BPM_REST_CLIENT_HOME" ] && export BPM_REST_CLIENT_HOME="$( cd `dirname $0`/../bids-rest-client; pwd )"
 [ -z "$BPM_REST_HOST" ] && export BPM_REST_HOST="localhost"
+[ -z "$BPM_JAVA_CMD" ] && [ -z "$JAVA_HOME" ] && echo "BPM_JAVA_CMD not set.  Set it explicitly, or set JAVA_HOME" >&2 && exit 1
+[ -z "$BPM_JAVA_CMD" ] && export BPM_JAVA_CMD="$JAVA_HOME/bin/java"
 
 function buildClassPath()
 {
+    [ -e /tmp/bpm-rest-client-cplasspath.txt ] && cat /tmp/bpm-rest-client-classpath.txt && return
     cd $BPM_REST_CLIENT_HOME
-    mvn dependency:build-classpath > /tmp/bpm-classpath.txt
+    mvn dependency:build-classpath -Dmdep.outputFile=/tmp/bpm-rest-client-classpath.txt -Dsilent=true
+
 }
 
 function getDefaultPassword()
@@ -22,13 +26,23 @@ function runRestCmd()
     shift 3
 
     [ -z "$password" ] && password="`getDefaultPassword $username`"
+
     (
         cd $BPM_REST_CLIENT_HOME
-
-        mvn exec:java \
-                -Dbids.jbpm.rest.host=$BPM_REST_HOST    \
-                -Dbids.jbpm.rest.username=$username     \
-                -Dbids.jbpm.rest.password=$password     \
-                -Dexec.args="$cmd $*" | grep -v "\[INFO\]"
+        export CLASSPATH="$BPM_REST_CLIENT_HOME/target/classes:`buildClassPath`"
+        $BPM_JAVA_CMD                                       \
+                -Dbids.jbpm.rest.host=$BPM_REST_HOST        \
+                -Dbids.jbpm.rest.username=$username         \
+                -Dbids.jbpm.rest.password=$password         \
+        com.bids.bpm.rest.client.BidsServiceClient $cmd $*
     )
+#    (
+#        cd $BPM_REST_CLIENT_HOME
+#
+#        mvn exec:java \
+#                -Dbids.jbpm.rest.host=$BPM_REST_HOST    \
+#                -Dbids.jbpm.rest.username=$username     \
+#                -Dbids.jbpm.rest.password=$password     \
+#                -Dexec.args="$cmd $*" | grep -v "\[INFO\]"
+#    )
 }
