@@ -7,4 +7,4 @@ processId="$1"
 #
 #  Main
 #
-runRestCmd andi '' dumpFacts $processId
+runRestCmd andi '' killProcess $processId
