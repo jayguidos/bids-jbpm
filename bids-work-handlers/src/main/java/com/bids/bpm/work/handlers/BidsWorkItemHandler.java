@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 import com.bids.bpm.facts.model.BidsDay;
+import org.apache.log4j.Logger;
 import org.drools.core.ObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -23,6 +24,7 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import sun.util.logging.resources.logging;
 
 public abstract class BidsWorkItemHandler
         implements WorkItemHandler
@@ -35,9 +37,13 @@ public abstract class BidsWorkItemHandler
     private RuntimeManager runtimeManager;
     public static final String IN_SIGNAL_ON_ERROR = "SignalOnError";
     public static final String NO_SIGNAL_ON_ERROR = "";
+    private static final Logger log = Logger.getLogger(BidsWorkItemHandler.class);
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager)
     {
+        BidsWorkItemWorker w = worker.get();
+        if ( w != null )
+            log.warn("Aborting work item: " + w.workItem );
         Thread t = workerThread.getAndSet(null);
         if (t != null)
         {
@@ -48,8 +54,8 @@ public abstract class BidsWorkItemHandler
             } catch (InterruptedException ignored)
             {
             }
-
         }
+        log.warn("Aborted work item: " + w.workItem );
     }
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager)
@@ -119,12 +125,22 @@ public abstract class BidsWorkItemHandler
             this.workItemId = workItem.getId();
         }
 
-        public abstract BidsWorkItemHandlerResults doWorkInThread();
+        public abstract BidsWorkItemHandlerResults doWorkInThread()
+                throws InterruptedException;
 
         public void run()
         {
 
-            BidsWorkItemHandlerResults rr = doWorkInThread();
+            BidsWorkItemHandlerResults rr = null;
+            try
+            {
+                rr = doWorkInThread();
+            } catch (InterruptedException e)
+            {
+                log.warn("Work item thread was killed for : " + workItem);
+                //quietly exit, someone killed us intentionally
+                return;
+            }
 
             // mark the work as done
             getKsession().insert(rr.getWorkDone());

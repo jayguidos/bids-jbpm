@@ -56,6 +56,7 @@ public class JobControlWorkItemHandler
         }
 
         protected BidsWorkItemHandlerResults executeInShell()
+                throws InterruptedException
         {
             BidsWorkItemHandlerResults rr = new BidsWorkItemHandlerResults();
             BashShell script = makeBashShell();
@@ -84,6 +85,8 @@ public class JobControlWorkItemHandler
                     log.info(OUT_STD_ERR + ":\n" + script.getStandardError());
                 }
 
+            } catch ( InterruptedException e ) {
+                throw e;
             } catch (Throwable e)
             {
                 log.error(e);

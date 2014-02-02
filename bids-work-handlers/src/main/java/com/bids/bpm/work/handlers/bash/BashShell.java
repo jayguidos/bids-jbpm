@@ -47,6 +47,7 @@ public class BashShell
     }
 
     public int execute()
+            throws InterruptedException
     {
         if (scriptName == null || scriptName.length() == 0)
             throw new IllegalStateException("No script name set");
@@ -90,6 +91,9 @@ public class BashShell
 
             if (logOutput || exitValue.get() != 0)
                 logOutput();
+        } catch ( InterruptedException e )
+        {
+            throw e;
         } catch (Exception e)
         {
             // do nothing

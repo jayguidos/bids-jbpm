@@ -92,6 +92,7 @@ public class BashScriptWorkItemHandler
 
         @Override
         public BidsWorkItemHandlerResults doWorkInThread()
+                throws InterruptedException
         {
 
             Collection<FactHandle> workDoneHandles = getKsession().getFactHandles(doneTaskFilter);
@@ -106,6 +107,8 @@ public class BashScriptWorkItemHandler
             {
                 this.scriptLogDir.mkdirs();
                 return executeUntilSuccessful();
+            } catch (InterruptedException e) {
+                throw e;
             } catch (Exception e)
             {
                 log.error(e);
@@ -114,6 +117,7 @@ public class BashScriptWorkItemHandler
         }
 
         private BidsWorkItemHandlerResults executeUntilSuccessful()
+                throws InterruptedException
         {
             BidsWorkItemHandlerResults rr = null;
             while (rr == null)
@@ -154,6 +158,7 @@ public class BashScriptWorkItemHandler
         }
 
         protected BidsWorkItemHandlerResults executeInShell()
+                throws InterruptedException
         {
             BidsWorkItemHandlerResults rr = new BidsWorkItemHandlerResults();
             BashShell script = makeBashShell();
@@ -179,6 +184,8 @@ public class BashScriptWorkItemHandler
                     log.info(OUT_STD_ERR + ":\n" + script.getStandardError());
                 }
 
+            } catch ( InterruptedException e ) {
+                throw e;
             } catch (Throwable e)
             {
                 log.error(e);
