@@ -34,6 +34,8 @@ public class BashScriptWorkItemHandler
     public static final String IN_SCRIPT_ARGS = "ScriptArgs";
     public static final String IN_ONCE_ONLY = "OnceOnly";
     public static final String IN_WAIT_FOR_SUCCESS = "WaitForSuccess";
+    public static final String IN_SIGNAL_ON_ERROR = "SignalOnError";
+    public static final String IN_LOG_OUTPUT_TO_CONSOLE = "LogOutputToConsole";
     public static final String OUT_STD_OUT = "StdOut";
     public static final String OUT_STD_ERR = "StdErr";
     private static final Logger log = Logger.getLogger(BashScriptWorkItemHandler.class);
@@ -58,6 +60,7 @@ public class BashScriptWorkItemHandler
     protected class BashScriptWorker
             extends BidsWorkItemWorker
     {
+        protected final String workDoneId;
         private final ObjectFilter doneTaskFilter = new ObjectFilter()
         {
             public boolean accept(Object object)
@@ -65,12 +68,13 @@ public class BashScriptWorkItemHandler
                 return object instanceof WorkDone && ((WorkDone) object).getName().equals(workDoneId);
             }
         };
-        protected final String workDoneId;
-        protected String scriptName;
-        protected String scriptArgs;
         private final boolean onceOnly;
         private final boolean waitForSuccessfulExitStatus;
+        private final boolean signalOnError;
+        private final boolean logOutputToConsole;
         private final File scriptLogDir;
+        protected String scriptName;
+        protected String scriptArgs;
 
         public BashScriptWorker(WorkItem workItem)
         {
@@ -80,6 +84,8 @@ public class BashScriptWorkItemHandler
             workDoneId = getStringParameter(IN_WORK_ID, scriptName.replace(" ", "_"));
             onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
             waitForSuccessfulExitStatus = getBooleanParameter(IN_WAIT_FOR_SUCCESS, false);
+            signalOnError = getBooleanParameter(IN_SIGNAL_ON_ERROR, false);
+            logOutputToConsole = getBooleanParameter(IN_LOG_OUTPUT_TO_CONSOLE, true);
             this.scriptLogDir = new File(workItemLogDir, scriptName);
             log.info("BashScript will log to " + scriptLogDir.toString());
         }
@@ -110,11 +116,17 @@ public class BashScriptWorkItemHandler
         private BidsWorkItemHandlerResults executeUntilSuccessful()
         {
             BidsWorkItemHandlerResults rr = null;
-            while (rr == null || rr.getReturnCode() != 0)
+            while (rr == null)
             {
                 rr = executeInShell();
                 if (rr.getReturnCode() != 0 && waitForSuccessfulExitStatus)
+                {
                     pauseUntilReleased();
+                    rr = null;
+                    continue;
+                }
+                else if (rr.getReturnCode() != 0 && signalOnError)
+                    getKsession().signalEvent("BashScriptError", workDoneId);
             }
             rr.setWorkDone(new WorkDone(workDoneId));
             return rr;
@@ -160,9 +172,12 @@ public class BashScriptWorkItemHandler
                 // echo script output to log files and the console
                 log.info("BASH Script Returns : " + script.getScriptName() + " rc: " + script.getExitValue());
                 writeFile(".out", script.getStandardOutput());
-                log.info(OUT_STD_OUT + ":\n" + script.getStandardOutput());
-                writeFile(".err", script.getStandardError());
-                log.info(OUT_STD_ERR + ":\n" + script.getStandardError());
+                writeFile (".err", script.getStandardError());
+                if (!logOutputToConsole && rr.getReturnCode() != 0)
+                {
+                    log.info(OUT_STD_OUT + ":\n" + script.getStandardOutput());
+                    log.info(OUT_STD_ERR + ":\n" + script.getStandardError());
+                }
 
             } catch (Throwable e)
             {
@@ -174,8 +189,9 @@ public class BashScriptWorkItemHandler
         protected BashShell makeBashShell()
         {
             BashShell script = new BashShell(scriptName, scriptArgs);
-            if ( targetHost != null && targetHost.trim().length() > 0 )
+            if (targetHost != null && targetHost.trim().length() > 0)
                 script.setHost(targetHost);
+            script.setLogOutput(logOutputToConsole);
             return script;
         }
 

@@ -65,7 +65,8 @@ import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
            "ScriptName" : new StringDataType(),
            "ScriptArgs" : new StringDataType(),
            "WorkId" : new StringDataType(),
-           "SimDelay" : new IntegerDataType() 
+           "SignalOnError" : new BooleanDataType(),
+           "LogOutputToConsole" : new BooleanDataType()
      ],
      "results" : [
          "ReturnCode" : new IntegerDataType(),
