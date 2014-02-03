@@ -11,7 +11,6 @@ package com.bids.bpm.jee.rest;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -93,7 +92,13 @@ public class BidsRESTService
     @Consumes(APPLICATION_XML)
     public BidsProcessInvocation startProcess(@Valid StartProcessRequest sp)
     {
-        return bpc.startProcess(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getKieProcessId());
+        // step 1 - create an invocation record in the DB - this is a separate transaction.
+        BidsProcessInvocation processInvocation = bpc.createProcessInvocation(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getKieProcessId());
+
+        // now we can start the process, which may or may not run to completion right here.
+        bpc.startProcess(processInvocation);
+
+        return processInvocation;
     }
 
     @DELETE
