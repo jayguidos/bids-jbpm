@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,6 +38,7 @@ import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
+import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -178,13 +181,17 @@ public class BidsProcessController
         kieManager.deployUnit(unit);
     }
 
-    public BidsProcessInvocation startProcess(Long bdId, String kieProcesssId)
+    // this transaction must complete BEFORE the process is started, because processes
+    // can run to completion in the KIE startProcess() call and the end process listeners
+    // require the process record to be in the DB
+    @TransactionAttribute(REQUIRES_NEW)
+    public BidsProcessInvocation createProcessInvocation(Long bdId, String kieProcesssId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
         if (bd == null)
             throw new RuntimeException("Could not start process. Deployment does not exist: " + bdId);
         KieSession kieSession = extractKieSession(bd);
-        ProcessInstance processInstance = kieSession.startProcess(kieProcesssId);
+        ProcessInstance processInstance = kieSession.createProcessInstance(kieProcesssId, null);
 
         log.info("Launched process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
 
@@ -195,6 +202,12 @@ public class BidsProcessController
         bd.startProcess(bidsProcess);
 
         return bidsProcess;
+    }
+
+    public void startProcess(BidsProcessInvocation processInvocation)
+    {
+        KieSession kieSession = extractKieSession(processInvocation.getDeployment());
+        kieSession.startProcessInstance(processInvocation.getKieInstanceId());
     }
 
     public boolean undeployModule(Long bdId)
