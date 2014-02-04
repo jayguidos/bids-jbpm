@@ -6,7 +6,7 @@
 
 function buildClassPath()
 {
-    [ -e /tmp/bpm-rest-client-cplasspath.txt ] && cat /tmp/bpm-rest-client-classpath.txt && return
+    [ -e /tmp/bpm-rest-client-classpath.txt ] && cat /tmp/bpm-rest-client-classpath.txt && return
     cd $BPM_REST_CLIENT_HOME
     mvn dependency:build-classpath -Dmdep.outputFile=/tmp/bpm-rest-client-classpath.txt -Dsilent=true
 
