@@ -22,13 +22,15 @@ public class JobControlRecord
         unstarted, started, complete, failed
     }
 
+    public static final String JOB_CTL = "JobCtl_";
+
     private final String jobId;
     private State state = unstarted;
     private int status;
 
     public JobControlRecord(String jobId)
     {
-        super("JobCtl_" + jobId);
+        super(JOB_CTL + jobId);
         this.jobId = jobId;
     }
 
@@ -75,4 +77,37 @@ public class JobControlRecord
         this.status = status;
     }
 
+    public String getJobId()
+    {
+        return jobId;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof JobControlRecord)) return false;
+
+        JobControlRecord that = (JobControlRecord) o;
+
+        if (!jobId.equals(that.jobId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return jobId.hashCode();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "JobControlRecord{" +
+                "jobId='" + jobId + '\'' +
+                ", state=" + state +
+                ", status=" + status +
+                '}';
+    }
 }

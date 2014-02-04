@@ -13,7 +13,6 @@ import java.io.File;
 
 
 import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
-import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandler;
 import org.kie.api.runtime.manager.RuntimeManager;
 
 public class JobControlWorkItemHandlerFactory
@@ -21,23 +20,21 @@ public class JobControlWorkItemHandlerFactory
 {
 
     private final String targetHost;
+    private final JobControlType jobControlType;
 
-    public JobControlWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir)
-    {
-        this(runtimeManager, logBaseDir, null);
-    }
 
-    public JobControlWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir, String targetHost)
+    public JobControlWorkItemHandlerFactory(JobControlType jobControlType, RuntimeManager runtimeManager, File logBaseDir, String targetHost)
     {
         super(runtimeManager, logBaseDir);
+        this.jobControlType = jobControlType;
         this.targetHost = targetHost;
     }
 
     public JobControlWorkItemHandler makeWorkItem()
     {
-        JobControlWorkItemHandler jobControlWorkItemHandler = new JobControlWorkItemHandler();
+        JobControlWorkItemHandler jobControlWorkItemHandler = new JobControlWorkItemHandler(logBaseDir);
         jobControlWorkItemHandler.setRuntimeManager(runtimeManager);
-        jobControlWorkItemHandler.setLogBaseDir(logBaseDir);
+        jobControlWorkItemHandler.setJobControlType(jobControlType);
         if ( targetHost != null && targetHost.trim().length() > 0 )
             jobControlWorkItemHandler.setTargetHost(targetHost);
         return jobControlWorkItemHandler;

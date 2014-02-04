@@ -95,7 +95,7 @@ import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
  [
      "name" : "EndJob",
         "parameters" : [
-           "jobFailed" : new BooleanDataType()     
+           "JobFailed" : new BooleanDataType()
      ],
      "results" : [
          "JobControlRecord" : new ObjectDataType(),

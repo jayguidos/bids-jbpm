@@ -13,33 +13,33 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 
 
 import com.bids.bpm.facts.model.WorkDone;
 import com.bids.bpm.work.handlers.BidsWorkItemHandler;
 import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
-import static com.bids.bpm.work.handlers.BidsWorkItemHandlerResults.ERROR_RESULTS;
 import org.apache.log4j.Logger;
-import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.rule.FactHandle;
 
 public class BashScriptWorkItemHandler
         extends BidsWorkItemHandler
 {
 
-    public static final String IN_WORK_ID = "WorkId";
-    public static final String IN_SCRIPT_NAME = "ScriptName";
-    public static final String IN_SCRIPT_ARGS = "ScriptArgs";
-    public static final String IN_ONCE_ONLY = "OnceOnly";
-    public static final String IN_WAIT_FOR_SUCCESS = "WaitForSuccess";
-    public static final String IN_SIGNAL_ON_ERROR = "SignalOnError";
-    public static final String IN_LOG_OUTPUT_TO_CONSOLE = "LogOutputToConsole";
     public static final String OUT_STD_OUT = "StdOut";
     public static final String OUT_STD_ERR = "StdErr";
+    public static final String BASH_SCRIPT_ERROR_SIGNAL = "BashScriptError";
     private static final Logger log = Logger.getLogger(BashScriptWorkItemHandler.class);
     protected String targetHost;
+
+    public BashScriptWorkItemHandler(File baseLogDir)
+    {
+        this(BASH_SCRIPT_ERROR_SIGNAL,baseLogDir);
+    }
+
+    public BashScriptWorkItemHandler(String errorSignalName, File baseLogDir)
+    {
+        super(errorSignalName, baseLogDir);
+    }
 
     public String getTargetHost()
     {
@@ -54,85 +54,38 @@ public class BashScriptWorkItemHandler
     @Override
     protected BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
     {
-        return new BashScriptWorker(workItem);
+        BashScriptWorkerConfig config = new BashScriptWorkerConfig(workItem,getLogBaseDir());
+        config.init(getKsession());
+        return new BashScriptWorker(config);
     }
 
     protected class BashScriptWorker
             extends BidsWorkItemWorker
     {
-        protected final String workDoneId;
-        private final ObjectFilter doneTaskFilter = new ObjectFilter()
-        {
-            public boolean accept(Object object)
-            {
-                return object instanceof WorkDone && ((WorkDone) object).getName().equals(workDoneId);
-            }
-        };
-        private final boolean onceOnly;
-        private final boolean waitForSuccessfulExitStatus;
-        private final boolean signalOnError;
-        private final boolean logOutputToConsole;
-        private final File scriptLogDir;
-        protected String scriptName;
-        protected String scriptArgs;
+        private final BashScriptWorkerConfig config;
 
-        public BashScriptWorker(WorkItem workItem)
+        public BashScriptWorker(BashScriptWorkerConfig config)
         {
-            super(workItem);
-            scriptName = getStringParameter(IN_SCRIPT_NAME, "echo");
-            scriptArgs = getStringParameter(IN_SCRIPT_ARGS, null);
-            workDoneId = getStringParameter(IN_WORK_ID, scriptName.replace(" ", "_"));
-            onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
-            waitForSuccessfulExitStatus = getBooleanParameter(IN_WAIT_FOR_SUCCESS, false);
-            signalOnError = getBooleanParameter(IN_SIGNAL_ON_ERROR, false);
-            logOutputToConsole = getBooleanParameter(IN_LOG_OUTPUT_TO_CONSOLE, true);
-            this.scriptLogDir = new File(workItemLogDir, scriptName);
-            log.info("BashScript will log to " + scriptLogDir.toString());
+            super(config);
+            this.config = config;
         }
 
         @Override
         public BidsWorkItemHandlerResults doWorkInThread()
                 throws InterruptedException
         {
-
-            Collection<FactHandle> workDoneHandles = getKsession().getFactHandles(doneTaskFilter);
-            if (!onceOnly && workDoneHandles.size() > 0)
-            {
-                log.warn("Work Id: " + workDoneId + " already completed - skipping this invocation");
-                WorkDone workDone = (WorkDone) getKsession().getObject(workDoneHandles.iterator().next());
-                return new BidsWorkItemHandlerResults(0, workDone);
-            }
-
-            try
-            {
-                this.scriptLogDir.mkdirs();
-                return executeUntilSuccessful();
-            } catch (InterruptedException e) {
-                throw e;
-            } catch (Exception e)
-            {
-                log.error(e);
-                return ERROR_RESULTS;
-            }
-        }
-
-        private BidsWorkItemHandlerResults executeUntilSuccessful()
-                throws InterruptedException
-        {
             BidsWorkItemHandlerResults rr = null;
             while (rr == null)
             {
                 rr = executeInShell();
-                if (rr.getReturnCode() != 0 && waitForSuccessfulExitStatus)
+                if (rr.getReturnCode() != 0 && config.isWaitForSuccessfulExitStatus())
                 {
                     pauseUntilReleased();
                     rr = null;
                     continue;
                 }
-                else if (rr.getReturnCode() != 0 && signalOnError)
-                    getKsession().signalEvent("BashScriptError", workDoneId);
             }
-            rr.setWorkDone(new WorkDone(workDoneId));
+            rr.setWorkDone(new WorkDone(config.getWorkDoneId()));
             return rr;
         }
 
@@ -140,17 +93,17 @@ public class BashScriptWorkItemHandler
         {
             try
             {
-                File waitFile = new File(workItemLogDir, workDoneId + ".paused");
+                File waitFile = new File(config.getWorkItemLogDir(), config.getWorkDoneId() + ".paused");
                 waitFile.createNewFile();
                 int counter = 0;
                 while (waitFile.exists())
                 {
                     if (counter % 20 == 0)
-                        log.warn("Script " + workDoneId + " is paused until you fix it.  Delete " + waitFile.getCanonicalPath() + " to retry execution");
+                        log.warn("Script " + config.getWorkDoneId() + " is paused until you fix it.  Delete " + waitFile.getCanonicalPath() + " to retry execution");
                     counter++;
                     Thread.sleep(500L);
                 }
-                log.warn("Script " + workDoneId + " has resumed and will restart.");
+                log.warn("Script " + config.getWorkDoneId() + " has resumed and will restart.");
             } catch (Exception e)
             {
                 log.error(e);
@@ -160,45 +113,33 @@ public class BashScriptWorkItemHandler
         protected BidsWorkItemHandlerResults executeInShell()
                 throws InterruptedException
         {
+            log.info("BashScript will log to " + config.getWorkItemLogDir().toString());
+
             BidsWorkItemHandlerResults rr = new BidsWorkItemHandlerResults();
             BashShell script = makeBashShell();
 
-            try
-            {
+            log.info("Executing BASH Script(WorkId:" + config.getWorkDoneId() + "): " + script.getScriptName() + " " + script.getScriptArgs());
+            script.execute();
 
-                log.info("Executing BASH Script(WorkId:" + workDoneId + "): " + script.getScriptName() + " " + script.getScriptArgs());
-                script.execute();
+            // assemble the results of the BASH script run
+            rr.setReturnCode(script.getExitValue());
+            rr.addResult(OUT_STD_OUT, script.getStandardOutput().toString());
+            rr.addResult(OUT_STD_ERR, script.getStandardError().toString());
 
-                // assemble the results of the BASH script run
-                rr.setReturnCode(script.getExitValue());
-                rr.addResult(OUT_STD_OUT, script.getStandardOutput().toString());
-                rr.addResult(OUT_STD_ERR, script.getStandardError().toString());
+            // echo script output to log files
+            log.info("BASH Script Returns : " + script.getScriptName() + " rc: " + script.getExitValue());
+            writeFile(".out", script.getStandardOutput());
+            writeFile(".err", script.getStandardError());
 
-                // echo script output to log files and the console
-                log.info("BASH Script Returns : " + script.getScriptName() + " rc: " + script.getExitValue());
-                writeFile(".out", script.getStandardOutput());
-                writeFile (".err", script.getStandardError());
-                if (!logOutputToConsole && rr.getReturnCode() != 0)
-                {
-                    log.info(OUT_STD_OUT + ":\n" + script.getStandardOutput());
-                    log.info(OUT_STD_ERR + ":\n" + script.getStandardError());
-                }
-
-            } catch ( InterruptedException e ) {
-                throw e;
-            } catch (Throwable e)
-            {
-                log.error(e);
-            }
             return rr;
         }
 
         protected BashShell makeBashShell()
         {
-            BashShell script = new BashShell(scriptName, scriptArgs);
+            BashShell script = new BashShell(config.getScriptName(), config.getScriptArgs());
             if (targetHost != null && targetHost.trim().length() > 0)
                 script.setHost(targetHost);
-            script.setLogOutput(logOutputToConsole);
+            script.setLogOutput(config.isLogOutputToConsole());
             return script;
         }
 
@@ -206,7 +147,8 @@ public class BashScriptWorkItemHandler
         {
             try
             {
-                PrintWriter w = new PrintWriter(new FileWriter(new File(scriptLogDir, workDoneId + suffix)));
+                FileWriter out = new FileWriter(new File(config.getWorkItemLogDir(), config.getWorkDoneId() + suffix));
+                PrintWriter w = new PrintWriter(out);
                 w.println(contents);
                 w.close();
             } catch (IOException e)

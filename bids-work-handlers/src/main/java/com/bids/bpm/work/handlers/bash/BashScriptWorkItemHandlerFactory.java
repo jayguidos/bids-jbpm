@@ -34,9 +34,8 @@ public class BashScriptWorkItemHandlerFactory
 
     public BashScriptWorkItemHandler makeWorkItem()
     {
-        BashScriptWorkItemHandler bashScriptWorkItemHandler = new BashScriptWorkItemHandler();
+        BashScriptWorkItemHandler bashScriptWorkItemHandler = new BashScriptWorkItemHandler(logBaseDir);
         bashScriptWorkItemHandler.setRuntimeManager(runtimeManager);
-        bashScriptWorkItemHandler.setLogBaseDir(logBaseDir);
         if ( targetHost != null && targetHost.trim().length() > 0 )
             bashScriptWorkItemHandler.setTargetHost(targetHost);
         return bashScriptWorkItemHandler;

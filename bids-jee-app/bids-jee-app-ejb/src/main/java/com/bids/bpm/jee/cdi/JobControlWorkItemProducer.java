@@ -16,7 +16,10 @@ import javax.inject.Inject;
 
 
 import com.bids.bpm.jee.util.BidsJBPMConfiguration;
-import static com.bids.bpm.shared.BidsBPMConstants.BIDS_JOB_CONTROL_WORK_ITEM_HANDLER;
+import static com.bids.bpm.shared.BidsBPMConstants.BIDS_JOB_CONTROL_END_ITEM_HANDLER;
+import static com.bids.bpm.shared.BidsBPMConstants.BIDS_JOB_CONTROL_START_ITEM_HANDLER;
+import static com.bids.bpm.work.handlers.jobctl.JobControlType.endJob;
+import static com.bids.bpm.work.handlers.jobctl.JobControlType.startJob;
 import com.bids.bpm.work.handlers.jobctl.JobControlWorkItemHandlerFactory;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -33,8 +36,14 @@ public class JobControlWorkItemProducer
     {
         HashMap<String, WorkItemHandler> wihMap = new HashMap<String, WorkItemHandler>();
         RuntimeManager runtimeManager = getRuntimeManager(params);
-        JobControlWorkItemHandlerFactory factory = new JobControlWorkItemHandlerFactory(runtimeManager, config.getGlobalLogDir(), config.getBashHostName());
-        wihMap.put(BIDS_JOB_CONTROL_WORK_ITEM_HANDLER, factory.makeWorkItem());
+        wihMap.put(
+                BIDS_JOB_CONTROL_START_ITEM_HANDLER,
+                new JobControlWorkItemHandlerFactory(startJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName()).makeWorkItem()
+        );
+        wihMap.put(
+                BIDS_JOB_CONTROL_END_ITEM_HANDLER,
+                new JobControlWorkItemHandlerFactory(endJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName()).makeWorkItem()
+        );
         return wihMap;
     }
 }
