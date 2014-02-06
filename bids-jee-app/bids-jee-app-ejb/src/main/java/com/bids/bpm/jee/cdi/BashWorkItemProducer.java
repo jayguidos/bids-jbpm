@@ -18,12 +18,8 @@ import javax.inject.Inject;
 import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BASH_WORK_ITEM_HANDLER;
 import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandlerFactory;
-import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.task.TaskService;
-import org.kie.internal.executor.api.ExecutorService;
 
 public class BashWorkItemProducer
         extends BidsWorkItemProducer

@@ -15,14 +15,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 
-import org.jbpm.kie.services.api.DeployedUnit;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.deployment.DeployedUnit;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 @ApplicationScoped
@@ -61,7 +61,7 @@ public class BidsKieManager
      *
      * @return
      */
-    public Collection<ProcessDesc> getProcesses()
+    public Collection<ProcessAssetDesc> getProcesses()
     {
         return runtimeDataService.getProcesses();
     }
@@ -72,7 +72,7 @@ public class BidsKieManager
      * @param deploymentId unique identifier of unit (kjar)
      * @return
      */
-    public Collection<ProcessDesc> getProcesses(String deploymentId)
+    public Collection<ProcessAssetDesc> getProcesses(String deploymentId)
     {
         return runtimeDataService.getProcessesByDeploymentId(deploymentId);
     }

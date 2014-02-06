@@ -105,13 +105,22 @@
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-shared-services</artifactId>
-            <classifier>btm</classifier>
+            <artifactId>jbpm-executor</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-executor</artifactId>
+            <artifactId>jbpm-kie-services</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-internal</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-workitems</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

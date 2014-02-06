@@ -21,8 +21,8 @@
 
         <!--Drools and jBPM-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <drools.version>6.0.0.Final</drools.version>
-        <jbpm.version>6.0.0.Final</jbpm.version>
+        <drools.version>6.0.1.Final</drools.version>
+        <jbpm.version>6.0.1.Final</jbpm.version>
         <arquillian.bom.version>1.1.0.Final</arquillian.bom.version>
         <arquillian.weld.version>1.0.0.CR3</arquillian.weld.version>
         <jboss.javaee.version>1.0.0.Final</jboss.javaee.version>
