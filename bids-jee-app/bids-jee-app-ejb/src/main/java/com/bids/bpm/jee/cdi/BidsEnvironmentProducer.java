@@ -30,11 +30,11 @@ import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
-import org.kie.internal.task.api.UserGroupCallback;
 
 public class BidsEnvironmentProducer
 {
