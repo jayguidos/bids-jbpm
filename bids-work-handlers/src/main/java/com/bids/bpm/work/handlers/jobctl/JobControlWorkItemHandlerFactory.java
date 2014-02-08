@@ -13,7 +13,7 @@ import java.io.File;
 
 
 import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
-import org.kie.api.runtime.manager.RuntimeManager;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 
 public class JobControlWorkItemHandlerFactory
         extends AbstractBidsWorkItemHandlerFactoryImpl<JobControlWorkItemHandler>
@@ -23,7 +23,7 @@ public class JobControlWorkItemHandlerFactory
     private final JobControlType jobControlType;
 
 
-    public JobControlWorkItemHandlerFactory(JobControlType jobControlType, RuntimeManager runtimeManager, File logBaseDir, String targetHost)
+    public JobControlWorkItemHandlerFactory(JobControlType jobControlType, SingletonRuntimeManager runtimeManager, File logBaseDir, String targetHost)
     {
         super(runtimeManager, logBaseDir);
         this.jobControlType = jobControlType;
@@ -35,7 +35,7 @@ public class JobControlWorkItemHandlerFactory
         JobControlWorkItemHandler jobControlWorkItemHandler = new JobControlWorkItemHandler(logBaseDir);
         jobControlWorkItemHandler.setRuntimeManager(runtimeManager);
         jobControlWorkItemHandler.setJobControlType(jobControlType);
-        if ( targetHost != null && targetHost.trim().length() > 0 )
+        if (targetHost != null && targetHost.trim().length() > 0)
             jobControlWorkItemHandler.setTargetHost(targetHost);
         return jobControlWorkItemHandler;
     }

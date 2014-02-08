@@ -13,7 +13,7 @@ import java.io.File;
 
 
 import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
-import org.kie.api.runtime.manager.RuntimeManager;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 
 public class BashScriptWorkItemHandlerFactory
         extends AbstractBidsWorkItemHandlerFactoryImpl<BashScriptWorkItemHandler>
@@ -21,12 +21,12 @@ public class BashScriptWorkItemHandlerFactory
 
     private final String targetHost;
 
-    public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir)
+    public BashScriptWorkItemHandlerFactory(SingletonRuntimeManager runtimeManager, File logBaseDir)
     {
         this(runtimeManager, logBaseDir, null);
     }
 
-    public BashScriptWorkItemHandlerFactory(RuntimeManager runtimeManager, File logBaseDir, String targetHost)
+    public BashScriptWorkItemHandlerFactory(SingletonRuntimeManager runtimeManager, File logBaseDir, String targetHost)
     {
         super(runtimeManager, logBaseDir);
         this.targetHost = targetHost;
@@ -36,7 +36,7 @@ public class BashScriptWorkItemHandlerFactory
     {
         BashScriptWorkItemHandler bashScriptWorkItemHandler = new BashScriptWorkItemHandler(logBaseDir);
         bashScriptWorkItemHandler.setRuntimeManager(runtimeManager);
-        if ( targetHost != null && targetHost.trim().length() > 0 )
+        if (targetHost != null && targetHost.trim().length() > 0)
             bashScriptWorkItemHandler.setTargetHost(targetHost);
         return bashScriptWorkItemHandler;
     }

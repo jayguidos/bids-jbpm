@@ -7,12 +7,13 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl;
+package com.bids.bpm.work.handlers.jobctl.worker;
 
 import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
+import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -23,9 +24,9 @@ public class StartJobControlWorkerConfig
     public static final String IN_JOB_IS_A_RESTART = "IsARestart";
     protected boolean restart;
 
-    public StartJobControlWorkerConfig(WorkItem workItem, File scriptLogDir)
+    public StartJobControlWorkerConfig(String targetHost, WorkItem workItem, File scriptLogDir)
     {
-        super(workItem,scriptLogDir);
+        super(targetHost, workItem,scriptLogDir);
     }
 
     public void init(KieSession kieSession)

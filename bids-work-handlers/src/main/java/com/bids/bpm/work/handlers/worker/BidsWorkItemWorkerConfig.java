@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.work.handlers;
+package com.bids.bpm.work.handlers.worker;
 
 import java.io.File;
 import java.util.Collection;
@@ -20,7 +20,7 @@ import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 
-public class BidsWorkItemConfig
+public class BidsWorkItemWorkerConfig
 {
     public static final String IN_WORK_ID = "WorkId";
     public static final String IN_SIGNAL_ON_ERROR = "SignalOnError";
@@ -33,7 +33,7 @@ public class BidsWorkItemConfig
     protected boolean signalOnErrorResult;
     protected boolean onceOnly;
 
-    public BidsWorkItemConfig(WorkItem workItem, File logBaseDir)
+    public BidsWorkItemWorkerConfig(WorkItem workItem, File logBaseDir)
     {
         this.workItem = workItem;
         this.workItemId = workItem.getId();

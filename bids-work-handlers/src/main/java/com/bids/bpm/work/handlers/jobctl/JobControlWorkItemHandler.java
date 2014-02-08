@@ -12,9 +12,12 @@ package com.bids.bpm.work.handlers.jobctl;
 import java.io.File;
 
 
-import com.bids.bpm.facts.model.JobControlRecord;
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
 import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandler;
+import com.bids.bpm.work.handlers.jobctl.worker.EndJobControlWorkerConfig;
+import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorker;
+import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
+import com.bids.bpm.work.handlers.jobctl.worker.StartJobControlWorkerConfig;
+import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
 import org.kie.api.runtime.process.WorkItem;
 
 public class JobControlWorkItemHandler
@@ -27,7 +30,7 @@ public class JobControlWorkItemHandler
 
     public JobControlWorkItemHandler(File logBaseDir)
     {
-        super(JOB_CONTROL_ERROR_SIGNAL,logBaseDir);
+        super(JOB_CONTROL_ERROR_SIGNAL, logBaseDir);
     }
 
     public JobControlType getJobControlType()
@@ -48,10 +51,10 @@ public class JobControlWorkItemHandler
         switch (jobControlType)
         {
             case startJob:
-                config = new StartJobControlWorkerConfig(workItem,getLogBaseDir());
+                config = new StartJobControlWorkerConfig(getTargetHost(), workItem, getLogBaseDir());
                 break;
             case endJob:
-                config = new EndJobControlWorkerConfig(workItem,getLogBaseDir());
+                config = new EndJobControlWorkerConfig(getTargetHost(), workItem, getLogBaseDir());
                 break;
             default:
                 throw new RuntimeException("Unhandled Job Control type");
@@ -60,32 +63,4 @@ public class JobControlWorkItemHandler
         return new JobControlWorker(config);
     }
 
-    protected class JobControlWorker
-            extends BashScriptWorker
-    {
-        private final JobControlWorkerConfig config;
-
-        public JobControlWorker(JobControlWorkerConfig config)
-        {
-            super(config);
-            this.config = config;
-        }
-
-        @Override
-        public BidsWorkItemHandlerResults doWorkInThread()
-                throws InterruptedException
-        {
-            BidsWorkItemHandlerResults rr = super.doWorkInThread();
-
-            // update the current status of the job
-            JobControlRecord jcr = (JobControlRecord) getKsession().getObject(config.getJcrHandle());
-            jcr.transitionTo(rr.getReturnCode() == 0);
-            getKsession().update(config.getJcrHandle(), jcr);
-
-            rr.addResult(OUT_JOB_CONTROL_RECORD, jcr);
-
-            return rr;
-        }
-
-    }
 }

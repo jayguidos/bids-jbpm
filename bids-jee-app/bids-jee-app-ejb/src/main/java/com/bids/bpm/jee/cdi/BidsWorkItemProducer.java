@@ -13,8 +13,8 @@ import java.util.Map;
 
 
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.task.TaskService;
 import org.kie.internal.executor.api.ExecutorService;
 
@@ -27,9 +27,9 @@ public abstract class BidsWorkItemProducer
     public static final String EXECUTOR_SERVICE = "executorService";
     public static final String TASK_SERVICE = "taskService";
 
-    protected RuntimeManager getRuntimeManager(Map<String, Object> injectedMap)
+    protected SingletonRuntimeManager getRuntimeManager(Map<String, Object> injectedMap)
     {
-        return (RuntimeManager) injectedMap.get(RUNTIME_MANAGER);
+        return (SingletonRuntimeManager) injectedMap.get(RUNTIME_MANAGER);
     }
 
     protected KieSession getKieSession(Map<String, Object> injectedMap)

@@ -7,14 +7,14 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl;
+package com.bids.bpm.work.handlers.jobctl.worker;
 
 import java.io.File;
 import java.util.Collection;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
-import com.bids.bpm.work.handlers.bash.BashScriptWorkerConfig;
+import com.bids.bpm.work.handlers.bash.worker.BashScriptWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItem;
@@ -29,9 +29,9 @@ public class JobControlWorkerConfig
     protected String jobCtlId;
     protected FactHandle jcrHandle;
 
-    public JobControlWorkerConfig(WorkItem workItem, File scriptLogDir)
+    public JobControlWorkerConfig(String targetHost, WorkItem workItem, File scriptLogDir)
     {
-        super(workItem,scriptLogDir);
+        super(targetHost, workItem,scriptLogDir);
     }
 
     @Override

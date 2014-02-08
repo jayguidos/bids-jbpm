@@ -21,7 +21,7 @@ import static com.bids.bpm.shared.BidsBPMConstants.BIDS_JOB_CONTROL_START_ITEM_H
 import static com.bids.bpm.work.handlers.jobctl.JobControlType.endJob;
 import static com.bids.bpm.work.handlers.jobctl.JobControlType.startJob;
 import com.bids.bpm.work.handlers.jobctl.JobControlWorkItemHandlerFactory;
-import org.kie.api.runtime.manager.RuntimeManager;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 
 public class JobControlWorkItemProducer
@@ -35,7 +35,7 @@ public class JobControlWorkItemProducer
     public Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params)
     {
         HashMap<String, WorkItemHandler> wihMap = new HashMap<String, WorkItemHandler>();
-        RuntimeManager runtimeManager = getRuntimeManager(params);
+        SingletonRuntimeManager runtimeManager = getRuntimeManager(params);
         wihMap.put(
                 BIDS_JOB_CONTROL_START_ITEM_HANDLER,
                 new JobControlWorkItemHandlerFactory(startJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName()).makeWorkItem()

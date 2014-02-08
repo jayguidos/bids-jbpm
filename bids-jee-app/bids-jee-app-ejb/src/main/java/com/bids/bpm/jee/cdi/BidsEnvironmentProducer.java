@@ -27,6 +27,7 @@ import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
+import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.internal.deployment.DeploymentService;
@@ -41,6 +42,7 @@ public class BidsEnvironmentProducer
     private EntityManagerFactory emf;
 
     @Inject
+    @Selectable
     private UserGroupCallback userGroupCallback;
 
     @Inject

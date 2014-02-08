@@ -7,12 +7,13 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl;
+package com.bids.bpm.work.handlers.jobctl.worker;
 
 import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
+import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -23,9 +24,9 @@ public class EndJobControlWorkerConfig
 
     private boolean jobFailed;
 
-    public EndJobControlWorkerConfig(WorkItem workItem, File scriptLogDir)
+    public EndJobControlWorkerConfig(String targetHost, WorkItem workItem, File scriptLogDir)
     {
-        super(workItem, scriptLogDir);
+        super(targetHost, workItem, scriptLogDir);
     }
 
     @Override

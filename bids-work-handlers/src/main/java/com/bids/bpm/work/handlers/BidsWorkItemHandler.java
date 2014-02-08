@@ -10,19 +10,18 @@
 package com.bids.bpm.work.handlers;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-import com.bids.bpm.facts.model.WorkDone;
+import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
+import com.bids.bpm.work.handlers.worker.BpmnSignalThrower;
 import org.apache.log4j.Logger;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 public abstract class BidsWorkItemHandler
@@ -31,15 +30,15 @@ public abstract class BidsWorkItemHandler
     public static final String THREAD_NAME_PREFIX = "BidsWorkItemWorkerThread-";
     private static final Logger log = Logger.getLogger(BidsWorkItemHandler.class);
     private static int threadCounter = 1;
-    private final String errorSignalName;
     private final File logBaseDir;
     private AtomicReference<Thread> workerThread = new AtomicReference<Thread>();
     private AtomicReference<BidsWorkItemWorker> worker = new AtomicReference<BidsWorkItemWorker>();
-    private RuntimeManager runtimeManager;
+    private SingletonRuntimeManager runtimeManager;
+    private BpmnSignalThrower signalThrower;
 
     protected BidsWorkItemHandler(String errorSignalName, File logBaseDir)
     {
-        this.errorSignalName = errorSignalName;
+        this.signalThrower = new BpmnSignalThrower(errorSignalName);
         this.logBaseDir = logBaseDir;
     }
 
@@ -47,7 +46,7 @@ public abstract class BidsWorkItemHandler
     {
         BidsWorkItemWorker w = worker.get();
         if (w != null)
-            log.warn("Aborting work item: " + w.config.getWorkItem());
+            log.warn("Aborting work item: " + w.getConfig().getWorkItem());
         Thread t = workerThread.getAndSet(null);
         if (t != null)
         {
@@ -59,7 +58,7 @@ public abstract class BidsWorkItemHandler
             {
             }
         }
-        log.warn("Aborted work item: " + w.config.getWorkItem());
+        log.warn("Aborted work item: " + w.getConfig().getWorkItem());
     }
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager)
@@ -71,7 +70,7 @@ public abstract class BidsWorkItemHandler
             worker.set(makeWorkItemWorker(workItem));
         } catch (Exception e)
         {
-            getKsession().signalEvent(errorSignalName, e);
+            signalThrower.signalEvent(getKsession(), e);
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
             else
@@ -79,13 +78,8 @@ public abstract class BidsWorkItemHandler
         }
 
         // exceptions on the worker thread will be caught by instances of BidsWorkItemWorker
-        workerThread.set(new Thread(worker.get(), THREAD_NAME_PREFIX + (threadCounter++)));
+        workerThread.set(new Thread(new InternalRunner(), THREAD_NAME_PREFIX + (threadCounter++)));
         workerThread.get().start();
-    }
-
-    public String getErrorSignalName()
-    {
-        return errorSignalName;
     }
 
     public KieSession getKsession()
@@ -100,7 +94,7 @@ public abstract class BidsWorkItemHandler
         return runtimeManager;
     }
 
-    public void setRuntimeManager(RuntimeManager runtimeManager)
+    public void setRuntimeManager(SingletonRuntimeManager runtimeManager)
     {
         this.runtimeManager = runtimeManager;
     }
@@ -112,85 +106,33 @@ public abstract class BidsWorkItemHandler
 
     protected abstract BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem);
 
-    public abstract class BidsWorkItemWorker
-            implements Runnable
+    private class InternalRunner
+        implements Runnable
     {
-        private final BidsWorkItemConfig config;
-
-        public BidsWorkItemWorker(BidsWorkItemConfig config)
-        {
-            this.config = config;
-        }
-
-        public abstract BidsWorkItemHandlerResults doWorkInThread()
-                throws InterruptedException;
 
         public void run()
         {
+            // we need a session that is for this thread only
+            KieSession localKieSession = runtimeManager.getFactory().findKieSessionById(runtimeManager.getRuntimeEngine(EmptyContext.get()).getKieSession().getId());
 
-            BidsWorkItemHandlerResults rr;
-            FactHandle oldWorkHandle = findOldWorkDone();
-            WorkDone oldWork = oldWorkHandle == null ? null : (WorkDone) getKsession().getObject(oldWorkHandle);
-
-            if (config.isOnceOnly() && oldWork != null)
+            // now run
+            try
             {
-                log.warn("Work Id: " + config.getWorkDoneId() + " already completed - skipping this invocation");
-                rr = new BidsWorkItemHandlerResults(0, oldWork);
-            }
-            else
-            {
-                try
+                BidsWorkItemWorker w = worker.get();
+                w.setKieSession(localKieSession);
+                if ( w != null )
                 {
-                    rr = doWorkInThread();
-                } catch (InterruptedException e)
-                {
-                    log.warn("Work item thread was killed for : " + config.getWorkItem());
-                    //quietly exit, someone killed us intentionally
-                    return;
-                } catch (Exception e)
-                {
-                    // signal an exception occurred to anyone who may be listening
-                    getKsession().signalEvent(errorSignalName, e);
-                    if (e instanceof RuntimeException)
-                        throw (RuntimeException) e;
-                    else
-                        throw new RuntimeException(e);
+                    w.setSignalThrower(signalThrower);
+                    w.run();
                 }
-
-                // mark the work as done (or redone)
-                if (oldWork == null)
-                    getKsession().insert(rr.getWorkDone());
-                else
-                    getKsession().update(oldWorkHandle, rr.getWorkDone());
-
-                // if the work task has been configured to signal if there was an error result then do it now
-                if (rr.getReturnCode() != 0 && config.isSignalOnErrorResult())
-                    getKsession().signalEvent(errorSignalName, config.getWorkDoneId());
-            }
-
-            // notify manager that work item has been completed.  We cannot keep a handle to
-            // the WorkItemManager around - the transaction it is within will have been
-            // closed by the time we get here.  Instead get it directly from the session when
-            // we need it
-            getKsession().getWorkItemManager().completeWorkItem(config.getWorkItemId(), rr.getResults());
-
-            workerThread.set(null);
-            worker.set(null);
-        }
-
-        private FactHandle findOldWorkDone()
-        {
-            // look for old work in the agenda
-            ObjectFilter doneTaskFilter = new ObjectFilter()
+            } catch (Exception e)
             {
-                public boolean accept(Object object)
-                {
-                    return object instanceof WorkDone && ((WorkDone) object).getName().equals(config.getWorkDoneId());
-                }
-            };
-            Collection<FactHandle> workDoneHandles = getKsession().getFactHandles(doneTaskFilter);
-            return workDoneHandles.size() == 0 ? null : workDoneHandles.iterator().next();
+                e.printStackTrace();
+            } finally
+            {
+                worker.set(null);
+                workerThread.set(null);
+            }
         }
-
     }
 }

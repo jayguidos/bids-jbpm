@@ -12,16 +12,16 @@ package com.bids.bpm.work.handlers;
 import java.io.File;
 
 
-import org.kie.api.runtime.manager.RuntimeManager;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 
 public abstract class AbstractBidsWorkItemHandlerFactoryImpl<T extends BidsWorkItemHandler>
-    implements BidsWorkItemHandlerFactory<T>
+        implements BidsWorkItemHandlerFactory<T>
 {
 
-    public RuntimeManager runtimeManager;
+    public SingletonRuntimeManager runtimeManager;
     protected File logBaseDir;
 
-    public AbstractBidsWorkItemHandlerFactoryImpl(RuntimeManager runtimeManager, File logBaseDir)
+    public AbstractBidsWorkItemHandlerFactoryImpl(SingletonRuntimeManager runtimeManager, File logBaseDir)
     {
         this.runtimeManager = runtimeManager;
         this.logBaseDir = logBaseDir;

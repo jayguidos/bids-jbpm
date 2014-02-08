@@ -7,31 +7,33 @@
  *
  */
 
-package com.bids.bpm.work.handlers.bash;
+package com.bids.bpm.work.handlers.bash.worker;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.BidsWorkItemConfig;
+import com.bids.bpm.work.handlers.worker.BidsWorkItemWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
 public class BashScriptWorkerConfig
-        extends BidsWorkItemConfig
+        extends BidsWorkItemWorkerConfig
 {
     public static final String IN_SCRIPT_NAME = "ScriptName";
     public static final String IN_SCRIPT_ARGS = "ScriptArgs";
     public static final String IN_WAIT_FOR_SUCCESS = "WaitForSuccess";
     public static final String IN_LOG_OUTPUT_TO_CONSOLE = "LogOutputToConsole";
+    private final String targetHost;
 
     protected boolean waitForSuccessfulExitStatus;
     protected boolean logOutputToConsole;
     protected String scriptName;
     protected String scriptArgs;
 
-    public BashScriptWorkerConfig(WorkItem workItem, File scriptLogDir)
+    public BashScriptWorkerConfig(String targetHost, WorkItem workItem, File scriptLogDir)
     {
         super(workItem, scriptLogDir);
+        this.targetHost = targetHost;
     }
 
     public void init(KieSession kieSession)
@@ -64,6 +66,11 @@ public class BashScriptWorkerConfig
     public void setWaitForSuccessfulExitStatus(boolean waitForSuccessfulExitStatus)
     {
         this.waitForSuccessfulExitStatus = waitForSuccessfulExitStatus;
+    }
+
+    public String getTargetHost()
+    {
+        return targetHost;
     }
 
     public String getScriptName()
