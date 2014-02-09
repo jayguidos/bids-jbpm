@@ -75,11 +75,9 @@ public class JobControlWorkerConfig
         this.jcrHandle = jcrHandle;
     }
 
-    protected FactHandle getJobControlRecordHandle(KieSession kieSession, String jcId, int expectedCount)
+    protected FactHandle getJobControlRecordHandle(KieSession kieSession, String jcId)
     {
         Collection<FactHandle> factHandles = kieSession.getFactHandles(makeJobControlRecordQuery(jcId));
-        if (factHandles.size() != expectedCount)
-            throw new RuntimeException("JobControlRecord count mismatch.  Expected count: " + expectedCount + " but found: " + factHandles.size());
         if (factHandles.size() > 0)
             return factHandles.iterator().next();
         else

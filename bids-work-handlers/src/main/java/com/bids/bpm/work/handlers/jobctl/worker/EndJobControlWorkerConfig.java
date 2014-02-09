@@ -40,7 +40,9 @@ public class EndJobControlWorkerConfig
         // use that record to configure me
         this.jobCtlId = jcr.getJobId();
 
-        this.jcrHandle = getJobControlRecordHandle(kieSession, this.jobCtlId, 1);
+        this.jcrHandle = getJobControlRecordHandle(kieSession, this.jobCtlId);
+        if (this.jcrHandle == null)
+            throw new RuntimeException("JobControlRecord error - end/fail was called but no active job control record found.");
         if (!jcr.equals(kieSession.getObject(this.jcrHandle)))
             throw new RuntimeException("Job control record in agenda does not match the one stored in the process");
         this.jobFailed = getBooleanParameter(IN_JOB_FAILED, false);
@@ -50,13 +52,13 @@ public class EndJobControlWorkerConfig
     }
 
     @Override
-    protected String extractWorkDoneIdFromParamters()
+    protected String extractWorkDoneIdFromParameters()
     {
         return JOB_CONTROL_WORK_PREFIX + this.jobCtlId + "_end";
     }
 
     @Override
-    protected String extractScriptArgsFromParameter()
+    protected String extractScriptArgsFromParameters()
     {
         return (this.jobFailed ? "failJob" : "completeJob") + " " + this.jobCtlId;
     }

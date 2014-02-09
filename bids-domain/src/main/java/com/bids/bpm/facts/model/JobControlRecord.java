@@ -10,6 +10,7 @@
 package com.bids.bpm.facts.model;
 
 import static com.bids.bpm.facts.model.JobControlRecord.State.complete;
+import static com.bids.bpm.facts.model.JobControlRecord.State.error;
 import static com.bids.bpm.facts.model.JobControlRecord.State.failed;
 import static com.bids.bpm.facts.model.JobControlRecord.State.started;
 import static com.bids.bpm.facts.model.JobControlRecord.State.unstarted;
@@ -19,14 +20,13 @@ public class JobControlRecord
 {
     public enum State
     {
-        unstarted, started, complete, failed
+        unstarted, started, complete, failed, error
     }
 
     public static final String JOB_CTL = "JobCtl_";
 
     private final String jobId;
     private State state = unstarted;
-    private int status;
 
     public JobControlRecord(String jobId)
     {
@@ -38,7 +38,7 @@ public class JobControlRecord
     {
         if (!stepIsSuccessful)
         {
-            this.state = failed;
+            this.state = error;
             return;
         }
 
@@ -49,6 +49,9 @@ public class JobControlRecord
                 break;
             case started:
                 this.state = complete;
+                break;
+            case error:
+                this.state = failed;
                 break;
             case failed:
             case complete:
@@ -65,16 +68,6 @@ public class JobControlRecord
     public void setState(State state)
     {
         this.state = state;
-    }
-
-    public int getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(int status)
-    {
-        this.status = status;
     }
 
     public String getJobId()
@@ -107,7 +100,6 @@ public class JobControlRecord
         return "JobControlRecord{" +
                 "jobId='" + jobId + '\'' +
                 ", state=" + state +
-                ", status=" + status +
                 '}';
     }
 }

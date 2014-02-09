@@ -44,7 +44,7 @@ public class BidsWorkItemWorkerConfig
     {
         this.signalOnErrorResult = getBooleanParameter(IN_SIGNAL_ON_ERROR, true);
         this.onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
-        this.workDoneId = extractWorkDoneIdFromParamters();
+        this.workDoneId = extractWorkDoneIdFromParameters();
 
         // derive a working log directory based on the Bids Day and the current process
         ProcessInstance process = kieSession.getProcessInstance(workItem.getProcessInstanceId());
@@ -111,7 +111,7 @@ public class BidsWorkItemWorkerConfig
         return workItem;
     }
 
-    protected String extractWorkDoneIdFromParamters()
+    protected String extractWorkDoneIdFromParameters()
     {
         return getStringParameter(IN_WORK_ID, this.workItemId.toString());
     }

@@ -37,7 +37,7 @@ public class JobControlWorker
         JobControlRecord jcr = (JobControlRecord) kieSession.getObject(config.getJcrHandle());
         jcr.transitionTo(rr.getReturnCode() == 0);
         kieSession.update(config.getJcrHandle(), jcr);
-
+        logger.info("Job State Update: " + jcr );
         rr.addResult(JobControlWorkItemHandler.OUT_JOB_CONTROL_RECORD, jcr);
 
         return rr;

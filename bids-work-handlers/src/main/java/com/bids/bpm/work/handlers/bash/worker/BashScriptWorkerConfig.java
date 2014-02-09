@@ -40,7 +40,7 @@ public class BashScriptWorkerConfig
     {
         // these are mine
         this.scriptName = extractScriptNameFromParameters();
-        this.scriptArgs = extractScriptArgsFromParameter();
+        this.scriptArgs = extractScriptArgsFromParameters();
         this.waitForSuccessfulExitStatus = getBooleanParameter(IN_WAIT_FOR_SUCCESS, false);
         this.logOutputToConsole = getBooleanParameter(IN_LOG_OUTPUT_TO_CONSOLE, true);
 
@@ -94,12 +94,12 @@ public class BashScriptWorkerConfig
     }
 
     @Override
-    protected String extractWorkDoneIdFromParamters()
+    protected String extractWorkDoneIdFromParameters()
     {
         return getStringParameter(IN_WORK_ID, scriptName.replace(" ", "_"));
     }
 
-    protected String extractScriptArgsFromParameter()
+    protected String extractScriptArgsFromParameters()
     {
         return getStringParameter(IN_SCRIPT_ARGS, null);
     }
