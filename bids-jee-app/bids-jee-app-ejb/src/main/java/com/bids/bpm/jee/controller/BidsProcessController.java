@@ -193,7 +193,7 @@ public class BidsProcessController
         KieSession kieSession = extractKieSession(bd);
         ProcessInstance processInstance = kieSession.createProcessInstance(kieProcesssId, null);
 
-        log.info("Launched process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
+        log.info("Created process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
 
         BidsProcessInvocation bidsProcess = new BidsProcessInvocation();
         bidsProcess.setDeployment(bd);
@@ -206,8 +206,10 @@ public class BidsProcessController
 
     public void startProcess(BidsProcessInvocation processInvocation)
     {
-        KieSession kieSession = extractKieSession(processInvocation.getDeployment());
-        kieSession.startProcessInstance(processInvocation.getKieInstanceId());
+        BidsDeployment bd = processInvocation.getDeployment();
+        KieSession kieSession = extractKieSession(bd);
+        ProcessInstance processInstance = kieSession.startProcessInstance(processInvocation.getKieInstanceId());
+        log.info("Started process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
     }
 
     public boolean undeployModule(Long bdId)

@@ -18,6 +18,7 @@ import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorker;
 import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
 import com.bids.bpm.work.handlers.jobctl.worker.StartJobControlWorkerConfig;
 import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
 public class JobControlWorkItemHandler
@@ -28,9 +29,9 @@ public class JobControlWorkItemHandler
     public static final String JOB_CONTROL_ERROR_SIGNAL = "JobControlError";
     private JobControlType jobControlType;
 
-    public JobControlWorkItemHandler(File logBaseDir)
+    public JobControlWorkItemHandler(KieSession kieSession, File logBaseDir)
     {
-        super(JOB_CONTROL_ERROR_SIGNAL, logBaseDir);
+        super(kieSession,JOB_CONTROL_ERROR_SIGNAL, logBaseDir);
     }
 
     public JobControlType getJobControlType()

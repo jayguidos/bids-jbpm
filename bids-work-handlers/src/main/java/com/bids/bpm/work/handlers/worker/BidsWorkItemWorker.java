@@ -60,7 +60,7 @@ public abstract class BidsWorkItemWorker
             } catch (Exception e)
             {
                 // signal an exception occurred to anyone who may be listening
-                signalThrower.signalEvent(kieSession, e);
+                signalThrower.signalEvent(e);
                 if (e instanceof RuntimeException)
                     throw (RuntimeException) e;
                 else
@@ -75,7 +75,7 @@ public abstract class BidsWorkItemWorker
 
             // if the work task has been configured to signal if there was an error result then do it now
             if (rr.getReturnCode() != 0 && config.isSignalOnErrorResult())
-                signalThrower.signalEvent(kieSession, config.getWorkDoneId());
+                signalThrower.signalEvent(config.getWorkDoneId());
         }
 
         // notify manager that work item has been completed.  We cannot keep a handle to

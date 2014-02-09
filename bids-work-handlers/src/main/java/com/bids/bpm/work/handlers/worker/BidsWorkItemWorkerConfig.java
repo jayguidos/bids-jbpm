@@ -42,7 +42,7 @@ public class BidsWorkItemWorkerConfig
 
     public void init(KieSession kieSession)
     {
-        this.signalOnErrorResult = getBooleanParameter(IN_SIGNAL_ON_ERROR, false);
+        this.signalOnErrorResult = getBooleanParameter(IN_SIGNAL_ON_ERROR, true);
         this.onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
         this.workDoneId = extractWorkDoneIdFromParamters();
 

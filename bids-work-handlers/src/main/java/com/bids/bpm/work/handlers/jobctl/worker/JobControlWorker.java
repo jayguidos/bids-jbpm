@@ -13,11 +13,13 @@ import com.bids.bpm.facts.model.JobControlRecord;
 import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
 import com.bids.bpm.work.handlers.bash.worker.BashScriptWorker;
 import com.bids.bpm.work.handlers.jobctl.JobControlWorkItemHandler;
+import org.apache.log4j.Logger;
 
 public class JobControlWorker
         extends BashScriptWorker
 {
     private final JobControlWorkerConfig config;
+    private static final Logger logger = Logger.getLogger(JobControlWorker.class);
 
     public JobControlWorker(JobControlWorkerConfig config)
     {

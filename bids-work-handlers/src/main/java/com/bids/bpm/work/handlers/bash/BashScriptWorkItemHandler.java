@@ -17,6 +17,7 @@ import com.bids.bpm.work.handlers.bash.worker.BashScriptWorker;
 import com.bids.bpm.work.handlers.bash.worker.BashScriptWorkerConfig;
 import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
 import org.apache.log4j.Logger;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
 public class BashScriptWorkItemHandler
@@ -29,14 +30,14 @@ public class BashScriptWorkItemHandler
     private static final Logger log = Logger.getLogger(BashScriptWorkItemHandler.class);
     protected String targetHost;
 
-    public BashScriptWorkItemHandler(File baseLogDir)
+    public BashScriptWorkItemHandler(KieSession kieSession, File baseLogDir)
     {
-        this(BASH_SCRIPT_ERROR_SIGNAL,baseLogDir);
+        this(kieSession, BASH_SCRIPT_ERROR_SIGNAL,baseLogDir);
     }
 
-    public BashScriptWorkItemHandler(String errorSignalName, File baseLogDir)
+    public BashScriptWorkItemHandler(KieSession kieSession, String errorSignalName, File baseLogDir)
     {
-        super(errorSignalName, baseLogDir);
+        super(kieSession, errorSignalName, baseLogDir);
     }
 
     public String getTargetHost()

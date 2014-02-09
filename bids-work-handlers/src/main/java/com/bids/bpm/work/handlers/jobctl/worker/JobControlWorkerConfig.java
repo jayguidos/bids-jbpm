@@ -28,16 +28,17 @@ public class JobControlWorkerConfig
     public static final String JCR_RECORD_VARIABLE = "jcrRecord";
     protected String jobCtlId;
     protected FactHandle jcrHandle;
+    private JobControlRecord jcr;
 
     public JobControlWorkerConfig(String targetHost, WorkItem workItem, File scriptLogDir)
     {
         super(targetHost, workItem,scriptLogDir);
     }
 
-    @Override
-    public void init(KieSession kieSession)
+    public void init(JobControlRecord jcr, KieSession kieSession)
     {
         super.init(kieSession);
+        this.jcr = jcr;
         // flip the default to false for logging job control
         this.logOutputToConsole = getBooleanParameter(IN_LOG_OUTPUT_TO_CONSOLE, false);
     }
@@ -47,6 +48,11 @@ public class JobControlWorkerConfig
     {
         // the BASH script I run is hard coded
         return OPS_JOB_CONTROL_SH;
+    }
+
+    public JobControlRecord getJcr()
+    {
+        return jcr;
     }
 
     public String getJobCtlId()

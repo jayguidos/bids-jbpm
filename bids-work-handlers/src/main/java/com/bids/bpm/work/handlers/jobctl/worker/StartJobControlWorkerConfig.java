@@ -13,7 +13,6 @@ import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
-import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -48,7 +47,7 @@ public class StartJobControlWorkerConfig
         getProcessInstance(kieSession).setVariable(JCR_RECORD_VARIABLE, jcr);
 
         // now I can safely call super and expect overridden methods to work
-        super.init(kieSession);
+        super.init(jcr,kieSession);
     }
 
     @Override

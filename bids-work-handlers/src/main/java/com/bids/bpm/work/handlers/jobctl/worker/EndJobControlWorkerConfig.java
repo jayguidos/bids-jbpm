@@ -13,7 +13,6 @@ import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
-import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -47,7 +46,7 @@ public class EndJobControlWorkerConfig
         this.jobFailed = getBooleanParameter(IN_JOB_FAILED, false);
 
         // I can now safely call the super and expect it to work
-        super.init(kieSession);
+        super.init(jcr, kieSession);
     }
 
     @Override
