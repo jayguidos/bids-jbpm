@@ -25,6 +25,7 @@ public class BpmnSignalThrower
     private final NodeInstance workItemNodeInstance;
     private final long processInstanceId;
     private final StatefulKnowledgeSession ksession;
+    private String boundaryNodeTypedErrorSignalName;
 
     public BpmnSignalThrower(AbstractWorkItemHandler myHandler, WorkItem wi, String errorSignalName)
     {
@@ -32,16 +33,17 @@ public class BpmnSignalThrower
         this.workItemNodeInstance = myHandler.getNodeInstance(wi);
         this.processInstanceId = wi.getProcessInstanceId();
         this.ksession = myHandler.getSession();
+        // I used to do this lazily, but if I don't do it now I risk pulling the process instance into
+        // another thread (and transaction).
+        this.boundaryNodeTypedErrorSignalName = formBoundaryErrorSignalName();
     }
 
     public void signalEvent(Object data)
     {
-        String boundaryNodeTypedErrorSignal = formBoundaryErrorSignalName();
-
         logger.warn("Sending signal " + errorSignalName + " with data " + data.toString());
 
         // the boundary event node signal must be designed so that any boundary event node listening will hear
-        ksession.signalEvent(boundaryNodeTypedErrorSignal, data, processInstanceId);
+        ksession.signalEvent(boundaryNodeTypedErrorSignalName, data, processInstanceId);
 
         // also signal generically for any process event node (non-boundary)
         ksession.signalEvent(errorSignalName, data, processInstanceId);
