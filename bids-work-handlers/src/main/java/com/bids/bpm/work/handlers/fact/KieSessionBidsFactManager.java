@@ -141,7 +141,18 @@ public class KieSessionBidsFactManager
     @SuppressWarnings("unchecked")
     public <T extends BidsFact> T get(FactHandle handle)
     {
-        return (T) kieSession.getObject(handle);
+        return handle == null ? null : (T) kieSession.getObject(handle);
+    }
+
+    public <T extends BidsFact> T get(final Long factId)
+    {
+        return get(find(new ObjectFilter()
+        {
+            public boolean accept(Object object)
+            {
+                return object instanceof BidsFact && ((BidsFact) object).getId() == factId;
+            }
+        }));
     }
 
     private FactHandle getHandle(BidsFact fact)

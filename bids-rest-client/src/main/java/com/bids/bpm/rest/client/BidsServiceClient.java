@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import com.bids.bpm.rest.client.cmds.DeleteWorkDoneCmd;
 import com.bids.bpm.rest.client.cmds.DumpFactsCmd;
 import com.bids.bpm.rest.client.cmds.GetDeploymentsCmd;
 import com.bids.bpm.rest.client.cmds.KillProcessCmd;
@@ -86,6 +87,7 @@ public class BidsServiceClient
         cmds.put(StopDayCmd.NAME, new StopDayCmd(clientFactory,uriTemplate));
         cmds.put(StartProcess.NAME, new StartProcess(clientFactory,uriTemplate));
         cmds.put(DumpFactsCmd.NAME, new DumpFactsCmd(clientFactory,uriTemplate));
+        cmds.put(DeleteWorkDoneCmd.NAME, new DeleteWorkDoneCmd(clientFactory,uriTemplate));
         cmds.put(KillProcessCmd.NAME, new KillProcessCmd(clientFactory,uriTemplate));
         return cmds;
     }

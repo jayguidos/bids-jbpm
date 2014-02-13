@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 
 
 import com.bids.bpm.facts.model.BidsDay;
+import com.bids.bpm.jee.controller.BidsDayController;
 import com.bids.bpm.jee.controller.BidsProcessController;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
@@ -47,6 +48,9 @@ public class BidsRESTService
     @Inject
     private BidsProcessController bpc;
 
+    @Inject
+    BidsDayController bdc;
+
     @GET
     @Path("/deployments")
     @Produces(APPLICATION_XML)
@@ -64,8 +68,16 @@ public class BidsRESTService
         BidsDeployment bidsDeployment = findBidsDeployment(bdIdString);
         BidsFactsResponse response = new BidsFactsResponse();
         response.setBidsDeploymentId(bidsDeployment.getId());
-        response.setFacts(bpc.dumpAllFacts(bidsDeployment.getId()));
+        response.setFacts(bdc.dumpAllFacts(bidsDeployment.getId()));
         return response;
+    }
+
+    @DELETE
+    @Path("/deleteWorkDone/{bdId}/{workId}")
+    @Produces(TEXT_PLAIN)
+    public String deleteWorkDoneItem(@NotNull @DecimalMin("1") @PathParam("bdId") Long bdId, @NotNull @DecimalMin("1") @PathParam("workId") Long workId)
+    {
+        return bdc.deleteWorkDoneItem(bdId,workId);
     }
 
     @DELETE
@@ -83,7 +95,7 @@ public class BidsRESTService
     @Consumes(APPLICATION_XML)
     public BidsDeployment startDay(@Valid DeployRequest deploy)
     {
-        return bpc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
+        return bdc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
     }
 
     @POST
@@ -107,7 +119,7 @@ public class BidsRESTService
     @Consumes(TEXT_PLAIN)
     public boolean stopDay(@NotNull @NotEmpty @DecimalMin("1") String bdIdString)
     {
-        return bpc.undeployModule(findBidsDeployment(bdIdString).getId());
+        return bdc.undeployModule(findBidsDeployment(bdIdString).getId());
     }
 
     private BidsDeployment findBidsDeployment(String bdIdStr)

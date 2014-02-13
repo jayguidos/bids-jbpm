@@ -22,7 +22,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-import com.bids.bpm.jee.controller.BidsProcessController;
+import com.bids.bpm.jee.controller.BidsDayController;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.util.BidsEjbEM;
 
@@ -32,7 +32,7 @@ import com.bids.bpm.jee.util.BidsEjbEM;
 public class BidsStartupDeployer
 {
     @Inject
-    BidsProcessController bpc;
+    BidsDayController bdc;
     @Inject
     @BidsEjbEM
     private EntityManager em;
@@ -48,7 +48,7 @@ public class BidsStartupDeployer
 
             log.info("Detected " + deployments.size() + " redeployments.");
             for (BidsDeployment bd : deployments)
-                bpc.redeployOnRestart(bd);
+                bdc.redeployOnRestart(bd);
             log.info("Redeployment phase complete");
         }
     }
