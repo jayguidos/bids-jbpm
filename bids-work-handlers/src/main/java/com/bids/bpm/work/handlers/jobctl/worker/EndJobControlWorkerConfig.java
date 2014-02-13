@@ -13,6 +13,7 @@ import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -43,7 +44,7 @@ public class EndJobControlWorkerConfig
         this.jcrHandle = getJobControlRecordHandle(kieSession, this.jobCtlId);
         if (this.jcrHandle == null)
             throw new RuntimeException("JobControlRecord error - end/fail was called but no active job control record found.");
-        if (!jcr.equals(kieSession.getObject(this.jcrHandle)))
+        if (!jcr.equals(new KieSessionBidsFactManager(kieSession).get(this.jcrHandle)))
             throw new RuntimeException("Job control record in agenda does not match the one stored in the process");
         this.jobFailed = getBooleanParameter(IN_JOB_FAILED, false);
 

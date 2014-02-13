@@ -36,14 +36,18 @@ public class JobControlWorkItemProducer
     {
         HashMap<String, WorkItemHandler> wihMap = new HashMap<String, WorkItemHandler>();
         SingletonRuntimeManager runtimeManager = getRuntimeManager(params);
+        JobControlWorkItemHandlerFactory startJobFactory = new JobControlWorkItemHandlerFactory(startJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName());
+        JobControlWorkItemHandlerFactory endJobFactory = new JobControlWorkItemHandlerFactory(endJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName());
+
         wihMap.put(
                 BIDS_JOB_CONTROL_START_ITEM_HANDLER,
-                new JobControlWorkItemHandlerFactory(startJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName()).makeWorkItem()
+                startJobFactory.makeWorkItem()
         );
         wihMap.put(
                 BIDS_JOB_CONTROL_END_ITEM_HANDLER,
-                new JobControlWorkItemHandlerFactory(endJob, runtimeManager, config.getGlobalLogDir(), config.getBashHostName()).makeWorkItem()
+                endJobFactory.makeWorkItem()
         );
         return wihMap;
     }
+
 }

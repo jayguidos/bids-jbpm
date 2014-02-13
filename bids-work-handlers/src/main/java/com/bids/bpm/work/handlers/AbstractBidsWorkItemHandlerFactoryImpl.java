@@ -12,6 +12,7 @@ package com.bids.bpm.work.handlers;
 import java.io.File;
 
 
+import com.bids.bpm.work.handlers.fact.FactIDFactory;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -22,6 +23,7 @@ public abstract class AbstractBidsWorkItemHandlerFactoryImpl<T extends BidsWorkI
 
     protected final SingletonRuntimeManager runtimeManager;
     protected final File logBaseDir;
+    protected FactIDFactory factIDFactory;
 
     public AbstractBidsWorkItemHandlerFactoryImpl(SingletonRuntimeManager runtimeManager, File logBaseDir)
     {
@@ -34,4 +36,20 @@ public abstract class AbstractBidsWorkItemHandlerFactoryImpl<T extends BidsWorkI
         return this.runtimeManager.getRuntimeEngine(EmptyContext.get()).getKieSession();
     }
 
+    public FactIDFactory getFactIDFactory()
+    {
+        return factIDFactory;
+    }
+
+    public void setFactIDFactory(FactIDFactory factIDFactory)
+    {
+        this.factIDFactory = factIDFactory;
+    }
+
+    protected T  configureItem(T item)
+    {
+        item.setRuntimeManager(runtimeManager);
+        item.setFactIDFactory(factIDFactory);
+        return item;
+    }
 }

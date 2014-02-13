@@ -9,15 +9,11 @@
 
 package com.bids.bpm.work.handlers.worker;
 
-import java.util.Collection;
-
-
 import com.bids.bpm.facts.model.WorkDone;
 import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import org.apache.log4j.Logger;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
-import org.kie.api.runtime.rule.FactHandle;
 
 public abstract class BidsWorkItemWorker
         implements Runnable
@@ -25,6 +21,7 @@ public abstract class BidsWorkItemWorker
     private static final Logger log = Logger.getLogger(BidsWorkItemWorker.class);
     private final BidsWorkItemWorkerConfig config;
     protected KieSession kieSession;
+    protected KieSessionBidsFactManager factManager;
     private BpmnSignalThrower signalThrower;
 
     public BidsWorkItemWorker(BidsWorkItemWorkerConfig config)
@@ -39,8 +36,7 @@ public abstract class BidsWorkItemWorker
     {
 
         BidsWorkItemHandlerResults rr;
-        FactHandle oldWorkHandle = findOldWorkDone();
-        WorkDone oldWork = oldWorkHandle == null ? null : (WorkDone) kieSession.getObject(oldWorkHandle);
+        WorkDone oldWork = factManager.find(WorkDone.class, config.getWorkDoneId());
 
         if (config.isOnceOnly() && oldWork != null)
         {
@@ -68,10 +64,7 @@ public abstract class BidsWorkItemWorker
             }
 
             // mark the work as done (or redone)
-            if (oldWork == null)
-                kieSession.insert(rr.getWorkDone());
-            else
-                kieSession.update(oldWorkHandle, rr.getWorkDone());
+            factManager.addOrUpdate(rr.getWorkDone());
 
             // if the work task has been configured to signal if there was an error result then do it now
             if (rr.getReturnCode() != 0 && config.isSignalOnErrorResult())
@@ -106,18 +99,14 @@ public abstract class BidsWorkItemWorker
         return config;
     }
 
-    private FactHandle findOldWorkDone()
+    public KieSessionBidsFactManager getFactManager()
     {
-        // look for old work in the agenda
-        ObjectFilter doneTaskFilter = new ObjectFilter()
-        {
-            public boolean accept(Object object)
-            {
-                return object instanceof WorkDone && ((WorkDone) object).getName().equals(config.getWorkDoneId());
-            }
-        };
-        Collection<FactHandle> workDoneHandles = kieSession.getFactHandles(doneTaskFilter);
-        return workDoneHandles.size() == 0 ? null : workDoneHandles.iterator().next();
+        return factManager;
+    }
+
+    public void setFactManager(KieSessionBidsFactManager factManager)
+    {
+        this.factManager = factManager;
     }
 
 }

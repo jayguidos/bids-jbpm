@@ -28,7 +28,6 @@ public class BidsDay
     private static final long serialVersionUID = 3108457365704606617L;
     private static final Date DEFAULT_START_TIME;
     private static final Date DEFAULT_END_TIME;
-    private Long id;
     @NotNull
     @ValidBidsDate
     private Date date;
@@ -98,12 +97,11 @@ public class BidsDay
     @Override
     public boolean equals(Object o)
     {
-        if (this == o) return true;
+        if ( ! super.equals(o) )
+            return false;
+
         if (!(o instanceof BidsDay)) return false;
-
         BidsDay bidsDay = (BidsDay) o;
-
-        if (id != null ? !id.equals(bidsDay.id) : bidsDay.id != null) return false;
         if (!date.equals(bidsDay.date)) return false;
 
         return true;
@@ -112,9 +110,7 @@ public class BidsDay
     @Override
     public int hashCode()
     {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + date.hashCode();
-        return result;
+        return 31 * super.hashCode() + date.hashCode();
     }
 
     public boolean isTradingHalfDay()
@@ -130,6 +126,7 @@ public class BidsDay
     @Override
     public String toString()
     {
+        // this is a special, undeletable fact, so I don't expose the ID anywhere
         return "BidsDay[" + new SimpleDateFormat(TRADING_DATE_FORMAT).format(date) + ']';
     }
 
@@ -169,16 +166,6 @@ public class BidsDay
     public void setSystemEndTime(Date systemEndTime)
     {
         this.systemEndTime = setTimeOfDayFieldsOnBidsDate(date, systemEndTime);
-    }
-
-    public Long getId()
-    {
-        return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
     }
 
 }

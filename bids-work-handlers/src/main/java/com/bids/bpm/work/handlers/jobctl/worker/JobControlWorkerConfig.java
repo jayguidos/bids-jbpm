@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import com.bids.bpm.facts.model.JobControlRecord;
 import com.bids.bpm.work.handlers.bash.worker.BashScriptWorkerConfig;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItem;
@@ -77,11 +78,7 @@ public class JobControlWorkerConfig
 
     protected FactHandle getJobControlRecordHandle(KieSession kieSession, String jcId)
     {
-        Collection<FactHandle> factHandles = kieSession.getFactHandles(makeJobControlRecordQuery(jcId));
-        if (factHandles.size() > 0)
-            return factHandles.iterator().next();
-        else
-            return null;
+        return new KieSessionBidsFactManager(kieSession).find(makeJobControlRecordQuery(jcId));
     }
 
     protected ObjectFilter makeJobControlRecordQuery(final String jobControlId)

@@ -33,10 +33,9 @@ public class JobControlWorkItemHandlerFactory
     public JobControlWorkItemHandler makeWorkItem()
     {
         JobControlWorkItemHandler jobControlWorkItemHandler = new JobControlWorkItemHandler(getKieSession(),logBaseDir);
-        jobControlWorkItemHandler.setRuntimeManager(runtimeManager);
         jobControlWorkItemHandler.setJobControlType(jobControlType);
         if (targetHost != null && targetHost.trim().length() > 0)
             jobControlWorkItemHandler.setTargetHost(targetHost);
-        return jobControlWorkItemHandler;
+        return configureItem(jobControlWorkItemHandler);
     }
 }

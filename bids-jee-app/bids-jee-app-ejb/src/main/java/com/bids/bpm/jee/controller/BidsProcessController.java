@@ -17,7 +17,6 @@ import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,6 +27,7 @@ import javax.persistence.criteria.Root;
 
 
 import com.bids.bpm.facts.model.BidsDay;
+import com.bids.bpm.facts.model.BidsFact;
 import com.bids.bpm.jee.cdi.BidsKieManager;
 import com.bids.bpm.jee.data.BidsDayProducer;
 import com.bids.bpm.jee.data.BidsDeploymentsProducer;
@@ -36,8 +36,10 @@ import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
+import static com.bids.bpm.shared.BidsBPMConstants.GLBL_FACT_MANAGER;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -76,6 +78,29 @@ public class BidsProcessController
         return process;
     }
 
+    // this transaction must complete BEFORE the process is started, because processes
+    // can run to completion in the KIE startProcess() call and the end process listeners
+    // require the process record to be in the DB
+    @TransactionAttribute(REQUIRES_NEW)
+    public BidsProcessInvocation createProcessInvocation(Long bdId, String kieProcesssId)
+    {
+        BidsDeployment bd = em.find(BidsDeployment.class, bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not start process. Deployment does not exist: " + bdId);
+        KieSession kieSession = extractKieSession(bd);
+        ProcessInstance processInstance = kieSession.createProcessInstance(kieProcesssId, null);
+
+        log.info("Created process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
+
+        BidsProcessInvocation bidsProcess = new BidsProcessInvocation();
+        bidsProcess.setDeployment(bd);
+        bidsProcess.setKieProcessDescriptionId(kieProcesssId);
+        bidsProcess.setKieInstanceId(processInstance.getId());
+        bd.startProcess(bidsProcess);
+
+        return bidsProcess;
+    }
+
     public boolean deleteWorkDoneItem(String workDoneName, Long bdId)
     {
         BidsDeployment bd = em.find(BidsDeployment.class, bdId);
@@ -106,7 +131,13 @@ public class BidsProcessController
         // add all facts and globals
         KieSession kieSession = kieManager.getRuntimeEngine(unit.getIdentifier()).getKieSession();
         kieSession.insert(bidsDay);
-        kieSession.setGlobal(GLBL_KSESSION, kieSession);
+//        kieSession.setGlobal(GLBL_KSESSION, kieSession);
+//        try
+//        {
+//            kieSession.setGlobal(GLBL_FACT_MANAGER, new KieSessionBidsFactManager(kieSession));
+//        } catch (Exception ignored)
+//        {
+//        }
         kieSession.setGlobal(GLBL_LOG_DIR_HOME, config.getGlobalLogDir().toString());
         kieSession.addEventListener(new DefaultProcessEventListener()
         {
@@ -137,10 +168,9 @@ public class BidsProcessController
         if (bd == null)
             throw new RuntimeException("Could not dump facts. Deployment does not exist: " + bdId);
         ArrayList<String> facts = new ArrayList<String>();
-        KieSession kieSession = extractKieSession(bd);
         log.info("Dumping facts for " + bd.getBidsDay());
-        for (FactHandle fh : kieSession.getFactHandles())
-            facts.add(kieSession.getObject(fh).toString());
+        for (BidsFact bidsFact : new KieSessionBidsFactManager(extractKieSession(bd)).findAll())
+            facts.add(bidsFact.toString());
         return facts;
     }
 
@@ -179,29 +209,6 @@ public class BidsProcessController
         KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
         log.info("Re-deploying BidsModule " + bd);
         kieManager.deployUnit(unit);
-    }
-
-    // this transaction must complete BEFORE the process is started, because processes
-    // can run to completion in the KIE startProcess() call and the end process listeners
-    // require the process record to be in the DB
-    @TransactionAttribute(REQUIRES_NEW)
-    public BidsProcessInvocation createProcessInvocation(Long bdId, String kieProcesssId)
-    {
-        BidsDeployment bd = em.find(BidsDeployment.class, bdId);
-        if (bd == null)
-            throw new RuntimeException("Could not start process. Deployment does not exist: " + bdId);
-        KieSession kieSession = extractKieSession(bd);
-        ProcessInstance processInstance = kieSession.createProcessInstance(kieProcesssId, null);
-
-        log.info("Created process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
-
-        BidsProcessInvocation bidsProcess = new BidsProcessInvocation();
-        bidsProcess.setDeployment(bd);
-        bidsProcess.setKieProcessDescriptionId(kieProcesssId);
-        bidsProcess.setKieInstanceId(processInstance.getId());
-        bd.startProcess(bidsProcess);
-
-        return bidsProcess;
     }
 
     public void startProcess(BidsProcessInvocation processInvocation)

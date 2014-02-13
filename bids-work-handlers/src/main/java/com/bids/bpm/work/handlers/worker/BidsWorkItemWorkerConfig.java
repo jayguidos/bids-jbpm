@@ -10,13 +10,12 @@
 package com.bids.bpm.work.handlers.worker;
 
 import java.io.File;
-import java.util.Collection;
 
 
 import com.bids.bpm.facts.model.BidsDay;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -48,7 +47,7 @@ public class BidsWorkItemWorkerConfig
 
         // derive a working log directory based on the Bids Day and the current process
         ProcessInstance process = kieSession.getProcessInstance(workItem.getProcessInstanceId());
-        BidsDay bidsDay = findBidsDay(kieSession);
+        BidsDay bidsDay = new KieSessionBidsFactManager(kieSession).find(BidsDay.class);
 
         File workItemLogBaseDir = bidsDay == null ? logBaseDir : new File(logBaseDir, bidsDay.getName());
         workItemLogBaseDir = new File(workItemLogBaseDir, process.getProcessName());
@@ -114,19 +113,6 @@ public class BidsWorkItemWorkerConfig
     protected String extractWorkDoneIdFromParameters()
     {
         return getStringParameter(IN_WORK_ID, this.workItemId.toString());
-    }
-
-    @SuppressWarnings("unchecked")
-    private BidsDay findBidsDay(KieSession kieSession)
-    {
-        Collection<BidsDay> bidsDays = (Collection<BidsDay>) kieSession.getObjects(new ObjectFilter()
-        {
-            public boolean accept(Object object)
-            {
-                return object instanceof BidsDay;
-            }
-        });
-        return bidsDays.size() == 0 ? null : bidsDays.iterator().next();
     }
 
     protected Object getObjectParameter(String name, Object def)

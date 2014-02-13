@@ -21,6 +21,7 @@ public class BidsBPMConstants
     public static final String GLBL_DB_SESSION = "dbSession";
     public static final String GLBL_LOG_DIR_HOME = "logDirHome";
     public static final String GLBL_KSESSION = "ksession";
+    public static final String GLBL_FACT_MANAGER = "factManager";
     public static final String BIDS_DAY_CLOCK_FMT = "yyyy-MM-dd HH:mm:ss";
 
 

@@ -18,8 +18,8 @@ import org.apache.log4j.Logger;
 public class JobControlWorker
         extends BashScriptWorker
 {
-    private final JobControlWorkerConfig config;
     private static final Logger logger = Logger.getLogger(JobControlWorker.class);
+    private final JobControlWorkerConfig config;
 
     public JobControlWorker(JobControlWorkerConfig config)
     {
@@ -34,10 +34,10 @@ public class JobControlWorker
         BidsWorkItemHandlerResults rr = super.doWorkInThread();
 
         // update the current status of the job
-        JobControlRecord jcr = (JobControlRecord) kieSession.getObject(config.getJcrHandle());
+        JobControlRecord jcr = factManager.get(config.getJcrHandle());
         jcr.transitionTo(rr.getReturnCode() == 0);
-        kieSession.update(config.getJcrHandle(), jcr);
-        logger.info("Job State Update: " + jcr );
+        factManager.update(jcr, config.getJcrHandle());
+        logger.info("Job State Update: " + jcr);
         rr.addResult(JobControlWorkItemHandler.OUT_JOB_CONTROL_RECORD, jcr);
 
         return rr;

@@ -23,7 +23,7 @@ public class JobControlRecord
         unstarted, started, complete, failed, error
     }
 
-    public static final String JOB_CTL = "JobCtl_";
+    public static final String JOB_CTL = "JobCtlRec_";
 
     private final String jobId;
     private State state = unstarted;
@@ -97,7 +97,7 @@ public class JobControlRecord
     @Override
     public String toString()
     {
-        return "JobControlRecord{" +
+        return printNameAndId() + "{" +
                 "jobId='" + jobId + '\'' +
                 ", state=" + state +
                 '}';

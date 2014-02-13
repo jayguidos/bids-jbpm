@@ -14,6 +14,7 @@ import java.io.File;
 
 import com.bids.bpm.facts.model.JobControlRecord;
 import com.bids.bpm.facts.model.WorkDone;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import org.apache.log4j.Logger;
 import org.drools.core.ObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -34,6 +35,8 @@ public class StartJobControlWorkerConfig
 
     public void init(KieSession kieSession)
     {
+        KieSessionBidsFactManager factManager = new KieSessionBidsFactManager(kieSession);
+
         // these are mine
         this.jobCtlId = getStringParameter(IN_JOB_CONTROL_ID, "0000");
         this.restart = getBooleanParameter(IN_JOB_IS_A_RESTART, false);
@@ -45,15 +48,15 @@ public class StartJobControlWorkerConfig
         // if this is a restart we can just reset the state to unstarted and try again
         if ( this.jcrHandle != null )
         {
-            jcr = (JobControlRecord) kieSession.getObject(this.jcrHandle);
+            jcr = factManager.get(this.jcrHandle);
             jcr.setState(JobControlRecord.State.unstarted);
-            kieSession.update(this.jcrHandle, jcr);
+            factManager.update(jcr,this.jcrHandle);
             removeWorkDones(kieSession);
         }
         else
         {
             jcr = new JobControlRecord(this.jobCtlId);
-            this.jcrHandle = kieSession.insert(jcr);
+            this.jcrHandle = factManager.addAndReturnHandle(jcr);
         }
 
         // store the job control record in the process for later use

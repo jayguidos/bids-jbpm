@@ -8,6 +8,14 @@
 
     <!--Allow BidsDay to be stored in a JPA persistence unit-->
 
+    <entity class="com.bids.bpm.facts.model.BidsFact" metadata-complete="true">
+        <attributes>
+            <id name="id">
+                <column name="FACT_ID"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
     <entity class="com.bids.bpm.facts.model.BidsDay" metadata-complete="true">
         <table name="BIDS_DAY">
             <unique-constraint>
@@ -15,10 +23,6 @@
             </unique-constraint>
         </table>
         <attributes>
-            <id name="id">
-                <column name="BIDS_DAY_ID"/>
-                <generated-value strategy="IDENTITY"/>
-            </id>
             <basic name="date">
                 <!--The default column name is an oracle keyword so change it-->
                 <column name="BIDS_DATE_VAL"/>

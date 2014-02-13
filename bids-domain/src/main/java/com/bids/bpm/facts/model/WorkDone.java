@@ -25,8 +25,9 @@ public class WorkDone
     @Override
     public String toString()
     {
-        return "WorkDone{" +
+        return printNameAndId() + "{" +
                 "name='" + getName() + '\'' +
+                "doneTime='" + doneTime + '\'' +
                 '}';
     }
 

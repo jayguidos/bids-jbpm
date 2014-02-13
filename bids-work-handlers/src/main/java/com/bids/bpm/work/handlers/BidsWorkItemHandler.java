@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 
+import com.bids.bpm.work.handlers.fact.FactIDFactory;
+import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
 import com.bids.bpm.work.handlers.worker.BpmnSignalThrower;
 import org.apache.log4j.Logger;
@@ -36,6 +38,17 @@ public abstract class BidsWorkItemHandler
     private AtomicReference<Thread> workerThread = new AtomicReference<Thread>();
     private AtomicReference<BidsWorkItemWorker> worker = new AtomicReference<BidsWorkItemWorker>();
     private SingletonRuntimeManager runtimeManager;
+    private FactIDFactory factIDFactory;
+
+    public FactIDFactory getFactIDFactory()
+    {
+        return factIDFactory;
+    }
+
+    public void setFactIDFactory(FactIDFactory factIDFactory)
+    {
+        this.factIDFactory = factIDFactory;
+    }
 
     protected BidsWorkItemHandler(KieSession kieSession, String errorSignalName, File logBaseDir)
     {
@@ -118,15 +131,19 @@ public abstract class BidsWorkItemHandler
     {
         public void run()
         {
+            BidsWorkItemWorker w = null;
             try
             {
-                BidsWorkItemWorker w = worker.get();
+                w = worker.get();
+                w.setFactManager(new KieSessionBidsFactManager(getKsession()));
                 if (w != null)
                     w.run();
             } finally
             {
                 worker.set(null);
                 workerThread.set(null);
+                if ( w != null )
+                    w.setFactManager(null);
             }
         }
     }

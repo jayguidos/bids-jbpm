@@ -31,7 +31,7 @@ public class TimeBell
     @Override
     public String toString()
     {
-        return TIME_BELL + "{" +
+        return printNameAndId() + "{" +
                 "name='" + name + '\'' +
                 '}';
     }
