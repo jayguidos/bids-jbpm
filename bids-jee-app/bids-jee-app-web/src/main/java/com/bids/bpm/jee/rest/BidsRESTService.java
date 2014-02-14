@@ -20,6 +20,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -77,7 +78,14 @@ public class BidsRESTService
     @Produces(TEXT_PLAIN)
     public String deleteWorkDoneItem(@NotNull @DecimalMin("1") @PathParam("bdId") Long bdId, @NotNull @DecimalMin("1") @PathParam("workId") Long workId)
     {
-        return bdc.deleteWorkDoneItem(bdId,workId);
+        return bdc.deleteWorkDoneItem(bdId, workId);
+    }
+
+    @PUT
+    @Path("/signalBidsdDay/{bdId}/{signalName}")
+    public boolean signal(@NotNull @DecimalMin("1") @PathParam("bdId") Long bdId, @NotNull @NotEmpty @PathParam("signalName") String signalName)
+    {
+        return bdc.signal(bdId,signalName);
     }
 
     @DELETE
@@ -121,6 +129,7 @@ public class BidsRESTService
     {
         return bdc.undeployModule(findBidsDeployment(bdIdString).getId());
     }
+
 
     private BidsDeployment findBidsDeployment(String bdIdStr)
     {

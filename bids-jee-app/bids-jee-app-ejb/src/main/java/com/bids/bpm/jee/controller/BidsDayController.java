@@ -27,6 +27,8 @@ import com.bids.bpm.jee.kie.BidsDeploymentUnit;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
+import static com.bids.bpm.shared.BidsBPMConstants.GLBL_FACT_MANAGER;
+import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
 import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
@@ -43,8 +45,8 @@ public class BidsDayController
     private BidsDayProducer bidsDayProducer;
     @Inject
     private Logger log;
-    @Resource
-    private SessionContext context;
+    @Inject
+    BidsProcessController bpc;
 
     public String deleteWorkDoneItem(Long bdId, Long workId)
     {
@@ -82,13 +84,8 @@ public class BidsDayController
         // add all facts and globals
         KieSession kieSession = kieManager.getRuntimeEngine(unit.getIdentifier()).getKieSession();
         kieSession.insert(bidsDay);
-//        kieSession.setGlobal(GLBL_KSESSION, kieSession);
-//        try
-//        {
-//            kieSession.setGlobal(GLBL_FACT_MANAGER, new KieSessionBidsFactManager(kieSession));
-//        } catch (Exception ignored)
-//        {
-//        }
+        kieSession.setGlobal(GLBL_KSESSION, kieSession);
+        kieSession.setGlobal(GLBL_FACT_MANAGER, new KieSessionBidsFactManager(kieSession));
         kieSession.setGlobal(GLBL_LOG_DIR_HOME, config.getGlobalLogDir().toString());
         kieSession.addEventListener(new DefaultProcessEventListener()
         {
@@ -96,10 +93,11 @@ public class BidsDayController
             public void afterProcessCompleted(ProcessCompletedEvent event)
             {
                 ProcessInstance processInstance = event.getProcessInstance();
-                BidsProcessInvocation process = context.getBusinessObject(BidsProcessController.class).completeProcess(processInstance.getId());
+                BidsProcessInvocation process = bpc.completeProcess(processInstance.getId());
                 log.info("Completed process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
             }
         });
+        kieSession.addEventListener(new BidsDayEventLogger(bidsDay));
 
         // remember our deployment
         BidsDeployment bd = new BidsDeployment();
@@ -132,6 +130,16 @@ public class BidsDayController
         KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
         log.info("Re-deploying BidsModule " + bd);
         kieManager.deployUnit(unit);
+    }
+
+    public boolean signal(Long bdId, String signalName)
+    {
+        BidsDeployment bd = findDeployment(bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not signal. Deployment does not exist: " + bdId);
+        log.info("Sending signal " + signalName + " to BidsDay: " + bd);
+        extractKieSession(bd).signalEvent(signalName, null);
+        return true;
     }
 
     public boolean undeployModule(Long bdId)
