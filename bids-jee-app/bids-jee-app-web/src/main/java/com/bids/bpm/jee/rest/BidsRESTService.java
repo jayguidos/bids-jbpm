@@ -29,9 +29,9 @@ import javax.ws.rs.Produces;
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.controller.BidsDayController;
 import com.bids.bpm.jee.controller.BidsProcessController;
-import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
+import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
 import com.bids.bpm.jee.rest.dto.DeployRequest;
 import com.bids.bpm.jee.rest.dto.StartProcessRequest;
@@ -48,24 +48,42 @@ public class BidsRESTService
 {
 
     @Inject
+    BidsDayController bdc;
+    @Inject
     private BidsProcessController bpc;
 
-    @Inject
-    BidsDayController bdc;
+    @DELETE
+    @Path("/deleteWorkDone/bdId/{bdId}/workId/{workId}")
+    @Produces(TEXT_PLAIN)
+
+    public String deleteWorkDoneItem(
+
+            @NotNull @DecimalMin("1") @PathParam("bdId") Long bdId,
+            @NotNull @DecimalMin("1") @PathParam("workId") Long workId
+
+    )
+    {
+        return bdc.deleteWorkDoneItem(bdId, workId);
+    }
 
     @GET
     @Path("/deployments")
     @Produces(APPLICATION_XML)
     @Wrapped(element = "list", prefix = "deployments")
+
     public List<BidsDeployment> deployments()
     {
         return bpc.getDeployments();
     }
 
     @GET
-    @Path("/dumpFacts/{bdId}")
+    @Path("/dumpFacts/bdId/{bdId}")
     @Produces(APPLICATION_XML)
-    public BidsFactsResponse dumpFacts(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString)
+
+    public BidsFactsResponse dumpFacts
+            (
+                    @NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString
+            )
     {
         BidsDeployment bidsDeployment = findBidsDeployment(bdIdString);
         BidsFactsResponse response = new BidsFactsResponse();
@@ -74,43 +92,50 @@ public class BidsRESTService
         return response;
     }
 
-    @GET
-    @Path("/reportStatus/{bdId}/{history}")
-    @Produces(APPLICATION_XML)
-    public DeployedBidsDayDesc reportStatus(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString, @PathParam("history") boolean withHistory)
-    {
-        return bdc.reportDeploymentActivity(findBidsDeployment(bdIdString).getId(),withHistory);
-    }
-
-    @DELETE
-    @Path("/deleteWorkDone/{bdId}/{workId}")
-    @Produces(TEXT_PLAIN)
-    public String deleteWorkDoneItem(@NotNull @DecimalMin("1") @PathParam("bdId") Long bdId, @NotNull @DecimalMin("1") @PathParam("workId") Long workId)
-    {
-        return bdc.deleteWorkDoneItem(bdId, workId);
-    }
-
-    @PUT
-    @Path("/signalBidsdDay/{bdId}/{signalName}")
-    public boolean signal(@NotNull @DecimalMin("1") @PathParam("bdId") Long bdId, @NotNull @NotEmpty @PathParam("signalName") String signalName)
-    {
-        return bdc.signal(bdId,signalName);
-    }
-
     @DELETE
     @Path("/killProcess")
     @Produces(APPLICATION_XML)
     @Consumes(TEXT_PLAIN)
-    public BidsProcessInvocation killProcess(@NotNull @DecimalMin("1") Long bidsProcessId)
+
+    public BidsProcessInvocation killProcess
+            (
+                    @NotNull @DecimalMin("1") Long bidsProcessId
+            )
     {
         return bpc.killProcess(bidsProcessId);
+    }
+
+    @GET
+    @Path("/reportStatus/bdId/{bdId}/history/{history}")
+    @Produces(APPLICATION_XML)
+    public DeployedBidsDayDesc reportStatus
+            (
+                    @NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString,
+                    @PathParam("history") boolean withHistory
+            )
+    {
+        return bdc.reportDeploymentActivity(findBidsDeployment(bdIdString).getId(), withHistory);
+    }
+
+    @PUT
+    @Path("/signalBidsdDay/bdId/{bdId}/signalName/{signalName}")
+    public boolean signal
+            (
+                    @NotNull @DecimalMin("1") @PathParam("bdId") Long bdId,
+                    @NotNull @NotEmpty @PathParam("signalName") String signalName
+            )
+    {
+        return bdc.signal(bdId, signalName);
     }
 
     @POST
     @Path("/startDay")
     @Produces(APPLICATION_XML)
     @Consumes(APPLICATION_XML)
-    public BidsDeployment startDay(@Valid DeployRequest deploy)
+    public BidsDeployment startDay
+            (
+                    @Valid DeployRequest deploy
+            )
     {
         return bdc.deployModule(new BidsDay(deploy.getBidsDate()), deploy.getArtifactId(), deploy.getVersion());
     }
@@ -119,7 +144,10 @@ public class BidsRESTService
     @Path("/startProcess")
     @Produces(APPLICATION_XML)
     @Consumes(APPLICATION_XML)
-    public BidsProcessInvocation startProcess(@Valid StartProcessRequest sp)
+    public BidsProcessInvocation startProcess
+            (
+                    @Valid StartProcessRequest sp
+            )
     {
         // step 1 - create an invocation record in the DB - this is a separate transaction.
         BidsProcessInvocation processInvocation = bpc.createProcessInvocation(findBidsDeployment(sp.getDeploymentId()).getId(), sp.getKieProcessId());
@@ -134,7 +162,10 @@ public class BidsRESTService
     @Path("/stopDay")
     @Produces(TEXT_PLAIN)
     @Consumes(TEXT_PLAIN)
-    public boolean stopDay(@NotNull @NotEmpty @DecimalMin("1") String bdIdString)
+    public boolean stopDay
+            (
+                    @NotNull @NotEmpty @DecimalMin("1") String bdIdString
+            )
     {
         return bdc.undeployModule(findBidsDeployment(bdIdString).getId());
     }

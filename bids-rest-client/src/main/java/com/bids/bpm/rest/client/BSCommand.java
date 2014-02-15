@@ -67,7 +67,7 @@ public abstract class BSCommand<T>
         // are in the form of [URI]/{Pname1}/{Pname2}... and will be substituted
         // during the HTTP call
         for (String p : params)
-            uri.append("/{").append(p).append("}");
+            uri.append("/").append(p).append("/{").append(p).append("}");
         return uri.toString();
     }
 
