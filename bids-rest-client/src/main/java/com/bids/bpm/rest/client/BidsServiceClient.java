@@ -18,6 +18,7 @@ import com.bids.bpm.rest.client.cmds.DeleteWorkDoneCmd;
 import com.bids.bpm.rest.client.cmds.DumpFactsCmd;
 import com.bids.bpm.rest.client.cmds.GetDeploymentsCmd;
 import com.bids.bpm.rest.client.cmds.KillProcessCmd;
+import com.bids.bpm.rest.client.cmds.ReportStatusCmd;
 import com.bids.bpm.rest.client.cmds.SignalBidsDayCmd;
 import com.bids.bpm.rest.client.cmds.StartDayCmd;
 import com.bids.bpm.rest.client.cmds.StartProcess;
@@ -88,6 +89,7 @@ public class BidsServiceClient
         cmds.put(StopDayCmd.NAME, new StopDayCmd(clientFactory,uriTemplate));
         cmds.put(StartProcess.NAME, new StartProcess(clientFactory,uriTemplate));
         cmds.put(DumpFactsCmd.NAME, new DumpFactsCmd(clientFactory,uriTemplate));
+        cmds.put(ReportStatusCmd.NAME, new ReportStatusCmd(clientFactory,uriTemplate));
         cmds.put(DeleteWorkDoneCmd.NAME, new DeleteWorkDoneCmd(clientFactory,uriTemplate));
         cmds.put(KillProcessCmd.NAME, new KillProcessCmd(clientFactory,uriTemplate));
         cmds.put(SignalBidsDayCmd.NAME, new SignalBidsDayCmd(clientFactory,uriTemplate));

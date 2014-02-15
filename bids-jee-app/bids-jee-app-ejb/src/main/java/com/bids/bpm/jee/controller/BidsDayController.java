@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,7 +21,10 @@ import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.facts.model.BidsFact;
 import com.bids.bpm.facts.model.WorkDone;
 import com.bids.bpm.jee.data.BidsDayProducer;
+import com.bids.bpm.jee.kie.BidsDayActivityReporter;
+import com.bids.bpm.jee.kie.BidsDayEventLogger;
 import com.bids.bpm.jee.kie.BidsDeploymentUnit;
+import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
@@ -158,5 +159,13 @@ public class BidsDayController
         return true;
     }
 
+    public DeployedBidsDayDesc reportDeploymentActivity(Long bdId, boolean withHistory)
+    {
+        BidsDeployment bd = findDeployment(bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not report on activity. Deployment does not exist: " + bdId);
+        return new BidsDayActivityReporter(kieManager.getRuntimeDataService(),withHistory).reportActivity(bd);
+    }
 }
+
 

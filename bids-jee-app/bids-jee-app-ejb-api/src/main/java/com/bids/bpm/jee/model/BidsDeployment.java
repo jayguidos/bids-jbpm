@@ -35,6 +35,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import org.hibernate.validator.constraints.NotEmpty;
 
 // JPA Annotations
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(uniqueConstraints =
                {

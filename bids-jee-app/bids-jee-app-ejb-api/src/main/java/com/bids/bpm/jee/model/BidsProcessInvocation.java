@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import static javax.persistence.GenerationType.IDENTITY;
 
 // JPA Annotations
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(uniqueConstraints =
                {

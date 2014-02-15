@@ -99,7 +99,7 @@ public abstract class BSCommand<T>
             return jaxbHelper.marshallIntoXML(result);
         } catch (Exception e)
         {
-            log.error("Could not marshall as XML: " + result);
+            log.error("Could not marshall as XML: " + result, e);
             return "ERROR";
         }
     }

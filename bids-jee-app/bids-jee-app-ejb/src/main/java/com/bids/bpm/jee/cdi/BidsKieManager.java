@@ -98,4 +98,9 @@ public class BidsKieManager
         // this presumes a Singleton, as per-session lookups require a context
         return getRuntimeManager(deploymentId).getRuntimeEngine(EmptyContext.get());
     }
+
+    public RuntimeDataService getRuntimeDataService()
+    {
+        return runtimeDataService;
+    }
 }

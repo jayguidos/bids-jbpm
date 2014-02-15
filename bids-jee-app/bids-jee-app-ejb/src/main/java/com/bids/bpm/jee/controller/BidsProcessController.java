@@ -97,10 +97,6 @@ public class BidsProcessController
         log.info("Started process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + bd);
     }
 
-    public void getActiveProcesses()
-    {
-    }
-
     private BidsProcessInvocation bidsProcessFromKieProcessInstance(long kieProcessInstanceId)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();

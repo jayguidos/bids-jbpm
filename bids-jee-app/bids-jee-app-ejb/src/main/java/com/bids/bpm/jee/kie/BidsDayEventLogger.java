@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.jee.controller;
+package com.bids.bpm.jee.kie;
 
 import java.util.logging.Logger;
 

@@ -29,6 +29,7 @@ import javax.ws.rs.Produces;
 import com.bids.bpm.facts.model.BidsDay;
 import com.bids.bpm.jee.controller.BidsDayController;
 import com.bids.bpm.jee.controller.BidsProcessController;
+import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
 import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
@@ -71,6 +72,14 @@ public class BidsRESTService
         response.setBidsDeploymentId(bidsDeployment.getId());
         response.setFacts(bdc.dumpAllFacts(bidsDeployment.getId()));
         return response;
+    }
+
+    @GET
+    @Path("/reportStatus/{bdId}/{history}")
+    @Produces(APPLICATION_XML)
+    public DeployedBidsDayDesc reportStatus(@NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString, @PathParam("history") boolean withHistory)
+    {
+        return bdc.reportDeploymentActivity(findBidsDeployment(bdIdString).getId(),withHistory);
     }
 
     @DELETE
