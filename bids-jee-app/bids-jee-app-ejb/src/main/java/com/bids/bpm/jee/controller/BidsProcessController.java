@@ -20,8 +20,10 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 
+import com.bids.bpm.jee.kie.BidsDayActivityReporter;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
+import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -87,6 +89,14 @@ public class BidsProcessController
 
         process.getDeployment().completeProcess(process);
         return process;
+    }
+
+    public DeployedBidsDayDesc reportProcessActivity(Long bdId, String processId, boolean withHistory)
+    {
+        BidsDeployment bd = findDeployment(bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not report on process activity. Deployment does not exist: " + bdId);
+        return new BidsDayActivityReporter(kieManager.getRuntimeDataService(), withHistory).reportProcessActivity(bd, processId);
     }
 
     public void startProcess(BidsProcessInvocation processInvocation)

@@ -9,12 +9,13 @@
 
 package com.bids.bpm.jee.kie;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 
-import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.model.BidsDeployment;
+import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.model.DeployedProcessActivity;
 import com.bids.bpm.jee.model.DeployedProcessDesc;
 import com.bids.bpm.jee.model.DeployedProcessNodeActivity;
@@ -36,16 +37,28 @@ public class BidsDayActivityReporter
         this.withHistory = withHistory;
     }
 
-    public DeployedBidsDayDesc reportActivity(BidsDeployment bd)
+    public DeployedBidsDayDesc reportDeploymentActivity(BidsDeployment bd)
     {
-        Collection<ProcessAssetDesc> processes = rds.getProcessesByDeploymentId(bd.getDeployIdentifier());
         DeployedBidsDayDesc dd = new DeployedBidsDayDesc(bd);
-        for (ProcessAssetDesc pd : processes)
-            addProcessAssets(dd, pd);
+        addAllProcessAssets(dd, rds.getProcessesByDeploymentId(bd.getDeployIdentifier()));
         return dd;
     }
 
-    protected void addProcessAssets(DeployedBidsDayDesc dd,ProcessAssetDesc p)
+    public DeployedBidsDayDesc reportProcessActivity(BidsDeployment bd, String processId)
+    {
+        DeployedBidsDayDesc dd = new DeployedBidsDayDesc(bd);
+        List<ProcessAssetDesc> descs = Arrays.asList(rds.getProcessesByDeploymentIdProcessId(bd.getDeployIdentifier(), processId));
+        addAllProcessAssets(dd, descs);
+        return dd;
+    }
+
+    protected void addAllProcessAssets(DeployedBidsDayDesc dd, Collection<ProcessAssetDesc> processes)
+    {
+        for (ProcessAssetDesc pad : processes)
+            addProcessAssets(dd, pad);
+    }
+
+    protected void addProcessAssets(DeployedBidsDayDesc dd, ProcessAssetDesc p)
     {
         DeployedProcessDesc dp = new DeployedProcessDesc(p.getId());
         dd.addProcess(dp);
@@ -58,11 +71,11 @@ public class BidsDayActivityReporter
         DeployedProcessActivity dpa = new DeployedProcessActivity(pid.getId(), pid.getState(), pid.getDataTimeStamp());
         String deploymentId = dp.getBidsDay().getDeploymentId();
         Collection<NodeInstanceDesc> nodeHistory;
-        if ( withHistory )
-            nodeHistory = rds.getProcessInstanceFullHistory(deploymentId,pid.getId());
+        if (withHistory)
+            nodeHistory = rds.getProcessInstanceFullHistory(deploymentId, pid.getId());
         else
             nodeHistory = rds.getProcessInstanceActiveNodes(deploymentId, pid.getId());
-        for ( NodeInstanceDesc nid : nodeHistory)
+        for (NodeInstanceDesc nid : nodeHistory)
             dpa.add(new DeployedProcessNodeActivity(
                     dpa,
                     nid.getId(),

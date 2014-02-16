@@ -10,24 +10,24 @@
 package com.bids.bpm.rest.client.cmds;
 
 import com.bids.bpm.jee.model.DeployedBidsDayDesc;
-import com.bids.bpm.jee.rest.dto.BidsFactsResponse;
 import com.bids.bpm.rest.client.BSCommand;
 import static com.bids.bpm.rest.client.BSCommand.CommandType.get;
 import com.bids.bpm.rest.client.RestEasyClientFactory;
 
-public class ReportStatusCmd
+public class ReportProcessStatusCmd
         extends BSCommand<DeployedBidsDayDesc>
 {
 
-    public static final String NAME = "reportStatus";
+    public static final String NAME = "reportProcessStatus";
     public static final String DEPLOYMENT_ID = "bdId";
+    public static final String PROCESS_ID = "processId";
     public static final String USE_HISTORY = "history";
 
-    public ReportStatusCmd(RestEasyClientFactory clientFactory, String uriTemplate)
+    public ReportProcessStatusCmd(RestEasyClientFactory clientFactory, String uriTemplate)
     {
         super(
                 NAME,
-                clientFactory.makeRequest(assembleUri(uriTemplate, NAME, new String[] {DEPLOYMENT_ID,USE_HISTORY} )),
+                clientFactory.makeRequest(assembleUri(uriTemplate, NAME, new String[]{DEPLOYMENT_ID, PROCESS_ID, USE_HISTORY})),
                 get,
                 DeployedBidsDayDesc.class
         );
@@ -49,18 +49,14 @@ public class ReportStatusCmd
     protected void prepareRequest(String[] args)
             throws Exception
     {
-        if (args.length == 1)
+        if (args.length == 3)
         {
             request.pathParameter(DEPLOYMENT_ID, args[0]);
-            request.pathParameter(USE_HISTORY, false);
-        }
-        else if ( args.length == 2 )
-        {
-            request.pathParameter(DEPLOYMENT_ID, args[0]);
-            request.pathParameter(USE_HISTORY, args[1]);
+            request.pathParameter(PROCESS_ID, args[1]);
+            request.pathParameter(USE_HISTORY, args[2]);
         }
         else
-            throw new RuntimeException("expected 1 or 2 args: deploymentId [true|false] where you use true to get full process execution history");
+            throw new RuntimeException("expected 3 args: deploymentId processId [true|false] where you use true to get full process execution history");
     }
 
 }

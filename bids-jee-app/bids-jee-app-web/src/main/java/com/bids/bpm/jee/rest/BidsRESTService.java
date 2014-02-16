@@ -106,15 +106,28 @@ public class BidsRESTService
     }
 
     @GET
-    @Path("/reportStatus/bdId/{bdId}/history/{history}")
+    @Path("/reportDeploymentStatus/bdId/{bdId}/history/{history}")
     @Produces(APPLICATION_XML)
-    public DeployedBidsDayDesc reportStatus
+    public DeployedBidsDayDesc reportDeploymentStatus
             (
                     @NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString,
                     @PathParam("history") boolean withHistory
             )
     {
         return bdc.reportDeploymentActivity(findBidsDeployment(bdIdString).getId(), withHistory);
+    }
+
+    @GET
+    @Path("/reportProcessStatus/bdId/{bdId}/processId/{processId}/history/{history}")
+    @Produces(APPLICATION_XML)
+    public DeployedBidsDayDesc reportProcessStatus
+            (
+                    @NotNull @NotEmpty @DecimalMin("1") @PathParam("bdId") String bdIdString,
+                    @NotNull @NotEmpty @PathParam("processId") String processId,
+                    @PathParam("history") boolean withHistory
+            )
+    {
+        return bpc.reportProcessActivity(findBidsDeployment(bdIdString).getId(), processId, withHistory);
     }
 
     @PUT

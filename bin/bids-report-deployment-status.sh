@@ -8,4 +8,4 @@ useHistory="$2"
 #
 #  Main
 #
-runRestCmd andi '' reportStatus $deploymentId $useHistory
+runRestCmd andi '' reportDeploymentStatus $deploymentId $useHistory

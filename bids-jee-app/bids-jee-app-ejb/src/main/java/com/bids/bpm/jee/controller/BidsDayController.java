@@ -164,7 +164,7 @@ public class BidsDayController
         BidsDeployment bd = findDeployment(bdId);
         if (bd == null)
             throw new RuntimeException("Could not report on activity. Deployment does not exist: " + bdId);
-        return new BidsDayActivityReporter(kieManager.getRuntimeDataService(),withHistory).reportActivity(bd);
+        return new BidsDayActivityReporter(kieManager.getRuntimeDataService(),withHistory).reportDeploymentActivity(bd);
     }
 }
 
