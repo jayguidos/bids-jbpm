@@ -78,6 +78,24 @@ import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
   ],
 
  [
+     "name" : "SQLScript",
+        "parameters" : [
+           "SQLFileName" : new StringDataType(),
+           "SQLFileArgs" : new StringDataType(),
+           "WorkDoneName" : new StringDataType(),
+           "SignalOnError" : new BooleanDataType(),
+           "LogOutputToConsole" : new BooleanDataType()
+     ],
+     "results" : [
+         "ReturnCode" : new IntegerDataType(),
+         "StdOut" : new StringDataType(),
+         "StdErr" : new StringDataType()
+     ],
+     "displayName" : "SQL Script",
+     "icon" : "defaultservicenodeicon.png"
+  ],
+
+ [
      "name" : "StartJob",
         "parameters" : [
            "JobId" : new StringDataType(),
