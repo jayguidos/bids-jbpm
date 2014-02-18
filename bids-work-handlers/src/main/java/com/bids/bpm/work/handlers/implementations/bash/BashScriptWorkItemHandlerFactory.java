@@ -7,12 +7,12 @@
  *
  */
 
-package com.bids.bpm.work.handlers.bash;
+package com.bids.bpm.work.handlers.implementations.bash;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
+import com.bids.bpm.work.handlers.support.AbstractBidsWorkItemHandlerFactoryImpl;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 
 public class BashScriptWorkItemHandlerFactory

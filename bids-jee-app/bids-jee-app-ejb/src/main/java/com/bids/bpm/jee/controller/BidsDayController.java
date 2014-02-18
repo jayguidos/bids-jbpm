@@ -31,7 +31,7 @@ import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_FACT_MANAGER;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_LOG_DIR_HOME;
-import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
+import com.bids.bpm.work.handlers.support.fact.KieSessionBidsFactManager;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;

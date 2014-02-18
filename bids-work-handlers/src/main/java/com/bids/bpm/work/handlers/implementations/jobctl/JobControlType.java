@@ -2,14 +2,14 @@
  * ===========================================================================
  *    Copyright 2012 BIDS Holdings L.P. All rights reserved.
  * ---------------------------------------------------------------------------
- * Created on 10/31/13
+ * Created on 2/3/14
  * By bidsjagu
  *
  */
 
-package com.bids.bpm.work.handlers;
+package com.bids.bpm.work.handlers.implementations.jobctl;
 
-public interface BidsWorkItemHandlerFactory<T extends BidsWorkItemHandler>
+public enum JobControlType
 {
-    T makeWorkItem();
+    startJob, endJob,
 }

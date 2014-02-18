@@ -7,12 +7,12 @@
  *
  */
 
-package com.bids.bpm.work.handlers.bash.worker;
+package com.bids.bpm.work.handlers.implementations.bash.worker;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.worker.BidsWorkItemWorkerConfig;
+import com.bids.bpm.work.handlers.support.worker.BidsWorkItemWorkerConfig;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 

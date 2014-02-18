@@ -18,9 +18,9 @@ import javax.inject.Inject;
 import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_JOB_CONTROL_END_ITEM_HANDLER;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_JOB_CONTROL_START_ITEM_HANDLER;
-import static com.bids.bpm.work.handlers.jobctl.JobControlType.endJob;
-import static com.bids.bpm.work.handlers.jobctl.JobControlType.startJob;
-import com.bids.bpm.work.handlers.jobctl.JobControlWorkItemHandlerFactory;
+import static com.bids.bpm.work.handlers.implementations.jobctl.JobControlType.endJob;
+import static com.bids.bpm.work.handlers.implementations.jobctl.JobControlType.startJob;
+import com.bids.bpm.work.handlers.implementations.jobctl.JobControlWorkItemHandlerFactory;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 

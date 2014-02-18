@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.work.handlers.bash.worker;
+package com.bids.bpm.work.handlers.implementations.bash.worker;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,13 +16,13 @@ import java.io.PrintWriter;
 
 
 import com.bids.bpm.facts.model.WorkDone;
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
-import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandler;
-import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
+import com.bids.bpm.work.handlers.support.BidsWorkItemHandlerResults;
+import com.bids.bpm.work.handlers.implementations.bash.BashScriptWorkItemHandler;
+import com.bids.bpm.work.handlers.support.worker.AbstractBidsWorkItemWorker;
 import org.apache.log4j.Logger;
 
 public class BashScriptWorker
-        extends BidsWorkItemWorker
+        extends AbstractBidsWorkItemWorker
 {
     private final BashScriptWorkerConfig config;
     private static final Logger log = Logger.getLogger(BashScriptWorker.class);

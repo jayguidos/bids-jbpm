@@ -7,17 +7,17 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl;
+package com.bids.bpm.work.handlers.implementations.jobctl;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandler;
-import com.bids.bpm.work.handlers.jobctl.worker.EndJobControlWorkerConfig;
-import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorker;
-import com.bids.bpm.work.handlers.jobctl.worker.JobControlWorkerConfig;
-import com.bids.bpm.work.handlers.jobctl.worker.StartJobControlWorkerConfig;
-import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
+import com.bids.bpm.work.handlers.implementations.bash.BashScriptWorkItemHandler;
+import com.bids.bpm.work.handlers.implementations.jobctl.worker.EndJobControlWorkerConfig;
+import com.bids.bpm.work.handlers.implementations.jobctl.worker.JobControlWorker;
+import com.bids.bpm.work.handlers.implementations.jobctl.worker.JobControlWorkerConfig;
+import com.bids.bpm.work.handlers.implementations.jobctl.worker.StartJobControlWorkerConfig;
+import com.bids.bpm.work.handlers.support.worker.AbstractBidsWorkItemWorker;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
@@ -45,7 +45,7 @@ public class JobControlWorkItemHandler
     }
 
     @Override
-    protected BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
+    protected AbstractBidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
     {
         // just call the job control script here
         JobControlWorkerConfig config;

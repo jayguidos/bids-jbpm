@@ -7,17 +7,17 @@
  *
  */
 
-package com.bids.bpm.work.handlers;
+package com.bids.bpm.work.handlers.support;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.fact.FactIDFactory;
+import com.bids.bpm.work.handlers.support.fact.FactIDFactory;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
-public abstract class AbstractBidsWorkItemHandlerFactoryImpl<T extends BidsWorkItemHandler>
+public abstract class AbstractBidsWorkItemHandlerFactoryImpl<T extends AbstractBidsWorkItemHandler>
         implements BidsWorkItemHandlerFactory<T>
 {
 

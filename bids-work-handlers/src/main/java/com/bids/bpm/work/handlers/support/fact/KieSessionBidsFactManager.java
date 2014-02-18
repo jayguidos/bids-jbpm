@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.work.handlers.fact;
+package com.bids.bpm.work.handlers.support.fact;
 
 import java.util.Collection;
 

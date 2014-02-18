@@ -7,7 +7,7 @@
  * ===========================================================================
  */
 
-package com.bids.bpm.work.handlers.bash.worker;
+package com.bids.bpm.work.handlers.implementations.bash.worker;
 
 import java.io.BufferedReader;
 import java.io.IOException;

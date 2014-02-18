@@ -7,14 +7,14 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl.worker;
+package com.bids.bpm.work.handlers.implementations.jobctl.worker;
 
 import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
 import com.bids.bpm.facts.model.WorkDone;
-import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
+import com.bids.bpm.work.handlers.support.fact.KieSessionBidsFactManager;
 import org.apache.log4j.Logger;
 import org.drools.core.ObjectFilter;
 import org.kie.api.runtime.KieSession;

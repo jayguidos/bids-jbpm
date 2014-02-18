@@ -7,12 +7,12 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl.worker;
+package com.bids.bpm.work.handlers.implementations.jobctl.worker;
 
 import com.bids.bpm.facts.model.JobControlRecord;
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
-import com.bids.bpm.work.handlers.bash.worker.BashScriptWorker;
-import com.bids.bpm.work.handlers.jobctl.JobControlWorkItemHandler;
+import com.bids.bpm.work.handlers.support.BidsWorkItemHandlerResults;
+import com.bids.bpm.work.handlers.implementations.bash.worker.BashScriptWorker;
+import com.bids.bpm.work.handlers.implementations.jobctl.JobControlWorkItemHandler;
 import org.apache.log4j.Logger;
 
 public class JobControlWorker

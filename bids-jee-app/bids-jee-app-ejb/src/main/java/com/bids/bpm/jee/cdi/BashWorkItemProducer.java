@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 import com.bids.bpm.jee.util.BidsJBPMConfiguration;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_BASH_WORK_ITEM_HANDLER;
-import com.bids.bpm.work.handlers.bash.BashScriptWorkItemHandlerFactory;
+import com.bids.bpm.work.handlers.implementations.bash.BashScriptWorkItemHandlerFactory;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 

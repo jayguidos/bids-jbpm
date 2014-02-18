@@ -7,12 +7,12 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl;
+package com.bids.bpm.work.handlers.implementations.jobctl;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.AbstractBidsWorkItemHandlerFactoryImpl;
+import com.bids.bpm.work.handlers.support.AbstractBidsWorkItemHandlerFactoryImpl;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 
 public class JobControlWorkItemHandlerFactory

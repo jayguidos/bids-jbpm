@@ -7,16 +7,16 @@
  *
  */
 
-package com.bids.bpm.work.handlers;
+package com.bids.bpm.work.handlers.support;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-import com.bids.bpm.work.handlers.fact.FactIDFactory;
-import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
-import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
-import com.bids.bpm.work.handlers.worker.BpmnSignalThrower;
+import com.bids.bpm.work.handlers.support.fact.FactIDFactory;
+import com.bids.bpm.work.handlers.support.fact.KieSessionBidsFactManager;
+import com.bids.bpm.work.handlers.support.worker.AbstractBidsWorkItemWorker;
+import com.bids.bpm.work.handlers.support.worker.BpmnSignalThrower;
 import org.apache.log4j.Logger;
 import org.jbpm.process.workitem.AbstractWorkItemHandler;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
@@ -27,16 +27,16 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
-public abstract class BidsWorkItemHandler
+public abstract class AbstractBidsWorkItemHandler
         extends AbstractWorkItemHandler
 {
     public static final String THREAD_NAME_PREFIX = "BidsWorkItemWorkerThread-";
-    private static final Logger log = Logger.getLogger(BidsWorkItemHandler.class);
+    private static final Logger log = Logger.getLogger(AbstractBidsWorkItemHandler.class);
     private static int threadCounter = 1;
     private final String errorSignalName;
     private final File logBaseDir;
     private AtomicReference<Thread> workerThread = new AtomicReference<Thread>();
-    private AtomicReference<BidsWorkItemWorker> worker = new AtomicReference<BidsWorkItemWorker>();
+    private AtomicReference<AbstractBidsWorkItemWorker> worker = new AtomicReference<AbstractBidsWorkItemWorker>();
     private SingletonRuntimeManager runtimeManager;
     private FactIDFactory factIDFactory;
 
@@ -50,7 +50,7 @@ public abstract class BidsWorkItemHandler
         this.factIDFactory = factIDFactory;
     }
 
-    protected BidsWorkItemHandler(KieSession kieSession, String errorSignalName, File logBaseDir)
+    protected AbstractBidsWorkItemHandler(KieSession kieSession, String errorSignalName, File logBaseDir)
     {
         super((StatefulKnowledgeSession) kieSession);
         this.errorSignalName = errorSignalName;
@@ -59,7 +59,7 @@ public abstract class BidsWorkItemHandler
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager)
     {
-        BidsWorkItemWorker w = worker.get();
+        AbstractBidsWorkItemWorker w = worker.get();
         if (w != null)
             log.warn("Aborting work item: " + w.getConfig().getWorkItem());
         Thread t = workerThread.getAndSet(null);
@@ -83,7 +83,7 @@ public abstract class BidsWorkItemHandler
         // be sure to catch exceptions on this thread if something happens while I am building the worker
         try
         {
-            BidsWorkItemWorker w = makeWorkItemWorker(workItem);
+            AbstractBidsWorkItemWorker w = makeWorkItemWorker(workItem);
             w.setSignalThrower(signalThrower);
             w.setKieSession(getSession());
             this.worker.set(w);
@@ -96,7 +96,7 @@ public abstract class BidsWorkItemHandler
                 throw new RuntimeException(e);
         }
 
-        // exceptions on the worker thread will be caught by instances of BidsWorkItemWorker,
+        // exceptions on the worker thread will be caught by instances of AbstractBidsWorkItemWorker,
         // and InterruptedExceptions are allowed to propagate
         workerThread.set(new Thread(new WorkerRunner(), THREAD_NAME_PREFIX + (threadCounter++)));
         workerThread.get().start();
@@ -124,14 +124,14 @@ public abstract class BidsWorkItemHandler
         return logBaseDir;
     }
 
-    protected abstract BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem);
+    protected abstract AbstractBidsWorkItemWorker makeWorkItemWorker(WorkItem workItem);
 
     private class WorkerRunner
             implements Runnable
     {
         public void run()
         {
-            BidsWorkItemWorker w = null;
+            AbstractBidsWorkItemWorker w = null;
             try
             {
                 w = worker.get();

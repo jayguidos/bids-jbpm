@@ -7,24 +7,24 @@
  *
  */
 
-package com.bids.bpm.work.handlers.worker;
+package com.bids.bpm.work.handlers.support.worker;
 
 import com.bids.bpm.facts.model.WorkDone;
-import com.bids.bpm.work.handlers.BidsWorkItemHandlerResults;
-import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
+import com.bids.bpm.work.handlers.support.BidsWorkItemHandlerResults;
+import com.bids.bpm.work.handlers.support.fact.KieSessionBidsFactManager;
 import org.apache.log4j.Logger;
 import org.kie.api.runtime.KieSession;
 
-public abstract class BidsWorkItemWorker
+public abstract class AbstractBidsWorkItemWorker
         implements Runnable
 {
-    private static final Logger log = Logger.getLogger(BidsWorkItemWorker.class);
+    private static final Logger log = Logger.getLogger(AbstractBidsWorkItemWorker.class);
     private final BidsWorkItemWorkerConfig config;
     protected KieSession kieSession;
     protected KieSessionBidsFactManager factManager;
     private BpmnSignalThrower signalThrower;
 
-    public BidsWorkItemWorker(BidsWorkItemWorkerConfig config)
+    public AbstractBidsWorkItemWorker(BidsWorkItemWorkerConfig config)
     {
         this.config = config;
     }

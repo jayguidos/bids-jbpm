@@ -7,21 +7,21 @@
  *
  */
 
-package com.bids.bpm.work.handlers.bash;
+package com.bids.bpm.work.handlers.implementations.bash;
 
 import java.io.File;
 
 
-import com.bids.bpm.work.handlers.BidsWorkItemHandler;
-import com.bids.bpm.work.handlers.bash.worker.BashScriptWorker;
-import com.bids.bpm.work.handlers.bash.worker.BashScriptWorkerConfig;
-import com.bids.bpm.work.handlers.worker.BidsWorkItemWorker;
+import com.bids.bpm.work.handlers.implementations.bash.worker.BashScriptWorker;
+import com.bids.bpm.work.handlers.implementations.bash.worker.BashScriptWorkerConfig;
+import com.bids.bpm.work.handlers.support.AbstractBidsWorkItemHandler;
+import com.bids.bpm.work.handlers.support.worker.AbstractBidsWorkItemWorker;
 import org.apache.log4j.Logger;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
 public class BashScriptWorkItemHandler
-        extends BidsWorkItemHandler
+        extends AbstractBidsWorkItemHandler
 {
 
     public static final String OUT_STD_OUT = "StdOut";
@@ -32,7 +32,7 @@ public class BashScriptWorkItemHandler
 
     public BashScriptWorkItemHandler(KieSession kieSession, File baseLogDir)
     {
-        this(kieSession, BASH_SCRIPT_ERROR_SIGNAL,baseLogDir);
+        this(kieSession, BASH_SCRIPT_ERROR_SIGNAL, baseLogDir);
     }
 
     public BashScriptWorkItemHandler(KieSession kieSession, String errorSignalName, File baseLogDir)
@@ -51,9 +51,9 @@ public class BashScriptWorkItemHandler
     }
 
     @Override
-    protected BidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
+    protected AbstractBidsWorkItemWorker makeWorkItemWorker(WorkItem workItem)
     {
-        BashScriptWorkerConfig config = new BashScriptWorkerConfig(this.targetHost,workItem,getLogBaseDir());
+        BashScriptWorkerConfig config = new BashScriptWorkerConfig(this.targetHost, workItem, getLogBaseDir());
         config.init(getKsession());
         return new BashScriptWorker(config);
     }

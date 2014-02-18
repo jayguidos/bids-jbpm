@@ -7,13 +7,13 @@
  *
  */
 
-package com.bids.bpm.work.handlers.jobctl.worker;
+package com.bids.bpm.work.handlers.implementations.jobctl.worker;
 
 import java.io.File;
 
 
 import com.bids.bpm.facts.model.JobControlRecord;
-import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
+import com.bids.bpm.work.handlers.support.fact.KieSessionBidsFactManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 

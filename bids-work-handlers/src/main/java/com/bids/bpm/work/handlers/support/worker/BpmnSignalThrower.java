@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.work.handlers.worker;
+package com.bids.bpm.work.handlers.support.worker;
 
 import org.apache.log4j.Logger;
 import org.jbpm.process.workitem.AbstractWorkItemHandler;

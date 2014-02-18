@@ -7,13 +7,13 @@
  *
  */
 
-package com.bids.bpm.work.handlers.worker;
+package com.bids.bpm.work.handlers.support.worker;
 
 import java.io.File;
 
 
 import com.bids.bpm.facts.model.BidsDay;
-import com.bids.bpm.work.handlers.fact.KieSessionBidsFactManager;
+import com.bids.bpm.work.handlers.support.fact.KieSessionBidsFactManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;

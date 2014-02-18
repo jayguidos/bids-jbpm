@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.work.handlers;
+package com.bids.bpm.work.handlers.support;
 
 import java.util.HashMap;
 
