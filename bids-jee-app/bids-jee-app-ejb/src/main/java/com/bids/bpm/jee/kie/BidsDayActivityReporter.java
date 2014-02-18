@@ -47,8 +47,9 @@ public class BidsDayActivityReporter
     public DeployedBidsDayDesc reportProcessActivity(BidsDeployment bd, String processId)
     {
         DeployedBidsDayDesc dd = new DeployedBidsDayDesc(bd);
-        List<ProcessAssetDesc> descs = Arrays.asList(rds.getProcessesByDeploymentIdProcessId(bd.getDeployIdentifier(), processId));
-        addAllProcessAssets(dd, descs);
+        ProcessAssetDesc processAssetDesc = rds.getProcessesByDeploymentIdProcessId(bd.getDeployIdentifier(), processId);
+        if (processAssetDesc != null)
+            addAllProcessAssets(dd, Arrays.asList(processAssetDesc));
         return dd;
     }
 

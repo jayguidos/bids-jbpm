@@ -24,9 +24,9 @@ import com.bids.bpm.jee.data.BidsDayProducer;
 import com.bids.bpm.jee.kie.BidsDayActivityReporter;
 import com.bids.bpm.jee.kie.BidsDayEventLogger;
 import com.bids.bpm.jee.kie.BidsDeploymentUnit;
-import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import com.bids.bpm.jee.model.BidsDeployment;
 import com.bids.bpm.jee.model.BidsProcessInvocation;
+import com.bids.bpm.jee.model.DeployedBidsDayDesc;
 import static com.bids.bpm.shared.BidsBPMConstants.BIDS_MAVEN_GROUP;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_FACT_MANAGER;
 import static com.bids.bpm.shared.BidsBPMConstants.GLBL_KSESSION;
@@ -43,11 +43,11 @@ public class BidsDayController
         extends BidsController
 {
     @Inject
+    BidsProcessController bpc;
+    @Inject
     private BidsDayProducer bidsDayProducer;
     @Inject
     private Logger log;
-    @Inject
-    BidsProcessController bpc;
 
     public String deleteWorkDoneItem(Long bdId, Long workId)
     {
@@ -88,17 +88,9 @@ public class BidsDayController
         kieSession.setGlobal(GLBL_KSESSION, kieSession);
         kieSession.setGlobal(GLBL_FACT_MANAGER, new KieSessionBidsFactManager(kieSession));
         kieSession.setGlobal(GLBL_LOG_DIR_HOME, config.getGlobalLogDir().toString());
-        kieSession.addEventListener(new DefaultProcessEventListener()
-        {
-            @Override
-            public void afterProcessCompleted(ProcessCompletedEvent event)
-            {
-                ProcessInstance processInstance = event.getProcessInstance();
-                BidsProcessInvocation process = bpc.completeProcess(processInstance.getId());
-                log.info("Completed process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
-            }
-        });
-        kieSession.addEventListener(new BidsDayEventLogger(bidsDay));
+
+        // event listeners are not persisted and have to be added on re-deploy too
+        addTransientEventListeners(bidsDay, kieSession);
 
         // remember our deployment
         BidsDeployment bd = new BidsDeployment();
@@ -131,6 +123,17 @@ public class BidsDayController
         KModuleDeploymentUnit unit = new BidsDeploymentUnit(bd.getBidsDay(), BIDS_MAVEN_GROUP, bd.getArtifactId(), bd.getVersion());
         log.info("Re-deploying BidsModule " + bd);
         kieManager.deployUnit(unit);
+
+        // re-add transient event listeners
+        addTransientEventListeners(bd.getBidsDay(),extractKieSession(bd));
+    }
+
+    public DeployedBidsDayDesc reportDeploymentActivity(Long bdId, boolean withHistory)
+    {
+        BidsDeployment bd = findDeployment(bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not report on activity. Deployment does not exist: " + bdId);
+        return new BidsDayActivityReporter(kieManager.getRuntimeDataService(), withHistory).reportDeploymentActivity(bd);
     }
 
     public boolean signal(Long bdId, String signalName)
@@ -159,12 +162,19 @@ public class BidsDayController
         return true;
     }
 
-    public DeployedBidsDayDesc reportDeploymentActivity(Long bdId, boolean withHistory)
+    protected void addTransientEventListeners(BidsDay bidsDay, KieSession kieSession)
     {
-        BidsDeployment bd = findDeployment(bdId);
-        if (bd == null)
-            throw new RuntimeException("Could not report on activity. Deployment does not exist: " + bdId);
-        return new BidsDayActivityReporter(kieManager.getRuntimeDataService(),withHistory).reportDeploymentActivity(bd);
+        kieSession.addEventListener(new DefaultProcessEventListener()
+        {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event)
+            {
+                ProcessInstance processInstance = event.getProcessInstance();
+                BidsProcessInvocation process = bpc.completeProcess(processInstance.getId());
+                log.info("Completed process " + processInstance.getProcessName() + "[pId=" + processInstance.getId() + "] using module " + process.getDeployment());
+            }
+        });
+        kieSession.addEventListener(new BidsDayEventLogger(bidsDay));
     }
 }
 
