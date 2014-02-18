@@ -21,14 +21,14 @@ import org.kie.api.runtime.process.WorkItem;
 
 public class BidsWorkItemWorkerConfig
 {
-    public static final String IN_WORK_ID = "WorkId";
+    public static final String IN_WORK_DONE_NAME = "WorkDoneName";
     public static final String IN_SIGNAL_ON_ERROR = "SignalOnError";
     public static final String IN_ONCE_ONLY = "OnceOnly";
     protected final WorkItem workItem;
     protected final File logBaseDir;
     protected File workItemLogDir;
     protected Long workItemId;
-    protected String workDoneId;
+    protected String workDoneName;
     protected boolean signalOnErrorResult;
     protected boolean onceOnly;
 
@@ -43,7 +43,7 @@ public class BidsWorkItemWorkerConfig
     {
         this.signalOnErrorResult = getBooleanParameter(IN_SIGNAL_ON_ERROR, true);
         this.onceOnly = getBooleanParameter(IN_ONCE_ONLY, false);
-        this.workDoneId = extractWorkDoneIdFromParameters();
+        this.workDoneName = extractWorkDoneNameFromParameters();
 
         // derive a working log directory based on the Bids Day and the current process
         ProcessInstance process = kieSession.getProcessInstance(workItem.getProcessInstanceId());
@@ -51,7 +51,7 @@ public class BidsWorkItemWorkerConfig
 
         File workItemLogBaseDir = bidsDay == null ? logBaseDir : new File(logBaseDir, bidsDay.getName());
         workItemLogBaseDir = new File(workItemLogBaseDir, process.getProcessName());
-        this.workItemLogDir = new File(workItemLogBaseDir, workDoneId);
+        this.workItemLogDir = new File(workItemLogBaseDir, workDoneName);
         this.workItemLogDir.mkdirs();
     }
 
@@ -75,14 +75,14 @@ public class BidsWorkItemWorkerConfig
         this.signalOnErrorResult = signalOnErrorResult;
     }
 
-    public String getWorkDoneId()
+    public String getWorkDoneName()
     {
-        return workDoneId;
+        return workDoneName;
     }
 
-    public void setWorkDoneId(String workDoneId)
+    public void setWorkDoneName(String workDoneName)
     {
-        this.workDoneId = workDoneId;
+        this.workDoneName = workDoneName;
     }
 
     public File getWorkItemLogDir()
@@ -110,9 +110,9 @@ public class BidsWorkItemWorkerConfig
         return workItem;
     }
 
-    protected String extractWorkDoneIdFromParameters()
+    protected String extractWorkDoneNameFromParameters()
     {
-        return getStringParameter(IN_WORK_ID, this.workItemId.toString());
+        return getStringParameter(IN_WORK_DONE_NAME, this.workItemId.toString());
     }
 
     protected Object getObjectParameter(String name, Object def)

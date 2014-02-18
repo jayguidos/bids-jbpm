@@ -70,6 +70,18 @@ public class BidsDayController
         }
     }
 
+    public WorkDone addWorkDoneItem(Long bdId, String name)
+    {
+        BidsDeployment bd = findDeployment(bdId);
+        if (bd == null)
+            throw new RuntimeException("Could not create work. Deployment does not exist: " + bdId);
+        KieSession kieSession = extractKieSession(bd);
+        KieSessionBidsFactManager factManager = new KieSessionBidsFactManager(kieSession);
+        WorkDone fact = new WorkDone(name);
+        factManager.add(fact);
+        return fact;
+    }
+
     public BidsDeployment deployModule(BidsDay bidsDay, String artifactId, String version)
     {
         // deploy the module identified by the GAV

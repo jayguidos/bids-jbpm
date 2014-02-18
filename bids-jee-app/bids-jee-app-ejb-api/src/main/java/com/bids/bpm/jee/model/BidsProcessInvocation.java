@@ -19,7 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -55,7 +54,7 @@ public class BidsProcessInvocation
     @NotNull
     private long kieInstanceId;
     @NotNull
-    private String kieProcessDescriptionId;
+    private String kieProcessId;
     // nullable
     private Date startTime;
     // nullable
@@ -101,7 +100,7 @@ public class BidsProcessInvocation
         return "BidsProcessInvocation{" +
                 "id=" + id +
                 ", kieInstanceId=" + kieInstanceId +
-                ", kieProcessDescriptionId='" + kieProcessDescriptionId + '\'' +
+                ", kieProcessDescriptionId='" + kieProcessId + '\'' +
                 ", deployment=" + deployment +
                 '}';
     }
@@ -136,14 +135,14 @@ public class BidsProcessInvocation
         this.kieInstanceId = kieInstanceId;
     }
 
-    public String getKieProcessDescriptionId()
+    public String getKieProcessId()
     {
-        return kieProcessDescriptionId;
+        return kieProcessId;
     }
 
-    public void setKieProcessDescriptionId(String kieProcessDescriptionId)
+    public void setKieProcessId(String kieProcessDescriptionId)
     {
-        this.kieProcessDescriptionId = kieProcessDescriptionId;
+        this.kieProcessId = kieProcessDescriptionId;
     }
 
     public Date getStartTime()

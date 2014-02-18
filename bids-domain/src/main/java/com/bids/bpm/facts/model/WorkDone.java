@@ -17,6 +17,11 @@ public class WorkDone
     private static final long serialVersionUID = -9101928234778914389L;
     private Date doneTime = new Date();
 
+    //  always need a no-arg for JAXB
+    public WorkDone()
+    {
+    }
+
     public WorkDone(String name)
     {
         super(name);

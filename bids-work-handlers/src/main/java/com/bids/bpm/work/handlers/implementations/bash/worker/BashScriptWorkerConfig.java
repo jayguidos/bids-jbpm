@@ -94,9 +94,9 @@ public class BashScriptWorkerConfig
     }
 
     @Override
-    protected String extractWorkDoneIdFromParameters()
+    protected String extractWorkDoneNameFromParameters()
     {
-        return getStringParameter(IN_WORK_ID, scriptName.replace(" ", "_"));
+        return getStringParameter(IN_WORK_DONE_NAME, scriptName.replace(" ", "_"));
     }
 
     protected String extractScriptArgsFromParameters()

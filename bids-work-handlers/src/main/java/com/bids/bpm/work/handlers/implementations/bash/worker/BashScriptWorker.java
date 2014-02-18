@@ -48,7 +48,7 @@ public class BashScriptWorker
                 continue;
             }
         }
-        rr.setWorkDone(new WorkDone(config.getWorkDoneId()));
+        rr.setWorkDone(new WorkDone(config.getWorkDoneName()));
         return rr;
     }
 
@@ -56,17 +56,17 @@ public class BashScriptWorker
     {
         try
         {
-            File waitFile = new File(config.getWorkItemLogDir(), config.getWorkDoneId() + ".paused");
+            File waitFile = new File(config.getWorkItemLogDir(), config.getWorkDoneName() + ".paused");
             waitFile.createNewFile();
             int counter = 0;
             while (waitFile.exists())
             {
                 if (counter % 20 == 0)
-                    log.warn("Script " + config.getWorkDoneId() + " is paused until you fix it.  Delete " + waitFile.getCanonicalPath() + " to retry execution");
+                    log.warn("Script " + config.getWorkDoneName() + " is paused until you fix it.  Delete " + waitFile.getCanonicalPath() + " to retry execution");
                 counter++;
                 Thread.sleep(500L);
             }
-            log.warn("Script " + config.getWorkDoneId() + " has resumed and will restart.");
+            log.warn("Script " + config.getWorkDoneName() + " has resumed and will restart.");
         } catch (Exception e)
         {
             log.error(e);
@@ -81,7 +81,7 @@ public class BashScriptWorker
         BidsWorkItemHandlerResults rr = new BidsWorkItemHandlerResults();
         BashShell script = makeBashShell();
 
-        log.info("Executing BASH Script(WorkId:" + config.getWorkDoneId() + "): " + script.getScriptName() + " " + script.getScriptArgs());
+        log.info("Executing BASH Script(WorkId:" + config.getWorkDoneName() + "): " + script.getScriptName() + " " + script.getScriptArgs());
         script.execute();
 
         // assemble the results of the BASH script run
@@ -110,7 +110,7 @@ public class BashScriptWorker
     {
         try
         {
-            FileWriter out = new FileWriter(new File(config.getWorkItemLogDir(), config.getWorkDoneId() + suffix));
+            FileWriter out = new FileWriter(new File(config.getWorkItemLogDir(), config.getWorkDoneName() + suffix));
             PrintWriter w = new PrintWriter(out);
             w.println(contents);
             w.close();

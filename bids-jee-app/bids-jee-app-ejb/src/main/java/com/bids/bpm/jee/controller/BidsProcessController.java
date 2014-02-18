@@ -61,7 +61,7 @@ public class BidsProcessController
 
         BidsProcessInvocation bidsProcess = new BidsProcessInvocation();
         bidsProcess.setDeployment(bd);
-        bidsProcess.setKieProcessDescriptionId(kieProcesssId);
+        bidsProcess.setKieProcessId(kieProcesssId);
         bidsProcess.setKieInstanceId(processInstance.getId());
         bd.startProcess(bidsProcess);
 

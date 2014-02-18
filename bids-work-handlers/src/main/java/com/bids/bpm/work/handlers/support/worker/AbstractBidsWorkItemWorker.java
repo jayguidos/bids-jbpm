@@ -36,11 +36,11 @@ public abstract class AbstractBidsWorkItemWorker
     {
 
         BidsWorkItemHandlerResults rr;
-        WorkDone oldWork = factManager.find(WorkDone.class, config.getWorkDoneId());
+        WorkDone oldWork = factManager.find(WorkDone.class, config.getWorkDoneName());
 
         if (config.isOnceOnly() && oldWork != null)
         {
-            log.warn("Work Id: " + config.getWorkDoneId() + " already completed - skipping this invocation");
+            log.warn("Work Id: " + config.getWorkDoneName() + " already completed - skipping this invocation");
             rr = new BidsWorkItemHandlerResults(0, oldWork);
         }
         else
@@ -68,7 +68,7 @@ public abstract class AbstractBidsWorkItemWorker
 
             // if the work task has been configured to signal if there was an error result then do it now
             if (rr.getReturnCode() != 0 && config.isSignalOnErrorResult())
-                signalThrower.signalEvent(config.getWorkDoneId());
+                signalThrower.signalEvent(config.getWorkDoneName());
         }
 
         // notify manager that work item has been completed.  We cannot keep a handle to

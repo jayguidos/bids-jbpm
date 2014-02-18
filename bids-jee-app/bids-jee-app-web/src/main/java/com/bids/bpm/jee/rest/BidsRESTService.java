@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 
 
 import com.bids.bpm.facts.model.BidsDay;
+import com.bids.bpm.facts.model.WorkDone;
 import com.bids.bpm.jee.controller.BidsDayController;
 import com.bids.bpm.jee.controller.BidsProcessController;
 import com.bids.bpm.jee.model.BidsDeployment;
@@ -51,6 +52,21 @@ public class BidsRESTService
     BidsDayController bdc;
     @Inject
     private BidsProcessController bpc;
+
+    @PUT
+    @Path("/addWorkDone/bdId/{bdId}/workDoneName/{workDoneName}")
+    @Produces(APPLICATION_XML)
+
+    public WorkDone addWorkDoneItem(
+
+            @NotNull @DecimalMin("1") @PathParam("bdId") Long bdId,
+            @NotNull @PathParam("workDoneName") String workIDoneName
+
+    )
+    {
+        return bdc.addWorkDoneItem(bdId, workIDoneName);
+
+    }
 
     @DELETE
     @Path("/deleteWorkDone/bdId/{bdId}/workId/{workId}")

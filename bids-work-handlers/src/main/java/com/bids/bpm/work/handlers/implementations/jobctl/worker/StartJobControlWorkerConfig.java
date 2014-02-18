@@ -86,7 +86,7 @@ public class StartJobControlWorkerConfig
     }
 
     @Override
-    protected String extractWorkDoneIdFromParameters()
+    protected String extractWorkDoneNameFromParameters()
     {
         return JOB_CONTROL_WORK_PREFIX + this.jobCtlId + "_start";
     }
