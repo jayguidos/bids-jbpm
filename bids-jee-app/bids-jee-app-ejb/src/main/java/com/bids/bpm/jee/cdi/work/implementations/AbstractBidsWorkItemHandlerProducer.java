@@ -7,25 +7,26 @@
  *
  */
 
-package com.bids.bpm.jee.cdi;
+package com.bids.bpm.jee.cdi.work.implementations;
 
 import java.util.Map;
 
 
-import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
+import static com.bids.bpm.jee.cdi.work.InjectableWorkItemHandlerProducer.EXECUTOR_SERVICE;
+import static com.bids.bpm.jee.cdi.work.InjectableWorkItemHandlerProducer.KIE_SESSION;
+import static com.bids.bpm.jee.cdi.work.InjectableWorkItemHandlerProducer.RUNTIME_MANAGER;
+import static com.bids.bpm.jee.cdi.work.InjectableWorkItemHandlerProducer.TASK_SERVICE;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.TaskService;
 import org.kie.internal.executor.api.ExecutorService;
 
-public abstract class BidsWorkItemProducer
-        implements WorkItemHandlerProducer
+public abstract class AbstractBidsWorkItemHandlerProducer
 {
     // these constants are defined as KIE internals
-    public static final String RUNTIME_MANAGER = "runtimeManager";
-    public static final String KIE_SESSION = "ksession";
-    public static final String EXECUTOR_SERVICE = "executorService";
-    public static final String TASK_SERVICE = "taskService";
+
+    abstract public Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params);
 
     protected SingletonRuntimeManager getRuntimeManager(Map<String, Object> injectedMap)
     {

@@ -10,9 +10,13 @@
 package com.bids.bpm.work.handlers.implementations.bash.worker;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,10 +30,12 @@ public class BashShell
     private String[] commandArgs;
     private String scriptName;
     private String scriptArgs;
-    private AsyncStreamHandler inputStreamHandler;
-    private AsyncStreamHandler errorStreamHandler;
+    private AsyncStreamHandler stdOutStreamHandler;
+    private AsyncStreamHandler stdErrStreamHandler;
     private AtomicInteger exitValue = new AtomicInteger(-1);
     private boolean logOutput = false;
+    private File inputFile;
+    private InputStream inputStream;
 
     public BashShell()
     {
@@ -70,28 +76,43 @@ public class BashShell
 
         try
         {
-            ProcessBuilder pb = new ProcessBuilder(commandArgs);
-            Process process = pb.start();
+            final ProcessBuilder pb = new ProcessBuilder(commandArgs);
+            final Process process = pb.start();
+            AsyncInputStreamSpooler inputSpooler = null;
 
-            InputStream inputStream = process.getInputStream();
-            InputStream errorStream = process.getErrorStream();
+            if (inputFile != null)
+                pb.redirectInput(inputFile);
+            else if (inputStream != null)
+            {
+                inputSpooler = new AsyncInputStreamSpooler(inputStream);
+                inputSpooler.start();
+            }
+
+            InputStream stdOutStream = process.getInputStream();
+            InputStream stdErrStream = process.getErrorStream();
 
             // these need to run as parallel java threads to drain in a timely fashion
             // the standard output and error from the command.
-            inputStreamHandler = new AsyncStreamHandler(inputStream);
-            errorStreamHandler = new AsyncStreamHandler(errorStream);
+            stdOutStreamHandler = new AsyncStreamHandler(stdOutStream);
+            stdErrStreamHandler = new AsyncStreamHandler(stdErrStream);
 
-            inputStreamHandler.start();
-            errorStreamHandler.start();
+            stdOutStreamHandler.start();
+            stdErrStreamHandler.start();
 
             exitValue.set(process.waitFor());
 
-            inputStreamHandler.join();
-            errorStreamHandler.join();
+            stdOutStreamHandler.join();
+            stdErrStreamHandler.join();
+            if (inputSpooler != null)
+            {
+                inputSpooler.join(2000L);
+                if (inputSpooler.isAlive())
+                    inputSpooler.interrupt();
+            }
 
             if (logOutput || exitValue.get() != 0)
                 logOutput();
-        } catch ( InterruptedException e )
+        } catch (InterruptedException e)
         {
             throw e;
         } catch (Exception e)
@@ -113,6 +134,16 @@ public class BashShell
         this.logOutput = logOutput;
     }
 
+    public File getInputFile()
+    {
+        return inputFile;
+    }
+
+    public void setInputFile(File inputFile)
+    {
+        this.inputFile = inputFile;
+    }
+
     public String getScriptArgs()
     {
         return scriptArgs;
@@ -125,12 +156,12 @@ public class BashShell
 
     public StringBuilder getStandardOutput()
     {
-        return inputStreamHandler.getOutputBuffer();
+        return stdOutStreamHandler.getOutputBuffer();
     }
 
     public StringBuilder getStandardError()
     {
-        return errorStreamHandler.getOutputBuffer();
+        return stdErrStreamHandler.getOutputBuffer();
     }
 
     public String getScriptName()
@@ -141,6 +172,16 @@ public class BashShell
     public void setScriptName(String scriptName)
     {
         this.scriptName = scriptName;
+    }
+
+    public InputStream getInputStream()
+    {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream)
+    {
+        this.inputStream = inputStream;
     }
 
     public String getHost()
@@ -172,7 +213,39 @@ public class BashShell
             logger.error(sb.toString());
     }
 
-    private class AsyncStreamHandler
+    private static class AsyncInputStreamSpooler
+            extends Thread
+    {
+        private InputStream inputStream;
+        private OutputStream outputStream;
+
+        private AsyncInputStreamSpooler(InputStream inputStream)
+        {
+            this.inputStream = inputStream;
+        }
+
+        public void run()
+        {
+            try
+            {
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
+                BufferedReader inputFile = new BufferedReader(new InputStreamReader(inputStream));
+                String currInputLine = null;
+                while ((currInputLine = inputFile.readLine()) != null)
+                {
+                    bw.write(currInputLine);
+                    bw.newLine();
+                }
+                bw.close();
+            } catch (IOException e)
+            {
+                logger.error("Exception working with input stream", e);
+            }
+        }
+
+    }
+
+    private static class AsyncStreamHandler
             extends Thread
     {
         InputStream inputStream;

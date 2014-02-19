@@ -99,11 +99,11 @@ public class BashScriptWorker
 
     protected BashShell makeBashShell()
     {
-        BashShell script = new BashShell(config.getScriptName(), config.getScriptArgs());
+        BashShell shell = new BashShell(config.getScriptName(), config.getScriptArgs());
         if (config.getTargetHost() != null && config.getTargetHost().trim().length() > 0)
-            script.setHost(config.getTargetHost());
-        script.setLogOutput(config.isLogOutputToConsole());
-        return script;
+            shell.setHost(config.getTargetHost());
+        shell.setLogOutput(config.isLogOutputToConsole());
+        return shell;
     }
 
     protected void writeFile(String suffix, StringBuilder contents)
