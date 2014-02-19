@@ -7,7 +7,7 @@
  *
  */
 
-package com.bids.bpm.jee.cdi;
+package com.bids.bpm.jee.cdi.work.implementations;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +24,8 @@ import com.bids.bpm.work.handlers.implementations.jobctl.JobControlWorkItemHandl
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 
-public class JobControlWorkItemProducer
-        extends BidsWorkItemProducer
+public class JobControlWorkItemHandlerProducer
+        extends AbstractBidsWorkItemHandlerProducer
 {
 
     @Inject

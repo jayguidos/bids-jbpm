@@ -15,6 +15,7 @@ public class BidsBPMConstants
     public static final String BIDS_BASH_WORK_ITEM_HANDLER="BashScript";
     public static final String BIDS_JOB_CONTROL_START_ITEM_HANDLER ="StartJob";
     public static final String BIDS_JOB_CONTROL_END_ITEM_HANDLER="EndJob";
+    public static final String BIDS_SQL_RUNNER_ITEM_HANDLER="SQLScript";
     public static final String BIDS_BPM_LOG_DIR_PROP_NAME = "com.bids.bpm.log.dir";
     public static final String BIDS_BPM_BASH_HOST_PROP_NAME = "com.bids.bash.host";
     public static final String TRADING_DATE_FORMAT = "yyyy-MM-dd";
