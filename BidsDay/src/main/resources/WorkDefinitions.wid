@@ -64,7 +64,7 @@ import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
         "parameters" : [
            "ScriptName" : new StringDataType(),
            "ScriptArgs" : new StringDataType(),
-           "WorkId" : new StringDataType(),
+           "WorkDoneName" : new StringDataType(),
            "SignalOnError" : new BooleanDataType(),
            "LogOutputToConsole" : new BooleanDataType()
      ],
@@ -74,6 +74,24 @@ import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
          "StdErr" : new StringDataType()
      ],
      "displayName" : "Bash Script",
+     "icon" : "defaultservicenodeicon.png"
+  ],
+
+ [
+     "name" : "SQLScript",
+        "parameters" : [
+           "SQLScriptFileName" : new StringDataType(),
+           "SQLScriptArgs" : new StringDataType(),
+           "WorkDoneName" : new StringDataType(),
+           "SignalOnError" : new BooleanDataType(),
+           "LogOutputToConsole" : new BooleanDataType()
+     ],
+     "results" : [
+         "ReturnCode" : new IntegerDataType(),
+         "StdOut" : new StringDataType(),
+         "StdErr" : new StringDataType()
+     ],
+     "displayName" : "SQL Script",
      "icon" : "defaultservicenodeicon.png"
   ],
 
