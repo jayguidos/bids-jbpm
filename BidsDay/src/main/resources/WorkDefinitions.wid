@@ -80,8 +80,8 @@ import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
  [
      "name" : "SQLScript",
         "parameters" : [
-           "SQLFileName" : new StringDataType(),
-           "SQLFileArgs" : new StringDataType(),
+           "SQLScriptFileName" : new StringDataType(),
+           "SQLScriptArgs" : new StringDataType(),
            "WorkDoneName" : new StringDataType(),
            "SignalOnError" : new BooleanDataType(),
            "LogOutputToConsole" : new BooleanDataType()
