@@ -20,6 +20,17 @@
   </dependencies>
   <repositories>
     <repository>
+      <id>bids-repository-group</id>
+      <name>BIDS Public Repository Group</name>
+      <url>http://cgybpm01:8081/nexus/content/groups/bids/</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
       <id>guvnor-m2-repo</id>
       <name>Guvnor M2 Repo</name>
       <url>http://localhost:8080/jbpm-console/maven2/</url>
