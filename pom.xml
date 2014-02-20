@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--My Versions-->
-        <bids-domain.version>1.0.0</bids-domain.version>
+        <bids-domain.version>1.0.0-SNAPSHOT</bids-domain.version>
         <bids-work-handlers.version>1.0.0-SNAPSHOT</bids-work-handlers.version>
         <bids-jee-app.version>1.0.0-SNAPSHOT</bids-jee-app.version>
 
@@ -122,5 +122,18 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>cgybpm01-deployment</id>
+            <name>Internal Releases</name>
+            <url>http://cgybpm01:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>cgybpm01-deployment</id>
+            <name>Internal Releases</name>
+            <url>http://cgybpm01:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
