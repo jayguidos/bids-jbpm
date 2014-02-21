@@ -4,12 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>bids-jbpm</groupId>
+        <groupId>com.bids.bpm</groupId>
         <artifactId>bids-jbpm-all</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>bids-jbpm</groupId>
     <artifactId>bids-jee-app</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -33,13 +32,13 @@
             <!-- Define the version of the EJB jar so that we don't need to
                repeat ourselves in every module -->
             <dependency>
-                <groupId>bids-jbpm</groupId>
+                <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-jee-app-ejb</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <type>ejb</type>
             </dependency>
             <dependency>
-                <groupId>bids-jbpm</groupId>
+                <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-jee-app-ejb-api</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
@@ -47,7 +46,7 @@
             <!-- Define the version of the WAR so that we don't need to repeat
                ourselves in every module -->
             <dependency>
-                <groupId>bids-jbpm</groupId>
+                <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-jee-app-web</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <type>war</type>
@@ -57,7 +56,7 @@
             <!-- Define the version of the Shared REST API so that we don't need to repeat
                ourselves in every module -->
             <dependency>
-                <groupId>bids-jbpm</groupId>
+                <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-jee-app-web-api</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <scope>compile</scope>

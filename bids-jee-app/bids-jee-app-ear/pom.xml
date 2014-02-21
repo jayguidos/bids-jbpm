@@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
+       <groupId>com.bids.bpm</groupId>
       <artifactId>bids-jee-app</artifactId>
-      <groupId>bids-jbpm</groupId>
       <version>1.0-SNAPSHOT</version>
    </parent>
 
@@ -18,12 +18,12 @@
 
       <!-- Depend on the ejb module and war so that we can package them -->
       <dependency>
-         <groupId>bids-jbpm</groupId>
+         <groupId>com.bids.bpm</groupId>
          <artifactId>bids-jee-app-web</artifactId>
          <type>war</type>
       </dependency>
       <dependency>
-         <groupId>bids-jbpm</groupId>
+         <groupId>com.bids.bpm</groupId>
          <artifactId>bids-jee-app-ejb</artifactId>
          <type>ejb</type>
       </dependency>
@@ -56,7 +56,7 @@
                   <!-- Register our War as a web module, and set the context 
                      root -->
                   <webModule>
-                     <groupId>bids-jbpm</groupId>
+                     <groupId>com.bids.bpm</groupId>
                      <artifactId>bids-jee-app-web</artifactId>
                      <!-- Define the context root for the webapp -->
                      <contextRoot>/bids</contextRoot>

@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <groupId>com.bids.bpm</groupId>
         <artifactId>bids-jee-app</artifactId>
-        <groupId>bids-jbpm</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -48,11 +48,12 @@
 
         <!--My own dependencies-->
         <dependency>
-            <groupId>bids-jbpm</groupId>
+            <groupId>com.bids.bpm</groupId>
             <artifactId>bids-work-handlers</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>bids-jbpm</groupId>
+            <groupId>com.bids.bpm</groupId>
             <artifactId>bids-jee-app-ejb-api</artifactId>
         </dependency>
 
@@ -106,11 +107,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-executor</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-kie-services</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

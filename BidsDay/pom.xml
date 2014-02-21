@@ -8,7 +8,7 @@
   <name>BidsDay</name>
   <dependencies>
     <dependency>
-      <groupId>bids-jbpm</groupId>
+      <groupId>com.bids.bpm</groupId>
       <artifactId>bids-domain</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
@@ -23,6 +23,14 @@
       <id>guvnor-m2-repo</id>
       <name>Guvnor M2 Repo</name>
       <url>http://localhost:8080/jbpm-console/maven2/</url>
+    </repository>
+    <repository>
+      <id>cgybpm01-development</id>
+      <name>Bids Repositories</name>
+      <url>http://cgybpm01:8081/nexus/content/groups/public</url>
+      <snapshots>
+          <updatePolicy>always</updatePolicy>
+      </snapshots>
     </repository>
   </repositories>
 </project>

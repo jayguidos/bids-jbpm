@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>BIDS Daily Operations</name>
-    <groupId>bids-jbpm</groupId>
+    <groupId>com.bids.bpm</groupId>
     <artifactId>bids-jbpm-all</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -65,12 +65,12 @@
 
             <!--These are mine -->
             <dependency>
-                <groupId>bids-jbpm</groupId>
+                <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-domain</artifactId>
                 <version>${bids-domain.version}</version>
             </dependency>
             <dependency>
-                <groupId>bids-jbpm</groupId>
+                <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-work-handlers</artifactId>
                 <version>${bids-work-handlers.version}</version>
             </dependency>
@@ -111,9 +111,9 @@
 
         <!--JBPM (and all other JBoss) jars-->
         <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <id>cgybpm01-development</id>
+            <name>Public Repositories</name>
+            <url>http://cgybpm01:8081/nexus/content/groups/bids/</url>
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>

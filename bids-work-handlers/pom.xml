@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <groupId>com.bids.bpm</groupId>
         <artifactId>bids-jbpm-all</artifactId>
-        <groupId>bids-jbpm</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>bids-jbpm</groupId>
+            <groupId>com.bids.bpm</groupId>
             <artifactId>bids-domain</artifactId>
             <version>${bids-domain.version}</version>
         </dependency>

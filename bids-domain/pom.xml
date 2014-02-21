@@ -5,13 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>bids-jbpm</groupId>
+        <groupId>com.bids.bpm</groupId>
         <artifactId>bids-jbpm-all</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <name>BIDS Domain and Facts</name>
-    <groupId>bids-jbpm</groupId>
     <artifactId>bids-domain</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
