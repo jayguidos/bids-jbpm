@@ -38,7 +38,7 @@
     <repository>
       <id>cgybpm01-development</id>
       <name>Bids Repositories</name>
-      <url>http://cgybpm01:8081/nexus/content/groups/public</url>
+      <url>http://cgybpm01:8081/nexus/content/groups/bids</url>
       <snapshots>
           <updatePolicy>always</updatePolicy>
       </snapshots>
