@@ -16,6 +16,7 @@
 
         <!--My Versions-->
         <bids-domain.version>1.0.0-SNAPSHOT</bids-domain.version>
+        <bids-resources.version>1.0.0-SNAPSHOT</bids-resources.version>
         <bids-work-handlers.version>1.0.0-SNAPSHOT</bids-work-handlers.version>
         <bids-jee-app.version>1.0.0-SNAPSHOT</bids-jee-app.version>
 
@@ -37,6 +38,7 @@
 
     <modules>
         <module>bids-domain</module>
+        <module>bids-resources</module>
         <module>bids-work-handlers</module>
         <module>bids-jee-app</module>
         <module>bids-rest-client</module>
@@ -73,6 +75,11 @@
                 <groupId>com.bids.bpm</groupId>
                 <artifactId>bids-work-handlers</artifactId>
                 <version>${bids-work-handlers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bids.bpm</groupId>
+                <artifactId>bids-resources</artifactId>
+                <version>${bids-resources.version}</version>
             </dependency>
 
             <dependency>
@@ -112,13 +119,15 @@
         <!--JBPM (and all other JBoss) jars-->
         <repository>
             <id>cgybpm01-development</id>
-            <name>Public Repositories</name>
+            <name>BIDS Public Repositories</name>
             <url>http://cgybpm01:8081/nexus/content/groups/bids/</url>
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>
+            <!--Kinda tricky to update snapshots of BIDS resources that are already being stuffed into a local repo-->
+            <!--via a build. Better to let user control when snapshots get updated-->
             <snapshots>
-                <updatePolicy>daily</updatePolicy>
+                <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
     </repositories>
