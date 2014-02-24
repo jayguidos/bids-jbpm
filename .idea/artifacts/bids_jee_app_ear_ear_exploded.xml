@@ -17,6 +17,9 @@
           <element id="module-output" name="bids-domain" />
         </element>
         <element id="library" level="project" name="Maven: commons-io:commons-io:2.1" />
+        <element id="archive" name="bids-resources-1.0.0-SNAPSHOT.jar">
+          <element id="module-output" name="bids-resources" />
+        </element>
         <element id="archive" name="bids-jee-app-ejb-api-1.0-SNAPSHOT.jar">
           <element id="module-output" name="bids-jee-app-ejb-api" />
         </element>

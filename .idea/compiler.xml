@@ -31,6 +31,7 @@
         <module name="bids-jee-app-ejb-api" />
         <module name="bids-jee-app-web" />
         <module name="bids-jee-app-web-api" />
+        <module name="bids-resources" />
         <module name="bids-rest-client" />
         <module name="bids-work-handlers" />
         <module name="BidsDay" />
