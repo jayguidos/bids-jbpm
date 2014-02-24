@@ -59,6 +59,12 @@ public class SQLRunnerWorkerConfig
     }
 
     @Override
+    protected String extractScriptArgsFromParameters()
+    {
+        return this.sqlScriptArgs;
+    }
+
+    @Override
     protected String extractWorkDoneNameFromParameters()
     {
         // default to the name of the script

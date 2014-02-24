@@ -27,6 +27,7 @@
     <orderEntry type="module" module-name="bids-work-handlers" scope="PROVIDED" />
     <orderEntry type="module" module-name="bids-domain" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-io:commons-io:1.4" level="project" />
+    <orderEntry type="module" module-name="bids-resources" scope="PROVIDED" />
     <orderEntry type="module" module-name="bids-jee-app-ejb-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-configuration:commons-configuration:1.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />

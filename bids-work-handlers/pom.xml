@@ -17,7 +17,10 @@
         <dependency>
             <groupId>com.bids.bpm</groupId>
             <artifactId>bids-domain</artifactId>
-            <version>${bids-domain.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bids.bpm</groupId>
+            <artifactId>bids-resources</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>

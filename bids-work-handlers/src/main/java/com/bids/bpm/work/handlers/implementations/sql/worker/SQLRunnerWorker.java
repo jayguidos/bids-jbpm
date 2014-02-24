@@ -19,7 +19,7 @@ import com.bids.bpm.work.handlers.implementations.bash.worker.BashShell;
 public class SQLRunnerWorker
         extends BashScriptWorker
 {
-    public static final File SQL_SCRIPT_DIR = new File("./sqlscripts");
+    public static final File SQL_SCRIPT_DIR = new File("sqlscripts");
     private final SQLRunnerWorkerConfig config;
 
     public SQLRunnerWorker(SQLRunnerWorkerConfig config)

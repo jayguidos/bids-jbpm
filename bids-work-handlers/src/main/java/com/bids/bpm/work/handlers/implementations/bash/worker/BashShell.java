@@ -84,7 +84,8 @@ public class BashShell
                 pb.redirectInput(inputFile);
             else if (inputStream != null)
             {
-                inputSpooler = new AsyncInputStreamSpooler(inputStream);
+                // tie the stream directly to the stdin of the process
+                inputSpooler = new AsyncInputStreamSpooler(inputStream,process.getOutputStream());
                 inputSpooler.start();
             }
 
@@ -219,9 +220,10 @@ public class BashShell
         private InputStream inputStream;
         private OutputStream outputStream;
 
-        private AsyncInputStreamSpooler(InputStream inputStream)
+        private AsyncInputStreamSpooler(InputStream inputStream, OutputStream outputStream)
         {
             this.inputStream = inputStream;
+            this.outputStream = outputStream;
         }
 
         public void run()

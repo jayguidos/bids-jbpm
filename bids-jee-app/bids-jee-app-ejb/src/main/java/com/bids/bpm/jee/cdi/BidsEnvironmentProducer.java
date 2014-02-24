@@ -25,6 +25,7 @@ import javax.persistence.PersistenceUnit;
 
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
+import org.jbpm.kie.services.cdi.producer.UserGroupInfoProducer;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.cdi.Selectable;
@@ -43,7 +44,7 @@ public class BidsEnvironmentProducer
 
     @Inject
     @Selectable
-    private UserGroupCallback userGroupCallback;
+    private UserGroupInfoProducer userGroupInfoProducer;
 
     @Inject
     private BeanManager beanManager;
@@ -81,7 +82,7 @@ public class BidsEnvironmentProducer
     @Produces
     public UserGroupCallback produceSelectedUserGroupCalback()
     {
-        return userGroupCallback;
+        return userGroupInfoProducer.produceCallback();
     }
 
     @Produces
@@ -111,7 +112,7 @@ public class BidsEnvironmentProducer
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
                 .newDefaultBuilder()
                 .entityManagerFactory(emf)
-                .userGroupCallback(userGroupCallback)
+                .userGroupCallback(userGroupInfoProducer.produceCallback())
                 .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
                 .get();
         return environment;

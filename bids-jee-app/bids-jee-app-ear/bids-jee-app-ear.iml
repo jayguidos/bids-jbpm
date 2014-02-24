@@ -22,6 +22,7 @@
     <orderEntry type="module" module-name="bids-work-handlers" />
     <orderEntry type="module" module-name="bids-domain" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.1" level="project" />
+    <orderEntry type="module" module-name="bids-resources" />
     <orderEntry type="module" module-name="bids-jee-app-ejb-api" />
     <orderEntry type="library" name="Maven: commons-configuration:commons-configuration:1.10" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
